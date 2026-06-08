@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="了">
-<meta name="description" content="了 — 每天睡前，放下今天。">
+<meta name="description" content="了 — 每天睡前，放下今天。情绪星河 · 晚安来信。">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230b0f16'/><text x='50' y='74' text-anchor='middle' fill='%23c9a96e' font-size='64' font-weight='300' font-family='system-ui'>了</text></svg>">
 <title>了</title>
@@ -17,176 +17,117 @@
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:#0b0f16;color:#d4cec4;min-height:100dvh;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
+  background:#0b0f16;color:#d4cec4;min-height:100dvh;overflow-x:hidden;
   user-select:none;-webkit-user-select:none;
 }
-/* Night sky ambient */
 body::before{
-  content:'';position:fixed;inset:0;
-  background:radial-gradient(ellipse 300px 400px at 50% 30%,rgba(201,169,110,.03) 0%,transparent 60%),
-              radial-gradient(ellipse 200px 200px at 80% 70%,rgba(201,169,110,.02) 0%,transparent 50%);
-  pointer-events:none;
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 400px 500px at 50% 25%,rgba(201,169,110,.025) 0%,transparent 60%),
+              radial-gradient(ellipse 200px 200px at 80% 60%,rgba(180,160,130,.015) 0%,transparent 50%);
 }
 
-#app{
-  width:100%;max-width:420px;height:100dvh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:40px 28px;position:relative;z-index:1;
-}
+#app{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;min-height:100dvh;padding-bottom:90px}
 
 /* ============ SCREENS ============ */
-.scr{display:none;flex-direction:column;align-items:center;width:100%}
-.scr.on{display:flex}
+.page{display:none;flex-direction:column;align-items:center;padding:44px 24px 20px}
+.page.on{display:flex}
 
-/* ============ MAIN RITUAL SCREEN ============ */
-.moon{font-size:40px;margin-bottom:28px;opacity:.7;animation:float 4s ease-in-out infinite}
+/* ============ PAGE 1: RITUAL (放下) ============ */
+.moon{font-size:38px;margin-bottom:24px;opacity:.7;animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-.greeting{font-size:14px;color:#6b6358;margin-bottom:18px;letter-spacing:1px}
-.question{font-size:22px;color:#c4bcae;font-weight:300;text-align:center;line-height:1.5;margin-bottom:24px;letter-spacing:.5px}
-
-/* Emotion tags */
-.tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px}
-.tag{
-  padding:10px 20px;border-radius:24px;font-size:14px;cursor:pointer;transition:all .25s;
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);color:#8b8278;
-  letter-spacing:.5px;
-}
-.tag:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.greeting{font-size:14px;color:#6b6358;margin-bottom:16px;letter-spacing:1px}
+.question{font-size:22px;color:#c4bcae;font-weight:300;text-align:center;line-height:1.5;margin-bottom:22px}
+.tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px}
+.tag{padding:10px 20px;border-radius:24px;font-size:14px;cursor:pointer;transition:all .25s;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);color:#8b8278}
+.tag:hover{background:rgba(255,255,255,.04)}
 .tag.pick{border-color:rgba(201,169,110,.3);background:rgba(201,169,110,.06);color:#c9a96e}
-
-/* Optional text */
-.text-area{
-  width:100%;max-width:300px;padding:14px 16px;background:rgba(255,255,255,.015);
-  border:1px solid rgba(255,255,255,.04);border-radius:14px;color:#9b9388;
-  font-size:15px;outline:none;font-family:inherit;resize:none;text-align:center;
-  line-height:1.7;transition:all .3s;margin-bottom:10px;height:0;opacity:0;overflow:hidden;
-}
-.text-area.show{height:80px;opacity:1;margin-bottom:28px}
-.text-area:focus{border-color:rgba(201,169,110,.2)}
-.text-area::placeholder{color:#4a443c}
-
-.text-toggle{font-size:12px;color:#4a443c;cursor:pointer;margin-bottom:28px;transition:color .2s}
+.text-toggle{font-size:12px;color:#4a443c;cursor:pointer;margin-bottom:26px;transition:color .2s}
 .text-toggle:hover{color:#6b6358}
-
-/* Submit button */
-.btn-letgo{
-  width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,169,110,.2);
-  background:rgba(201,169,110,.04);color:#c9a96e;font-size:18px;
-  cursor:pointer;transition:all .3s;letter-spacing:1px;font-family:inherit;
-  display:flex;align-items:center;justify-content:center;
-}
-.btn-letgo:hover{background:rgba(201,169,110,.1);border-color:rgba(201,169,110,.35);box-shadow:0 0 32px rgba(201,169,110,.08)}
+.text-area{width:100%;max-width:300px;padding:14px 16px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.03);border-radius:14px;color:#9b9388;font-size:15px;outline:none;font-family:inherit;resize:none;text-align:center;line-height:1.7;transition:all .3s;height:0;opacity:0;overflow:hidden;margin-bottom:10px}
+.text-area.show{height:80px;opacity:1;margin-bottom:26px}
+.text-area:focus{border-color:rgba(201,169,110,.15)}
+.text-area::placeholder{color:#4a443c}
+.btn-letgo{width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,169,110,.2);background:rgba(201,169,110,.04);color:#c9a96e;font-size:18px;cursor:pointer;transition:all .3s;font-family:inherit;display:flex;align-items:center;justify-content:center}
+.btn-letgo:hover{background:rgba(201,169,110,.1);border-color:rgba(201,169,110,.35);box-shadow:0 0 32px rgba(201,169,110,.06)}
 .btn-letgo:active{transform:scale(.94)}
+.tonight-hint{font-size:11px;color:#3a3430;margin-top:20px;text-align:center;line-height:1.6}
 
 /* ============ CEREMONY OVERLAY ============ */
-.overlay{
-  position:fixed;inset:0;z-index:100;background:#0b0f16;display:none;
-  flex-direction:column;align-items:center;justify-content:center;
-}
+.overlay{position:fixed;inset:0;z-index:100;background:#0b0f16;display:none;flex-direction:column;align-items:center;justify-content:center}
 .overlay.on{display:flex}
-
-/* Moon phases during ceremony */
 .ceremony-moon{font-size:32px;margin-bottom:40px;opacity:.5;animation:float 3s ease-in-out infinite}
-
-/* Water + boat scene */
 .scene{position:relative;width:260px;height:200px;margin-bottom:40px}
-.water{
-  position:absolute;bottom:0;left:0;right:0;height:80px;
-  background:linear-gradient(to bottom,transparent,rgba(32,36,48,.6),rgba(24,28,40,.8));
-  border-radius:0 0 40% 60%;
-  animation:ripple 3s ease-in-out infinite;
-}
-.water::after{
-  content:'';position:absolute;top:-20px;left:10%;right:10%;height:2px;
-  background:rgba(201,169,110,.08);border-radius:50%;
-}
-@keyframes ripple{0%,100%{border-radius:0 0 40% 60%}50%{border-radius:0 0 60% 40%}}
-
-.boat{
-  position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
-  font-size:36px;transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2;
-}
-.boat.sailing{bottom:280px;opacity:0;transform:translateX(-50%) rotate(-5deg) scale(.6)}
-
-.boat-text{
-  position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
-  font-size:12px;color:#8b8278;text-align:center;max-width:200px;
-  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:1;line-height:1.6;
-}
-.boat-text.sailing{bottom:320px;opacity:0}
-
-/* Particles */
-.particles{position:absolute;inset:0;pointer-events:none}
-.dot{
-  position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(201,169,110,.4);
-  animation:driftUp 4s ease-out forwards;opacity:0;
-}
-@keyframes driftUp{0%{opacity:0;transform:translateY(0)}20%{opacity:.8}100%{opacity:0;transform:translateY(-120px)}}
-
-/* Goodnight screen */
-.goodnight{display:none;flex-direction:column;align-items:center;text-align:center}
-.goodnight.on{display:flex}
-.gn-line1{font-size:18px;color:#9b9388;margin-bottom:8px;font-weight:300;letter-spacing:1px}
-.gn-line2{font-size:28px;color:#c9a96e;font-weight:300;letter-spacing:2px;margin-bottom:40px}
+.water{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,rgba(32,36,48,.6),rgba(24,28,40,.8));border-radius:0 0 40% 60%;animation:rip 3s ease-in-out infinite}
+.water::after{content:'';position:absolute;top:-20px;left:10%;right:10%;height:2px;background:rgba(201,169,110,.06);border-radius:50%}
+@keyframes rip{0%,100%{border-radius:0 0 40% 60%}50%{border-radius:0 0 60% 40%}}
+.boat{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);font-size:36px;transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2}
+.boat.sail{bottom:280px;opacity:0;transform:translateX(-50%) rotate(-5deg) scale(.6)}
+.boat-text{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);font-size:12px;color:#8b8278;text-align:center;max-width:200px;transition:all 4s cubic-bezier(.4,0,.2,1);z-index:1;line-height:1.6}
+.boat-text.sail{bottom:320px;opacity:0}
+.dots{position:absolute;inset:0;pointer-events:none}
+.dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(201,169,110,.35);animation:drift 4s ease-out forwards;opacity:0}
+@keyframes drift{0%{opacity:0;transform:translateY(0)}20%{opacity:.7}100%{opacity:0;transform:translateY(-120px)}}
+.gn-wrap{display:none;flex-direction:column;align-items:center;text-align:center}
+.gn-wrap.on{display:flex}
+.gn1{font-size:18px;color:#9b9388;margin-bottom:8px;font-weight:300}
+.gn2{font-size:28px;color:#c9a96e;font-weight:300;letter-spacing:2px;margin-bottom:40px}
 .gn-moon{font-size:60px;opacity:.3;animation:float 5s ease-in-out infinite}
 
+/* ============ PAGE 2: RIVER (星河) ============ */
+.river-header{text-align:center;margin-bottom:24px}
+.river-title{font-size:18px;color:#b4aca0;font-weight:300;margin-bottom:4px}
+.river-sub{font-size:12px;color:#5b5448}
+.river-canvas{width:100%;max-width:360px;min-height:300px;border-radius:20px;background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.02);position:relative;overflow:hidden;margin-bottom:16px}
+.river-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3a3430;font-size:13px;text-align:center;line-height:1.8}
+.star{position:absolute;border-radius:50%;transition:all .3s;cursor:default}
+.star:hover{transform:scale(2);z-index:10;box-shadow:0 0 20px currentColor}
+.star-tip{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);font-size:10px;color:#8b8278;white-space:nowrap;background:rgba(16,18,28,.9);padding:4px 10px;border-radius:8px;pointer-events:none}
+.star:hover .star-tip{display:block}
+.river-legend{display:flex;gap:16px;justify-content:center;font-size:11px;color:#4a443c;flex-wrap:wrap}
+.river-legend span{display:flex;align-items:center;gap:4px}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* ============ PAGE 3: LETTER (来信) ============ */
+.letter-card{width:100%;max-width:340px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.03);border-radius:20px;padding:28px 24px;line-height:2;margin-bottom:20px}
+.letter-header{text-align:center;margin-bottom:18px}
+.letter-date{font-size:12px;color:#5b5448;margin-bottom:4px}
+.letter-to{font-size:16px;color:#c4bcae;font-weight:300}
+.letter-body{font-size:14px;color:#8b8278;line-height:2.2}
+.letter-body .em{color:#c9a96e}
+.letter-sign{text-align:right;margin-top:18px;font-size:13px;color:#5b5448}
+.letter-empty{text-align:center;color:#4a443c;padding:40px 20px;line-height:2;font-size:14px}
+
+/* ============ BOTTOM NAV ============ */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;width:100%;max-width:440px;display:flex;justify-content:space-around;padding:12px 20px max(12px,env(safe-area-inset-bottom));background:rgba(11,15,22,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.03)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .2s;color:#4a443c;font-size:10px;letter-spacing:.5px;background:none;border:none;font-family:inherit;padding:4px 12px;border-radius:10px}
+.nav-item .ni{font-size:22px}
+.nav-item.active{color:#c9a96e}
+.nav-item:hover{color:#8b8278}
+.nav-item:active{transform:scale(.92)}
+
 /* ============ SETTINGS ============ */
-.settings-btn{
-  position:fixed;top:20px;right:20px;z-index:50;width:32px;height:32px;
-  border-radius:50%;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  color:#4a443c;font-size:12px;transition:all .2s;
-}
-.settings-btn:hover{color:#6b6358;border-color:rgba(255,255,255,.06)}
-
-.back-btn{
-  position:fixed;top:20px;left:20px;z-index:50;background:none;border:none;
-  color:#4a443c;font-size:13px;cursor:pointer;font-family:inherit;letter-spacing:.5px;
-}
-.back-btn:hover{color:#8b8278}
-
-.settings-scr{
-  width:100%;max-width:300px;display:flex;flex-direction:column;gap:16px
-}
-.settings-scr h2{font-size:18px;font-weight:300;color:#b4aca0;margin-bottom:8px;text-align:center}
-.set-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.02)}
-.set-label{font-size:14px;color:#8b8278}
-.set-val{font-size:13px;color:#5b5448}
-.set-hint{font-size:11px;color:#3a3430;text-align:center;line-height:1.7;margin-top:12px}
-.set-btn{
-  padding:8px 18px;border-radius:16px;font-size:13px;cursor:pointer;font-family:inherit;
-  background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.15);color:#b4a080;transition:all .2s;
-  letter-spacing:.5px;
-}
-.set-btn:hover{background:rgba(201,169,110,.12)}
-.set-btn:active{transform:scale(.95)}
-
-/* Annual report */
-.report{text-align:center;line-height:2.2}
-.report h3{font-size:20px;font-weight:300;color:#c4bcae;margin-bottom:20px}
-.report .big-num{font-size:48px;font-weight:200;color:#c9a96e;margin:8px 0}
-.report p{font-size:14px;color:#8b8278}
+.set-wrap{width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px}
+.si{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.02)}
+.sl{font-size:14px;color:#8b8278}
+.sv{font-size:13px;color:#5b5448}
+.set-hint{font-size:11px;color:#3a3430;text-align:center;line-height:1.8;margin-top:8px}
+.s-btn{padding:10px 20px;border-radius:18px;font-size:13px;cursor:pointer;font-family:inherit;background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.12);color:#b4a080;transition:all .2s;text-align:center}
+.s-btn:hover{background:rgba(201,169,110,.1)}
+.s-btn:active{transform:scale(.95)}
+.s-btn.danger{color:#9b7060;border-color:rgba(180,120,100,.1);background:rgba(180,120,100,.03)}
 
 /* Toast */
-.toast{
-  position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;
-  background:rgba(20,18,26,.95);border:1px solid rgba(201,169,110,.1);
-  color:#9b9080;padding:10px 20px;border-radius:12px;font-size:13px;
-  transition:transform .35s;pointer-events:none;
-}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:rgba(20,18,26,.95);border:1px solid rgba(201,169,110,.1);color:#9b9080;padding:10px 20px;border-radius:12px;font-size:13px;transition:transform .35s;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
 
-@media(max-width:360px){
-  .question{font-size:19px}.tags{gap:8px}.tag{padding:9px 16px;font-size:13px}
-}
+@media(max-width:360px){.question{font-size:19px}.tags{gap:8px}.tag{padding:8px 14px;font-size:13px}}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- ====== MAIN RITUAL ====== -->
-  <div class="scr on" id="main">
+  <!-- ===== RITUAL PAGE ===== -->
+  <div class="page on" id="pageRitual">
     <div class="moon">🌙</div>
     <div class="greeting" id="greeting"></div>
     <div class="question">今天有什么<br>放不下的？</div>
@@ -200,216 +141,176 @@ body::before{
     <div class="text-toggle" id="textToggle">⋯ 想说几句？</div>
     <textarea class="text-area" id="textArea" rows="2" placeholder="可以说，也可以不说。"></textarea>
     <button class="btn-letgo" id="btnLetGo">放下</button>
+    <div class="tonight-hint" id="tonightHint"></div>
   </div>
 
-  <!-- ====== CEREMONY ====== -->
-  <div class="overlay" id="ceremony">
-    <div class="ceremony-moon">🌙</div>
-    <div class="scene">
-      <div class="particles" id="particles"></div>
-      <div class="boat-text" id="boatText"></div>
-      <div class="boat" id="boat">⛵</div>
-      <div class="water"></div>
+  <!-- ===== RIVER PAGE ===== -->
+  <div class="page" id="pageRiver">
+    <div class="river-header"><div class="river-title">情绪星河</div><div class="river-sub" id="riverSub"></div></div>
+    <div class="river-canvas" id="riverCanvas"><div class="river-empty" id="riverEmpty">还没有星星。<br>每天来一次，<br>这里会是一片星空。</div></div>
+    <div class="river-legend">
+      <span><span class="legend-dot" style="background:#c9a96e"></span>焦虑</span>
+      <span><span class="legend-dot" style="background:#8b9dc3"></span>遗憾</span>
+      <span><span class="legend-dot" style="background:#a8c97e"></span>期待</span>
+      <span><span class="legend-dot" style="background:#c97e7e"></span>生气</span>
+      <span><span class="legend-dot" style="background:#b8a0c8"></span>说不清</span>
     </div>
   </div>
 
-  <!-- ====== GOODNIGHT ====== -->
-  <div class="overlay" id="goodnightScr">
-    <div class="goodnight on">
-      <div class="gn-line1">今天结束了</div>
-      <div class="gn-line2">晚安</div>
-      <div class="gn-moon">🌙</div>
-    </div>
+  <!-- ===== LETTER PAGE ===== -->
+  <div class="page" id="pageLetter">
+    <div class="letter-card" id="letterCard"><div class="letter-empty">一周后<br>你会收到第一封来信。<br><br>它会告诉你：<br>这些天你放下了什么，<br>什么情绪最常来找你，<br>以及——<br>你已经做得很好了。</div></div>
   </div>
 
-  <!-- ====== SETTINGS ====== -->
-  <div class="scr" id="settings">
-    <div class="settings-scr">
-      <h2>⚙</h2>
-      <div class="set-item"><span class="set-label">动画主题</span><span class="set-val">纸船（免费）</span></div>
-      <div class="set-item"><span class="set-label">记录天数</span><span class="set-val" id="setDays">0 天</span></div>
-      <div class="set-item"><span class="set-label">放下次数</span><span class="set-val" id="setCount">0 次</span></div>
-      <button class="set-btn" id="btnReport" style="width:100%;margin-top:4px">📋 我的年度情绪报告</button>
-      <button class="set-btn" id="btnClear" style="width:100%;color:#8b6b60;border-color:rgba(180,120,100,.15);background:rgba(180,120,100,.04)">清空所有记录</button>
-      <div class="set-hint">
-        你的每一句话都存在本机。<br>没有人能看到，包括你自己。<br>除非你打开年度报告。
-      </div>
+  <!-- ===== SETTINGS PAGE ===== -->
+  <div class="page" id="pageSettings">
+    <div class="set-wrap">
+      <div class="si"><span class="sl">记录天数</span><span class="sv" id="sDays">0 天</span></div>
+      <div class="si"><span class="sl">放下次数</span><span class="sv" id="sCount">0 次</span></div>
+      <div class="si"><span class="sl">最常放下的</span><span class="sv" id="sTop">—</span></div>
+      <button class="s-btn" id="btnLetterNow" style="width:100%;margin-top:6px">💌 现在就生成一封来信</button>
+      <button class="s-btn danger" id="btnClear" style="width:100%">清空所有记录</button>
+      <div class="set-hint">你的每一句话都存在本机。<br>没有人能看到。<br>包括你自己——除非你来这里。</div>
     </div>
-  </div>
-
-  <!-- ====== ANNUAL REPORT ====== -->
-  <div class="scr" id="reportScr">
-    <div class="report" id="reportContent"></div>
   </div>
 </div>
 
-<!-- Settings button -->
-<button class="settings-btn" id="btnSettings" title="设置">⚙</button>
-<button class="back-btn" id="btnBack" style="display:none">← 返回</button>
+<!-- BOTTOM NAV -->
+<div class="nav" id="bottomNav">
+  <button class="nav-item active" data-page="pageRitual"><span class="ni">🌙</span>放下</button>
+  <button class="nav-item" data-page="pageRiver"><span class="ni">🌌</span>星河</button>
+  <button class="nav-item" data-page="pageLetter"><span class="ni">💌</span>来信</button>
+  <button class="nav-item" data-page="pageSettings"><span class="ni">⚙</span>设置</button>
+</div>
+
+<!-- CEREMONY OVERLAY -->
+<div class="overlay" id="ceremony">
+  <div class="ceremony-moon">🌙</div>
+  <div class="scene"><div class="dots" id="particles"></div><div class="boat-text" id="boatText"></div><div class="boat" id="boat">⛵</div><div class="water"></div></div>
+</div>
+<div class="overlay" id="goodnightScr">
+  <div class="gn-wrap on"><div class="gn1">今天结束了</div><div class="gn2">晚安</div><div class="gn-moon">🌙</div></div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 // ==================== STATE ====================
-const ST={emotion:'',text:'',screen:'main'};
+let EM='',TX='',currPage='pageRitual';
+function H(){try{return JSON.parse(localStorage.getItem('le_h')||'[]')}catch(e){return[]}}
+function save(e,t){const h=H();h.push({d:new Date().toISOString(),e,t});if(h.length>600)h.splice(0,h.length-600);localStorage.setItem('le_h',JSON.stringify(h))}
+function cnt(){return H().length}
+function days(){return new Set(H().map(x=>x.d.slice(0,10))).size}
+function topE(){const c={};H().forEach(x=>{c[x.e]=(c[x.e]||0)+1});const e=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'—'}
+function clearH(){localStorage.removeItem('le_h')}
 const $=id=>document.getElementById(id);
-const EMOTIONS=['焦虑','遗憾','期待','生气','说不清'];
-
-// ==================== PERSISTENCE ====================
-function getHistory(){try{return JSON.parse(localStorage.getItem('le_history')||'[]')}catch(e){return[]}}
-function saveEntry(e,t){const h=getHistory();h.push({date:new Date().toISOString(),emotion:e,text:t});if(h.length>500)h.splice(0,h.length-500);localStorage.setItem('le_history',JSON.stringify(h))}
-function getCount(){return getHistory().length}
-function getDays(){const ds=new Set(getHistory().map(x=>x.date.slice(0,10)));return ds.size}
-function clearHistory(){localStorage.removeItem('le_history')}
-
-// ==================== GREETING ====================
-function setGreeting(){
-  const h=new Date().getHours();const g=$('greeting');
-  if(h>=5&&h<12)g.textContent='早上好';
-  else if(h>=12&&h<17)g.textContent='下午好';
-  else if(h>=17&&h<21)g.textContent='傍晚好';
-  else if(h>=21||h<4)g.textContent='夜深了';
-  else g.textContent='该睡了';
-}
-
-// ==================== MAIN INTERACTIONS ====================
-function initMain(){
-  ST.emotion='';ST.text='';$('textArea').value='';$('textArea').classList.remove('show');
-  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));
-  $('btnLetGo').style.opacity='.3';$('btnLetGo').disabled=true;
-  $('textToggle').textContent='⋯ 想说几句？';
-  setGreeting();
-}
-
-// Emotion tags
-document.querySelectorAll('.tag').forEach(tag=>{
-  tag.addEventListener('click',function(){
-    document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));
-    this.classList.add('pick');
-    ST.emotion=this.dataset.e;
-    updateLetGoBtn();
-  });
-});
-
-// Text toggle
-$('textToggle').addEventListener('click',function(){
-  const ta=$('textArea');
-  if(ta.classList.contains('show')){
-    ta.classList.remove('show');this.textContent='⋯ 想说几句？';
-  }else{
-    ta.classList.add('show');this.textContent='不用了';setTimeout(()=>ta.focus(),300);
-  }
-});
-
-$('textArea').addEventListener('input',function(){ST.text=this.value.trim();updateLetGoBtn()});
-
-function updateLetGoBtn(){
-  const btn=$('btnLetGo');
-  if(ST.emotion){btn.style.opacity='1';btn.disabled=false}else{btn.style.opacity='.3';btn.disabled=true}
-}
-
-// ==================== CEREMONY ====================
-$('btnLetGo').addEventListener('click',async function(){
-  if(!ST.emotion)return;
-  ST.text=$('textArea').value.trim();
-  saveEntry(ST.emotion,ST.text);
-
-  // Switch to main view and start ceremony
-  $('main').classList.remove('on');
-  const cer=$('ceremony');cer.classList.add('on');
-
-  // Set boat text
-  const displayText=ST.text||ST.emotion;
-  $('boatText').textContent=displayText.length>30?displayText.slice(0,30)+'…':displayText;
-
-  // Generate particles
-  const pc=$('particles');
-  pc.innerHTML='';
-  for(let i=0;i<30;i++){
-    const dot=document.createElement('div');dot.className='dot';
-    dot.style.left=(20+Math.random()*60)+'%';dot.style.bottom=(Math.random()*30)+'%';
-    dot.style.animationDelay=(Math.random()*2)+'s';dot.style.animationDuration=(3+Math.random()*3)+'s';
-    pc.appendChild(dot);
-  }
-
-  // Wait a moment then sail
-  await sleep(1200);
-  const boat=$('boat');const boatText=$('boatText');
-  boat.classList.add('sailing');boatText.classList.add('sailing');
-
-  // Wait for sailing to complete then show goodnight
-  await sleep(4500);
-  cer.classList.remove('on');
-  const gn=$('goodnightScr');gn.classList.add('on');
-
-  // Auto-dismiss after a moment
-  await sleep(4000);
-  gn.classList.remove('on');
-  $('main').classList.add('on');
-  initMain();
-});
-
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+const EC={焦虑:'#c9a96e',遗憾:'#8b9dc3',期待:'#a8c97e',生气:'#c97e7e',说不清:'#b8a0c8'};
 
 // ==================== NAVIGATION ====================
-let prevScreen='main';
-function showScreen(name){
-  prevScreen=ST.screen;ST.screen=name;
-  ['main','settings','reportScr'].forEach(s=>$(s).classList.remove('on'));
-  if(name==='main'){$(name).classList.add('on');$('btnSettings').style.display='flex';$('btnBack').style.display='none'}
-  else if(name==='settings'){$(name).classList.add('on');$('btnSettings').style.display='none';$('btnBack').style.display='flex';updateSettings()}
-  else if(name==='reportScr'){$(name).classList.add('on');$('btnSettings').style.display='none';$('btnBack').style.display='flex';renderReport()}
-  // Hide overlay screens
-  $('ceremony').classList.remove('on');$('goodnightScr').classList.remove('on');
+function goPage(name){
+  currPage=name;
+  ['pageRitual','pageRiver','pageLetter','pageSettings'].forEach(p=>$(p).classList.remove('on'));
+  $(name).classList.add('on');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelector(`[data-page="${name}"]`).classList.add('active');
+  if(name==='pageRitual'){resetRitual();setGreeting();setTonight()}
+  if(name==='pageRiver')renderRiver();
+  if(name==='pageLetter')renderLetter();
+  if(name==='pageSettings')updateSettings();
 }
-function updateSettings(){$('setDays').textContent=getDays()+' 天';$('setCount').textContent=getCount()+' 次'}
-function goBack(){showScreen('main')}
+document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>goPage(n.dataset.page)));
 
-// ==================== SETTINGS ====================
-$('btnSettings').addEventListener('click',()=>showScreen('settings'));
-$('btnBack').addEventListener('click',goBack);
-$('btnClear').addEventListener('click',function(){
-  if(confirm('确定清空所有记录？此操作不可撤销。')){clearHistory();updateSettings();toast('已清空')}
+// ==================== GREETING ====================
+function setGreeting(){const h=new Date().getHours();const g=$('greeting');if(h>=5&&h<12)g.textContent='早上好';else if(h>=12&&h<17)g.textContent='下午好';else if(h>=17&&h<21)g.textContent='傍晚好';else g.textContent='夜深了'}
+function setTonight(){const h=new Date().getHours();const n=Math.floor(Math.random()*8000+3000);if(h>=22||h<4)$('tonightHint').innerHTML=`🕯 今夜，还有 <span style="color:#c9a96e">${n.toLocaleString()}</span> 个人也醒着`;else $('tonightHint').textContent=''}
+
+// ==================== RITUAL ====================
+function resetRitual(){EM='';TX='';$('textArea').value='';$('textArea').classList.remove('show');document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));$('btnLetGo').style.opacity='.3';$('btnLetGo').disabled=true;$('textToggle').textContent='⋯ 想说几句？'}
+document.querySelectorAll('.tag').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.tag').forEach(x=>x.classList.remove('pick'));this.classList.add('pick');EM=this.dataset.e;$('btnLetGo').style.opacity='1';$('btnLetGo').disabled=false}));
+$('textToggle').addEventListener('click',function(){const ta=$('textArea');if(ta.classList.contains('show')){ta.classList.remove('show');this.textContent='⋯ 想说几句？'}else{ta.classList.add('show');this.textContent='不用了';setTimeout(()=>ta.focus(),300)}});
+$('textArea').addEventListener('input',function(){TX=this.value.trim()});
+
+$('btnLetGo').addEventListener('click',async function(){
+  if(!EM)return;TX=$('textArea').value.trim();save(EM,TX);
+  $('pageRitual').classList.remove('on');const c=$('ceremony');c.classList.add('on');
+  const txt=TX||EM;$('boatText').textContent=txt.length>30?txt.slice(0,30)+'…':txt;
+  const pc=$('particles');pc.innerHTML='';for(let i=0;i<30;i++){const d=document.createElement('div');d.className='dot';d.style.left=(20+Math.random()*60)+'%';d.style.bottom=(Math.random()*30)+'%';d.style.animationDelay=(Math.random()*2)+'s';d.style.animationDuration=(3+Math.random()*3)+'s';pc.appendChild(d)}
+  await sleep(1200);$('boat').classList.add('sail');$('boatText').classList.add('sail');
+  await sleep(4500);c.classList.remove('on');const g=$('goodnightScr');g.classList.add('on');
+  await sleep(4000);g.classList.remove('on');$('pageRitual').classList.add('on');resetRitual();setGreeting();setTonight();
 });
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 
-// ==================== ANNUAL REPORT ====================
-function renderReport(){
-  const h=getHistory();
-  if(!h.length){$('reportContent').innerHTML=`<h3>📋</h3><p>还没有记录。<br>每天来一次，<br>一年后这里会有你的情绪地图。</p>`;return}
-  // Stats
-  const total=h.length;const days=new Set(h.map(x=>x.date.slice(0,10))).size;
-  // Most common emotion
-  const ec={};h.forEach(x=>{ec[x.emotion]=(ec[x.emotion]||0)+1});
-  const topE=Object.entries(ec).sort((a,b)=>b[1]-a[1])[0];
-  // Longest text
-  let longest=h[0];h.forEach(x=>{if((x.text||'').length>(longest.text||'').length)longest=x});
-  // First entry
-  const first=new Date(h[0].date);
-  // Recent month
-  const now=new Date();const monthAgo=new Date(now-30*86400000);
-  const recent=h.filter(x=>new Date(x.date)>monthAgo).length;
+// ==================== RIVER (星河) ====================
+function renderRiver(){
+  const h=H();const sub=$('riverSub');const empty=$('riverEmpty');const canvas=$('riverCanvas');
+  if(!h.length){empty.style.display='flex';sub.textContent='';canvas.querySelectorAll('.star').forEach(s=>s.remove());return}
+  empty.style.display='none';sub.textContent=`${days()} 个夜晚 · ${h.length} 颗星星`;
+  // Build stars
+  canvas.querySelectorAll('.star').forEach(s=>s.remove());
+  const total=h.length;const maxPerRow=12;const rows=Math.ceil(total/maxPerRow);
+  const cw=canvas.clientWidth||360;const rh=Math.max(300,rows*28+40);
+  canvas.style.minHeight=rh+'px';
+  h.forEach((x,i)=>{
+    const row=Math.floor(i/maxPerRow);const col=i%maxPerRow;
+    const sx=((col+1)/(maxPerRow+1))*cw;
+    const sy=row*28+24;
+    const star=document.createElement('div');star.className='star';
+    star.style.left=sx+'px';star.style.top=sy+'px';
+    star.style.width='6px';star.style.height='6px';
+    star.style.background=EC[x.e]||'#c9a96e';
+    star.style.boxShadow=`0 0 6px ${EC[x.e]||'#c9a96e'}`;
+    star.title=`${new Date(x.d).toLocaleDateString('zh-CN')} · ${x.e}${x.t?' — '+x.t.slice(0,15):''}`;
+    // Tip
+    const tip=document.createElement('div');tip.className='star-tip';
+    tip.textContent=`${new Date(x.d).getMonth()+1}/${new Date(x.d).getDate()} · ${x.e}`;
+    star.appendChild(tip);
+    canvas.appendChild(star);
+  });
+  canvas.scrollTop=canvas.scrollHeight;
+}
 
-  $('reportContent').innerHTML=`
-    <h3>📋 你的情绪报告</h3>
-    <p>从 ${first.getFullYear()}年${first.getMonth()+1}月${first.getDate()}日 开始<br>你来了 <span class="big-num">${total}</span> 次</p>
-    <p style="margin-top:16px">在 <span class="big-num">${days}</span> 个夜晚<br>你放下了些什么</p>
-    <p style="margin-top:16px">你最常放下的情绪是<br><span style="font-size:28px;font-weight:300;color:#c9a96e">${topE?topE[0]:'—'}</span><br>共 ${topE?topE[1]:0} 次</p>
-    ${longest.text?`<p style="margin-top:16px">${new Date(longest.date).getMonth()+1}月${new Date(longest.date).getDate()}日那天<br>你写了最长的一段话：<br><span style="color:#9b9388;font-size:13px">${longest.text.slice(0,50)}${longest.text.length>50?'…':''}</span></p>`:''}
-    <p style="margin-top:16px">最近30天你来了 <span style="font-size:24px;color:#c9a96e">${recent}</span> 次</p>
-    <p style="margin-top:20px;color:#5b5448;font-size:12px">记录越多，报告越丰富。<br>明年今日，再来看看。</p>
+// ==================== LETTER (来信) ====================
+function renderLetter(force=false){
+  const h=H();const card=$('letterCard');
+  if(!h.length&&!force){card.innerHTML='<div class="letter-empty">一周后<br>你会收到第一封来信。<br><br>它会告诉你：<br>这些天你放下了什么，<br>什么情绪最常来找你，<br>以及——<br>你已经做得很好了。</div>';return}
+  if(!h.length)return;
+  // Last 7 days
+  const now7=new Date(Date.now()-7*86400000);const recent=h.filter(x=>new Date(x.d)>now7);
+  const total=h.length;const d=days();
+  const ec={};h.forEach(x=>{ec[x.e]=(ec[x.e]||0)+1});const t=Object.entries(ec).sort((a,b)=>b[1]-a[1])[0];
+  const weekE={};recent.forEach(x=>{weekE[x.e]=(weekE[x.e]||0)+1});const wt=Object.entries(weekE).sort((a,b)=>b[1]-a[1])[0];
+  // Find longest text
+  let long=null;h.forEach(x=>{if((x.t||'').length>(long?.t?.length||0))long=x});
+  // Poetic phrases
+  const phrases={焦虑:['像风一样来了又走','今天，你又独自面对了它','它很轻，但你知道它来过'],遗憾:['有些事像沙子，握不住','轻舟已过万重山','放在心里就好'],期待:['对未来温柔的人，不会失眠','明天会因为你而不同','你已经走在路上了'],生气:['火苗亮了又灭','那些情绪，不必道歉','你是对的。但放下是对的'],说不清:['有些情绪不需要名字','它来了。你在。它走了。','就这样吧']};
+  const ph=phrases[wt?wt[0]:'说不清']||phrases['说不清'];
+  const now=new Date();
+  card.innerHTML=`
+    <div class="letter-header"><div class="letter-date">${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 第${total}次放下</div><div class="letter-to">亲爱的你，</div></div>
+    <div class="letter-body">
+      这一周，你来了 <span class="em">${recent.length}</span> 次。<br><br>
+      ${wt?`最近常来找你的，是<span class="em">「${wt[0]}」</span>。<br>${ph[total%ph.length]}。<br><br>`:''}
+      ${long?.t?`你写过最长的一句话：<br><span class="em">「${long.t.slice(0,40)}${long.t.length>40?'…':''}」</span><br><br>`:''}
+      从第一天到现在，<br>你已经走过了 <span class="em">${d}</span> 个夜晚。<br>
+      最多的陪伴是 <span class="em">「${t?t[0]:'—'}」</span>。<br><br>
+      你知道吗。<br>每一次你打开这个App，<br>都在做同一件事：<br><span class="em">给自己一个句号。</span><br><br>
+      你已经做得很好了。
+    </div>
+    <div class="letter-sign">—— 了</div>
   `;
 }
-$('btnReport').addEventListener('click',()=>showScreen('reportScr'));
+
+// ==================== SETTINGS ====================
+function updateSettings(){$('sDays').textContent=days()+' 天';$('sCount').textContent=cnt()+' 次';$('sTop').textContent=topE()}
+$('btnClear').addEventListener('click',()=>{if(confirm('清空所有记录？不可撤销。')){clearH();updateSettings();toast('已清空')}});
+$('btnLetterNow').addEventListener('click',()=>{renderLetter(true);goPage('pageLetter');toast('💌 你的来信')});
 
 // ==================== TOAST ====================
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('on'),2000)}
 
 // ==================== INIT ====================
-function init(){
-  initMain();showScreen('main');
-  // Hide settings/back buttons initially
-  $('btnBack').style.display='none';
-}
+function init(){setGreeting();setTonight();resetRitual();goPage('pageRitual')}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
 document.addEventListener('DOMContentLoaded',init);
 </script>
