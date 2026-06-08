@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0b0f16">
+<meta name="theme-color" content="#080b12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="了">
-<meta name="description" content="了 — 每天睡前，放下今天。情绪星河 · 晚安来信。">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230b0f16'/><text x='50' y='74' text-anchor='middle' fill='%23c9a96e' font-size='64' font-weight='300' font-family='system-ui'>了</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23080b12'/><circle cx='50' cy='44' r='18' fill='none' stroke='%23c9a060' stroke-width='2.5'/><circle cx='47' cy='42' r='13' fill='%23080b12'/><line x1='50' y1='64' x2='50' y2='78' stroke='%23c9a060' stroke-width='2' stroke-linecap='round'/></svg>">
 <title>了</title>
 <style>
 /* ============ ROOT ============ */
@@ -17,300 +16,380 @@
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:#0b0f16;color:#d4cec4;min-height:100dvh;overflow-x:hidden;
-  user-select:none;-webkit-user-select:none;
+  background:#080b12;color:#ddd8cf;min-height:100dvh;overflow-x:hidden;
+  display:flex;justify-content:center;
 }
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 400px 500px at 50% 25%,rgba(201,169,110,.025) 0%,transparent 60%),
-              radial-gradient(ellipse 200px 200px at 80% 60%,rgba(180,160,130,.015) 0%,transparent 50%);
-}
+#app{position:relative;z-index:1;width:100%;max-width:440px;min-height:100dvh;padding-bottom:82px}
 
-#app{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;min-height:100dvh;padding-bottom:90px}
-
-/* ============ SCREENS ============ */
-.page{display:none;flex-direction:column;align-items:center;padding:44px 24px 20px}
+/* ============ PAGES ============ */
+.page{display:none;flex-direction:column;align-items:center;min-height:calc(100dvh - 82px)}
 .page.on{display:flex}
 
-/* ============ PAGE 1: RITUAL (放下) ============ */
-.moon{font-size:38px;margin-bottom:24px;opacity:.7;animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.greeting{font-size:14px;color:#6b6358;margin-bottom:16px;letter-spacing:1px}
-.question{font-size:22px;color:#c4bcae;font-weight:300;text-align:center;line-height:1.5;margin-bottom:22px}
-.tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px}
-.tag{padding:10px 20px;border-radius:24px;font-size:14px;cursor:pointer;transition:all .25s;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);color:#8b8278}
-.tag:hover{background:rgba(255,255,255,.04)}
-.tag.pick{border-color:rgba(201,169,110,.3);background:rgba(201,169,110,.06);color:#c9a96e}
-.text-toggle{font-size:12px;color:#4a443c;cursor:pointer;margin-bottom:26px;transition:color .2s}
-.text-toggle:hover{color:#6b6358}
-.text-area{width:100%;max-width:300px;padding:14px 16px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.03);border-radius:14px;color:#9b9388;font-size:15px;outline:none;font-family:inherit;resize:none;text-align:center;line-height:1.7;transition:all .3s;height:0;opacity:0;overflow:hidden;margin-bottom:10px}
-.text-area.show{height:80px;opacity:1;margin-bottom:26px}
-.text-area:focus{border-color:rgba(201,169,110,.15)}
-.text-area::placeholder{color:#4a443c}
-.btn-letgo{width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,169,110,.2);background:rgba(201,169,110,.04);color:#c9a96e;font-size:18px;cursor:pointer;transition:all .3s;font-family:inherit;display:flex;align-items:center;justify-content:center}
-.btn-letgo:hover{background:rgba(201,169,110,.1);border-color:rgba(201,169,110,.35);box-shadow:0 0 32px rgba(201,169,110,.06)}
-.btn-letgo:active{transform:scale(.94)}
-.tonight-hint{font-size:11px;color:#3a3430;margin-top:20px;text-align:center;line-height:1.6}
+/* ============ CSS ILLUSTRATION: MOON ============ */
+.moon-art{position:relative;width:72px;height:72px;margin:56px 0 32px;flex-shrink:0}
+.moon-body{
+  width:72px;height:72px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#f8f0dd 0%,#e8d8b0 35%,#d4c090 100%);
+  box-shadow:0 0 60px rgba(210,180,130,.12),0 0 120px rgba(210,180,130,.05);
+}
+/* Crescent cut */
+.moon-body::after{
+  content:'';position:absolute;width:62px;height:62px;border-radius:50%;
+  background:#080b12;top:-10px;right:-14px;
+}
+/* Subtle crater dots */
+.moon-dot1,.moon-dot2,.moon-dot3{position:absolute;border-radius:50%;background:rgba(180,160,130,.15)}
+.moon-dot1{width:10px;height:10px;top:28px;left:18px}
+.moon-dot2{width:6px;height:6px;top:44px;left:32px}
+.moon-dot3{width:8px;height:8px;top:22px;left:30px}
+
+/* ============ GREETING & QUESTION ============ */
+.greet{font-size:13px;color:#6b6254;margin-bottom:14px;letter-spacing:1.5px;font-weight:400}
+.question{font-size:23px;color:#cfc8ba;font-weight:300;text-align:center;line-height:1.55;margin-bottom:28px;letter-spacing:.5px}
+
+/* ============ EMOTION TAGS ============ */
+.tag-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px;padding:0 16px}
+.tag{
+  padding:11px 22px;border-radius:22px;font-size:14px;cursor:pointer;transition:all .28s;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);color:#8a8276;
+  letter-spacing:.5px;font-weight:400;
+}
+.tag:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.06);color:#b0a898}
+.tag.pick{border-color:rgba(200,160,90,.3);background:rgba(200,160,90,.05);color:#c9a060}
+
+/* ============ TEXT TOGGLE & INPUT ============ */
+.toggle-wrap{display:flex;align-items:center;gap:8px;margin-bottom:30px}
+.toggle-line{width:28px;height:1px;background:rgba(255,255,255,.04)}
+.toggle-btn{font-size:12px;color:#4d4638;cursor:pointer;transition:color .2s;letter-spacing:.5px}
+.toggle-btn:hover{color:#6b6254}
+.text-box{
+  width:100%;max-width:300px;padding:15px 18px;background:rgba(255,255,255,.01);
+  border:1px solid rgba(255,255,255,.03);border-radius:14px;color:#9b9284;
+  font-size:15px;outline:none;font-family:inherit;resize:none;text-align:center;
+  line-height:1.8;transition:all .3s;height:0;opacity:0;overflow:hidden;margin-bottom:10px;
+}
+.text-box.show{height:88px;opacity:1;margin-bottom:30px}
+.text-box:focus{border-color:rgba(200,160,90,.12)}
+.text-box::placeholder{color:#3d362c}
+
+/* ============ LET-GO BUTTON ============ */
+.btn-letgo{
+  width:88px;height:88px;border-radius:50%;cursor:pointer;transition:all .35s;
+  background:rgba(200,160,90,.03);border:1.5px solid rgba(200,160,90,.18);
+  color:#c9a060;font-size:18px;font-weight:400;letter-spacing:1px;
+  display:flex;align-items:center;justify-content:center;font-family:inherit;
+}
+.btn-letgo:hover{background:rgba(200,160,90,.08);border-color:rgba(200,160,90,.3);box-shadow:0 0 36px rgba(200,160,90,.06)}
+.btn-letgo:active{transform:scale(.93)}
+.tonight-line{font-size:11px;color:#383022;margin-top:28px;text-align:center;line-height:1.6;padding:0 20px}
 
 /* ============ CEREMONY OVERLAY ============ */
-.overlay{position:fixed;inset:0;z-index:100;background:#0b0f16;display:none;flex-direction:column;align-items:center;justify-content:center}
+.overlay{position:fixed;inset:0;z-index:100;background:#080b12;display:none;flex-direction:column;align-items:center;justify-content:center}
 .overlay.on{display:flex}
-.ceremony-moon{font-size:32px;margin-bottom:40px;opacity:.5;animation:float 3s ease-in-out infinite}
-.scene{position:relative;width:260px;height:200px;margin-bottom:40px}
-.water{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,rgba(32,36,48,.6),rgba(24,28,40,.8));border-radius:0 0 40% 60%;animation:rip 3s ease-in-out infinite}
-.water::after{content:'';position:absolute;top:-20px;left:10%;right:10%;height:2px;background:rgba(201,169,110,.06);border-radius:50%}
-@keyframes rip{0%,100%{border-radius:0 0 40% 60%}50%{border-radius:0 0 60% 40%}}
-.boat{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);font-size:36px;transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2}
-.boat.sail{bottom:280px;opacity:0;transform:translateX(-50%) rotate(-5deg) scale(.6)}
-.boat-text{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);font-size:12px;color:#8b8278;text-align:center;max-width:200px;transition:all 4s cubic-bezier(.4,0,.2,1);z-index:1;line-height:1.6}
-.boat-text.sail{bottom:320px;opacity:0}
-.dots{position:absolute;inset:0;pointer-events:none}
-.dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(201,169,110,.35);animation:drift 4s ease-out forwards;opacity:0}
-@keyframes drift{0%{opacity:0;transform:translateY(0)}20%{opacity:.7}100%{opacity:0;transform:translateY(-120px)}}
+.cer-moon{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f8f0dd,#e0d0a0);box-shadow:0 0 50px rgba(210,180,130,.1);margin-bottom:48px;opacity:.6}
+/* CSS Boat */
+.boat-scene{position:relative;width:280px;height:220px;margin-bottom:48px}
+/* Water */
+.water-area{position:absolute;bottom:0;left:0;right:0;height:70px}
+.wave1,.wave2,.wave3{position:absolute;left:-10%;right:-10%;height:2px;border-radius:50%;animation:waveMove 4s ease-in-out infinite}
+.wave1{bottom:50px;background:rgba(255,255,255,.02);animation-delay:0s}
+.wave2{bottom:40px;background:rgba(255,255,255,.015);animation-delay:.8s}
+.wave3{bottom:30px;background:rgba(255,255,255,.01);animation-delay:1.6s}
+@keyframes waveMove{0%,100%{transform:translateX(0)}50%{transform:translateX(4%)}}
+/* Boat hull */
+.boat-hull{
+  position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;
+  border-bottom:14px solid rgba(210,180,140,.25);
+  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2;
+}
+/* Boat sail */
+.boat-sail{
+  position:absolute;bottom:64px;left:50%;transform:translateX(-2px);
+  width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:28px solid rgba(210,180,140,.18);
+  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2;
+}
+.boat-group.sailing .boat-hull{bottom:260px;opacity:0;border-bottom-color:rgba(210,180,140,0)}
+.boat-group.sailing .boat-sail{bottom:272px;opacity:0;border-bottom-color:rgba(210,180,140,0)}
+/* Boat text */
+.boat-words{
+  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
+  font-size:12px;color:#8a8276;text-align:center;max-width:200px;
+  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:1;line-height:1.6;
+}
+.boat-words.sailing{bottom:320px;opacity:0}
+/* Particles */
+.dust{position:absolute;inset:0;pointer-events:none}
+.dust-dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(210,180,130,.3);animation:riseUp 4s ease-out forwards;opacity:0}
+@keyframes riseUp{0%{opacity:0;transform:translateY(0)}20%{opacity:.6}100%{opacity:0;transform:translateY(-140px)}}
+/* Goodnight */
 .gn-wrap{display:none;flex-direction:column;align-items:center;text-align:center}
 .gn-wrap.on{display:flex}
-.gn1{font-size:18px;color:#9b9388;margin-bottom:8px;font-weight:300}
-.gn2{font-size:28px;color:#c9a96e;font-weight:300;letter-spacing:2px;margin-bottom:40px}
-.gn-moon{font-size:60px;opacity:.3;animation:float 5s ease-in-out infinite}
+.gn1{font-size:17px;color:#8a8276;margin-bottom:10px;font-weight:300;letter-spacing:1px}
+.gn2{font-size:28px;color:#c9a060;font-weight:300;letter-spacing:3px;margin-bottom:44px}
+.gn-star{width:8px;height:8px;border-radius:50%;background:rgba(200,160,90,.2);box-shadow:0 0 12px rgba(200,160,90,.1);animation:floatStar 5s ease-in-out infinite}
 
-/* ============ PAGE 2: RIVER (星河) ============ */
-.river-header{text-align:center;margin-bottom:24px}
-.river-title{font-size:18px;color:#b4aca0;font-weight:300;margin-bottom:4px}
-.river-sub{font-size:12px;color:#5b5448}
-.river-canvas{width:100%;max-width:360px;min-height:300px;border-radius:20px;background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.02);position:relative;overflow:hidden;margin-bottom:16px}
-.river-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3a3430;font-size:13px;text-align:center;line-height:1.8}
-.star{position:absolute;border-radius:50%;transition:all .3s;cursor:default}
-.star:hover{transform:scale(2);z-index:10;box-shadow:0 0 20px currentColor}
-.star-tip{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);font-size:10px;color:#8b8278;white-space:nowrap;background:rgba(16,18,28,.9);padding:4px 10px;border-radius:8px;pointer-events:none}
-.star:hover .star-tip{display:block}
-.river-legend{display:flex;gap:16px;justify-content:center;font-size:11px;color:#4a443c;flex-wrap:wrap}
-.river-legend span{display:flex;align-items:center;gap:4px}
-.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+/* ============ RIVER (星河) ============ */
+.river-top{text-align:center;margin:44px 0 24px}
+.river-title{font-size:18px;color:#bfb8aa;font-weight:300;letter-spacing:1px}
+.river-sub{font-size:11px;color:#5b5444;margin-top:6px}
+.river-area{width:100%;max-width:350px;min-height:320px;border-radius:20px;background:rgba(255,255,255,.008);border:1px solid rgba(255,255,255,.015);position:relative;overflow:hidden;margin-bottom:16px;padding:16px 20px}
+.river-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3d362c;font-size:13px;text-align:center;line-height:2}
+.river-dots{position:relative;width:100%;min-height:280px}
+.star-dot{position:absolute;border-radius:50%;cursor:default;transition:all .3s}
+.star-dot:hover{transform:scale(2.5);z-index:10}
+.star-label{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);font-size:10px;color:#8a8276;white-space:nowrap;background:rgba(8,11,18,.95);padding:5px 10px;border-radius:8px;pointer-events:none;border:1px solid rgba(255,255,255,.04)}
+.star-dot:hover .star-label{display:block}
+.river-keys{display:flex;gap:18px;justify-content:center;font-size:10px;color:#4d4638;flex-wrap:wrap;padding-bottom:8px}
+.river-keys span{display:flex;align-items:center;gap:5px}
+.key-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 
-/* ============ PAGE 3: LETTER (来信) ============ */
-.letter-card{width:100%;max-width:340px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.03);border-radius:20px;padding:28px 24px;line-height:2;margin-bottom:20px}
-.letter-header{text-align:center;margin-bottom:18px}
-.letter-date{font-size:12px;color:#5b5448;margin-bottom:4px}
-.letter-to{font-size:16px;color:#c4bcae;font-weight:300}
-.letter-body{font-size:14px;color:#8b8278;line-height:2.2}
-.letter-body .em{color:#c9a96e}
-.letter-sign{text-align:right;margin-top:18px;font-size:13px;color:#5b5448}
-.letter-empty{text-align:center;color:#4a443c;padding:40px 20px;line-height:2;font-size:14px}
-
-/* ============ BOTTOM NAV ============ */
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;width:100%;max-width:440px;display:flex;justify-content:space-around;padding:12px 20px max(12px,env(safe-area-inset-bottom));background:rgba(11,15,22,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.03)}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .2s;color:#4a443c;font-size:10px;letter-spacing:.5px;background:none;border:none;font-family:inherit;padding:4px 12px;border-radius:10px}
-.nav-item .ni{font-size:22px}
-.nav-item.active{color:#c9a96e}
-.nav-item:hover{color:#8b8278}
-.nav-item:active{transform:scale(.92)}
+/* ============ LETTER (来信) ============ */
+.letter-pad{width:100%;max-width:350px;margin-top:44px}
+.letter-sheet{
+  background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.025);
+  border-radius:20px;padding:32px 28px;line-height:2.2;margin-bottom:14px;
+  position:relative;
+}
+.letter-sheet::before{content:'';position:absolute;top:0;left:28px;right:28px;height:1px;background:rgba(200,160,90,.06)}
+.let-head{text-align:center;margin-bottom:22px}
+.let-date{font-size:11px;color:#4d4638;margin-bottom:4px;letter-spacing:1px}
+.let-to{font-size:16px;color:#bfb8aa;font-weight:300}
+.let-body{font-size:14px;color:#8a8276;line-height:2.3}
+.let-body em{color:#c9a060;font-style:normal}
+.let-sign{text-align:right;margin-top:20px;font-size:12px;color:#5b5444;letter-spacing:1px}
+.letter-blank{text-align:center;color:#4d4638;padding:50px 20px;line-height:2.2;font-size:14px}
 
 /* ============ SETTINGS ============ */
-.set-wrap{width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px}
-.si{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.02)}
-.sl{font-size:14px;color:#8b8278}
-.sv{font-size:13px;color:#5b5448}
-.set-hint{font-size:11px;color:#3a3430;text-align:center;line-height:1.8;margin-top:8px}
-.s-btn{padding:10px 20px;border-radius:18px;font-size:13px;cursor:pointer;font-family:inherit;background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.12);color:#b4a080;transition:all .2s;text-align:center}
-.s-btn:hover{background:rgba(201,169,110,.1)}
-.s-btn:active{transform:scale(.95)}
-.s-btn.danger{color:#9b7060;border-color:rgba(180,120,100,.1);background:rgba(180,120,100,.03)}
+.set-card{width:100%;max-width:320px;margin-top:44px}
+.set-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.015)}
+.set-l{font-size:14px;color:#8a8276}
+.set-v{font-size:13px;color:#5b5444}
+.s-btn{
+  width:100%;padding:12px;border-radius:16px;font-size:13px;cursor:pointer;font-family:inherit;
+  background:rgba(200,160,90,.04);border:1px solid rgba(200,160,90,.1);color:#b09870;
+  transition:all .2s;text-align:center;letter-spacing:.5px;margin-top:6px;
+}
+.s-btn:hover{background:rgba(200,160,90,.08)}
+.s-btn:active{transform:scale(.96)}
+.s-btn.danger{color:#9b7a6a;border-color:rgba(180,130,100,.08);background:rgba(180,130,100,.02)}
+.set-foot{font-size:11px;color:#383022;text-align:center;line-height:2;margin-top:16px}
+
+/* ============ BOTTOM NAV ============ */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;
+  width:100%;max-width:440px;display:flex;justify-content:space-around;
+  padding:10px 24px max(10px,env(safe-area-inset-bottom));
+  background:rgba(8,11,18,.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border-top:1px solid rgba(255,255,255,.02);
+}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .2s;color:#4d4638;font-size:10px;letter-spacing:.5px;background:none;border:none;font-family:inherit;padding:4px 14px;border-radius:10px}
+.nav-btn.active{color:#c9a060}
+.nav-btn:hover{color:#8a8276}
+.nav-btn:active{transform:scale(.9)}
+/* CSS nav icons */
+.nav-icon{position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+/* 放下 icon: circle with a line dropping down */
+.nav-icon-ritual{width:10px;height:10px;border:1.5px solid currentColor;border-radius:50%;position:relative}
+.nav-icon-ritual::after{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:1px;height:8px;background:currentColor;border-radius:1px}
+/* 星河 icon: three dots in triangle */
+.nav-icon-river{display:flex;gap:6px;justify-content:center}
+.nav-dot{width:3.5px;height:3.5px;border-radius:50%;background:currentColor}
+.nav-dots-col{display:flex;flex-direction:column;gap:7px;align-items:center}
+/* 来信 icon: envelope */
+.nav-icon-letter{width:16px;height:12px;border:1.5px solid currentColor;border-radius:2px;position:relative}
+.nav-icon-letter::after{content:'';position:absolute;top:-3px;left:-1.5px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:5px solid currentColor}
+/* 设置 icon: circle with dot */
+.nav-icon-gear{width:4px;height:4px;border-radius:50%;background:currentColor;box-shadow:0 0 0 6px currentColor;opacity:.3;position:relative}
+.nav-icon-gear::after{content:'';position:absolute;top:-9px;left:-9px;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;opacity:.5}
 
 /* Toast */
-.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:rgba(20,18,26,.95);border:1px solid rgba(201,169,110,.1);color:#9b9080;padding:10px 20px;border-radius:12px;font-size:13px;transition:transform .35s;pointer-events:none}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:rgba(16,18,28,.95);border:1px solid rgba(200,160,90,.08);color:#9b9080;padding:10px 20px;border-radius:12px;font-size:13px;transition:transform .35s;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
 
-@media(max-width:360px){.question{font-size:19px}.tags{gap:8px}.tag{padding:8px 14px;font-size:13px}}
+@media(max-width:360px){.question{font-size:20px}.tag{padding:10px 16px;font-size:13px}.tag-row{gap:8px}}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- ===== RITUAL PAGE ===== -->
-  <div class="page on" id="pageRitual">
-    <div class="moon">🌙</div>
-    <div class="greeting" id="greeting"></div>
+  <!-- ===== RITUAL ===== -->
+  <div class="page on" id="ritual">
+    <!-- CSS-drawn crescent moon -->
+    <div class="moon-art"><div class="moon-body"></div><div class="moon-dot1"></div><div class="moon-dot2"></div><div class="moon-dot3"></div></div>
+    <div class="greet" id="greeting"></div>
     <div class="question">今天有什么<br>放不下的？</div>
-    <div class="tags" id="emotionTags">
+    <div class="tag-row" id="tagsRow">
       <span class="tag" data-e="焦虑">焦虑</span>
       <span class="tag" data-e="遗憾">遗憾</span>
       <span class="tag" data-e="期待">期待</span>
       <span class="tag" data-e="生气">生气</span>
       <span class="tag" data-e="说不清">说不清</span>
     </div>
-    <div class="text-toggle" id="textToggle">⋯ 想说几句？</div>
-    <textarea class="text-area" id="textArea" rows="2" placeholder="可以说，也可以不说。"></textarea>
+    <div class="toggle-wrap"><span class="toggle-line"></span><span class="toggle-btn" id="toggleText">写几句</span><span class="toggle-line"></span></div>
+    <textarea class="text-box" id="textBox" rows="3" placeholder="想说什么就说吧。也可以不说。"></textarea>
     <button class="btn-letgo" id="btnLetGo">放下</button>
-    <div class="tonight-hint" id="tonightHint"></div>
+    <div class="tonight-line" id="tonightHint"></div>
   </div>
 
-  <!-- ===== RIVER PAGE ===== -->
-  <div class="page" id="pageRiver">
-    <div class="river-header"><div class="river-title">情绪星河</div><div class="river-sub" id="riverSub"></div></div>
-    <div class="river-canvas" id="riverCanvas"><div class="river-empty" id="riverEmpty">还没有星星。<br>每天来一次，<br>这里会是一片星空。</div></div>
-    <div class="river-legend">
-      <span><span class="legend-dot" style="background:#c9a96e"></span>焦虑</span>
-      <span><span class="legend-dot" style="background:#8b9dc3"></span>遗憾</span>
-      <span><span class="legend-dot" style="background:#a8c97e"></span>期待</span>
-      <span><span class="legend-dot" style="background:#c97e7e"></span>生气</span>
-      <span><span class="legend-dot" style="background:#b8a0c8"></span>说不清</span>
+  <!-- ===== RIVER (星河) ===== -->
+  <div class="page" id="river">
+    <div class="river-top"><div class="river-title">情绪星河</div><div class="river-sub" id="riverSub"></div></div>
+    <div class="river-area"><div class="river-note" id="riverNote">还没有星星。<br>每天来一次，这里会是一片星空。</div><div class="river-dots" id="riverDots"></div></div>
+    <div class="river-keys">
+      <span><span class="key-dot" style="background:#c9a060"></span>焦虑</span>
+      <span><span class="key-dot" style="background:#8b9dc3"></span>遗憾</span>
+      <span><span class="key-dot" style="background:#a8c97e"></span>期待</span>
+      <span><span class="key-dot" style="background:#c97e7e"></span>生气</span>
+      <span><span class="key-dot" style="background:#b8a0c8"></span>说不清</span>
     </div>
   </div>
 
-  <!-- ===== LETTER PAGE ===== -->
-  <div class="page" id="pageLetter">
-    <div class="letter-card" id="letterCard"><div class="letter-empty">一周后<br>你会收到第一封来信。<br><br>它会告诉你：<br>这些天你放下了什么，<br>什么情绪最常来找你，<br>以及——<br>你已经做得很好了。</div></div>
+  <!-- ===== LETTER (来信) ===== -->
+  <div class="page" id="letter">
+    <div class="letter-pad" id="letterPad"><div class="letter-blank">一周后<br>你会收到第一封来信。<br><br>它会告诉你这些天<br>你放下了什么、<br>什么情绪常来找你。<br><br>还有——<br>你已经做得很好了。</div></div>
   </div>
 
-  <!-- ===== SETTINGS PAGE ===== -->
-  <div class="page" id="pageSettings">
-    <div class="set-wrap">
-      <div class="si"><span class="sl">记录天数</span><span class="sv" id="sDays">0 天</span></div>
-      <div class="si"><span class="sl">放下次数</span><span class="sv" id="sCount">0 次</span></div>
-      <div class="si"><span class="sl">最常放下的</span><span class="sv" id="sTop">—</span></div>
-      <button class="s-btn" id="btnLetterNow" style="width:100%;margin-top:6px">💌 现在就生成一封来信</button>
-      <button class="s-btn danger" id="btnClear" style="width:100%">清空所有记录</button>
-      <div class="set-hint">你的每一句话都存在本机。<br>没有人能看到。<br>包括你自己——除非你来这里。</div>
+  <!-- ===== SETTINGS ===== -->
+  <div class="page" id="settings">
+    <div class="set-card">
+      <div class="set-item"><span class="set-l">记录天数</span><span class="set-v" id="sDays">0 天</span></div>
+      <div class="set-item"><span class="set-l">放下次数</span><span class="set-v" id="sCount">0 次</span></div>
+      <div class="set-item"><span class="set-l">最常放下的</span><span class="set-v" id="sTop">—</span></div>
+      <button class="s-btn" id="btnLetterNow">💌 现在生成一封来信</button>
+      <button class="s-btn danger" id="btnClear">清空所有记录</button>
+      <div class="set-foot">每一句话都存在本机。<br>没有人能看到——包括你自己。<br>除非你来这里。</div>
     </div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
-<div class="nav" id="bottomNav">
-  <button class="nav-item active" data-page="pageRitual"><span class="ni">🌙</span>放下</button>
-  <button class="nav-item" data-page="pageRiver"><span class="ni">🌌</span>星河</button>
-  <button class="nav-item" data-page="pageLetter"><span class="ni">💌</span>来信</button>
-  <button class="nav-item" data-page="pageSettings"><span class="ni">⚙</span>设置</button>
-</div>
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-btn active" data-page="ritual">
+    <div class="nav-icon"><div class="nav-icon-ritual"></div></div>放下
+  </button>
+  <button class="nav-btn" data-page="river">
+    <div class="nav-icon"><div class="nav-dots-col"><div class="nav-dot"></div><div class="nav-dot"></div></div></div>星河
+  </button>
+  <button class="nav-btn" data-page="letter">
+    <div class="nav-icon"><div class="nav-icon-letter"></div></div>来信
+  </button>
+  <button class="nav-btn" data-page="settings">
+    <div class="nav-icon"><div class="nav-icon-gear"></div></div>设置
+  </button>
+</nav>
 
-<!-- CEREMONY OVERLAY -->
+<!-- CEREMONY -->
 <div class="overlay" id="ceremony">
-  <div class="ceremony-moon">🌙</div>
-  <div class="scene"><div class="dots" id="particles"></div><div class="boat-text" id="boatText"></div><div class="boat" id="boat">⛵</div><div class="water"></div></div>
+  <div class="cer-moon"></div>
+  <div class="boat-scene">
+    <div class="dust" id="dust"></div>
+    <div class="boat-words" id="boatWords"></div>
+    <div class="boat-group" id="boatGroup"><div class="boat-sail"></div><div class="boat-hull"></div></div>
+    <div class="water-area"><div class="wave1"></div><div class="wave2"></div><div class="wave3"></div></div>
+  </div>
 </div>
-<div class="overlay" id="goodnightScr">
-  <div class="gn-wrap on"><div class="gn1">今天结束了</div><div class="gn2">晚安</div><div class="gn-moon">🌙</div></div>
+<div class="overlay" id="goodnightOverlay">
+  <div class="gn-wrap on"><div class="gn1">今天结束了</div><div class="gn2">晚安</div><div class="gn-star"></div></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 // ==================== STATE ====================
-let EM='',TX='',currPage='pageRitual';
+let EM='',TX='',curr='ritual';
+const EC={焦虑:'#c9a060',遗憾:'#8b9dc3',期待:'#a8c97e',生气:'#c97e7e',说不清:'#b8a0c8'};
 function H(){try{return JSON.parse(localStorage.getItem('le_h')||'[]')}catch(e){return[]}}
 function save(e,t){const h=H();h.push({d:new Date().toISOString(),e,t});if(h.length>600)h.splice(0,h.length-600);localStorage.setItem('le_h',JSON.stringify(h))}
 function cnt(){return H().length}
 function days(){return new Set(H().map(x=>x.d.slice(0,10))).size}
 function topE(){const c={};H().forEach(x=>{c[x.e]=(c[x.e]||0)+1});const e=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'—'}
-function clearH(){localStorage.removeItem('le_h')}
 const $=id=>document.getElementById(id);
-const EC={焦虑:'#c9a96e',遗憾:'#8b9dc3',期待:'#a8c97e',生气:'#c97e7e',说不清:'#b8a0c8'};
 
 // ==================== NAVIGATION ====================
-function goPage(name){
-  currPage=name;
-  ['pageRitual','pageRiver','pageLetter','pageSettings'].forEach(p=>$(p).classList.remove('on'));
+function go(name){
+  curr=name;
+  ['ritual','river','letter','settings'].forEach(p=>$(p).classList.remove('on'));
   $(name).classList.add('on');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
   document.querySelector(`[data-page="${name}"]`).classList.add('active');
-  if(name==='pageRitual'){resetRitual();setGreeting();setTonight()}
-  if(name==='pageRiver')renderRiver();
-  if(name==='pageLetter')renderLetter();
-  if(name==='pageSettings')updateSettings();
+  if(name==='ritual'){resetRitual();setGreet();setTonight()}
+  if(name==='river')renderRiver();
+  if(name==='letter')renderLetter();
+  if(name==='settings')updateSettings();
 }
-document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>goPage(n.dataset.page)));
+document.querySelectorAll('.nav-btn').forEach(n=>n.addEventListener('click',()=>go(n.dataset.page)));
 
 // ==================== GREETING ====================
-function setGreeting(){const h=new Date().getHours();const g=$('greeting');if(h>=5&&h<12)g.textContent='早上好';else if(h>=12&&h<17)g.textContent='下午好';else if(h>=17&&h<21)g.textContent='傍晚好';else g.textContent='夜深了'}
-function setTonight(){const h=new Date().getHours();const n=Math.floor(Math.random()*8000+3000);if(h>=22||h<4)$('tonightHint').innerHTML=`🕯 今夜，还有 <span style="color:#c9a96e">${n.toLocaleString()}</span> 个人也醒着`;else $('tonightHint').textContent=''}
+function setGreet(){const h=new Date().getHours();const g=$('greeting');if(h<5)g.textContent='夜深了';else if(h<12)g.textContent='早上好';else if(h<17)g.textContent='下午好';else if(h<21)g.textContent='傍晚好';else g.textContent='夜深了'}
+function setTonight(){const h=new Date().getHours();if(h>=22||h<5){const n=Math.floor(Math.random()*7000+3000);$('tonightHint').innerHTML=`今夜，还有 <span style="color:#c9a060">${n.toLocaleString()}</span> 个人也醒着`}else $('tonightHint').textContent=''}
 
 // ==================== RITUAL ====================
-function resetRitual(){EM='';TX='';$('textArea').value='';$('textArea').classList.remove('show');document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));$('btnLetGo').style.opacity='.3';$('btnLetGo').disabled=true;$('textToggle').textContent='⋯ 想说几句？'}
+function resetRitual(){EM='';TX='';$('textBox').value='';$('textBox').classList.remove('show');document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));$('btnLetGo').style.opacity='.3';$('btnLetGo').disabled=true;$('toggleText').textContent='写几句'}
 document.querySelectorAll('.tag').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.tag').forEach(x=>x.classList.remove('pick'));this.classList.add('pick');EM=this.dataset.e;$('btnLetGo').style.opacity='1';$('btnLetGo').disabled=false}));
-$('textToggle').addEventListener('click',function(){const ta=$('textArea');if(ta.classList.contains('show')){ta.classList.remove('show');this.textContent='⋯ 想说几句？'}else{ta.classList.add('show');this.textContent='不用了';setTimeout(()=>ta.focus(),300)}});
-$('textArea').addEventListener('input',function(){TX=this.value.trim()});
-
+$('toggleText').addEventListener('click',function(){const tb=$('textBox');if(tb.classList.contains('show')){tb.classList.remove('show');this.textContent='写几句'}else{tb.classList.add('show');this.textContent='不写了';setTimeout(()=>tb.focus(),300)}});
+$('textBox').addEventListener('input',function(){TX=this.value.trim()});
 $('btnLetGo').addEventListener('click',async function(){
-  if(!EM)return;TX=$('textArea').value.trim();save(EM,TX);
-  $('pageRitual').classList.remove('on');const c=$('ceremony');c.classList.add('on');
-  const txt=TX||EM;$('boatText').textContent=txt.length>30?txt.slice(0,30)+'…':txt;
-  const pc=$('particles');pc.innerHTML='';for(let i=0;i<30;i++){const d=document.createElement('div');d.className='dot';d.style.left=(20+Math.random()*60)+'%';d.style.bottom=(Math.random()*30)+'%';d.style.animationDelay=(Math.random()*2)+'s';d.style.animationDuration=(3+Math.random()*3)+'s';pc.appendChild(d)}
-  await sleep(1200);$('boat').classList.add('sail');$('boatText').classList.add('sail');
-  await sleep(4500);c.classList.remove('on');const g=$('goodnightScr');g.classList.add('on');
-  await sleep(4000);g.classList.remove('on');$('pageRitual').classList.add('on');resetRitual();setGreeting();setTonight();
+  if(!EM)return;TX=$('textBox').value.trim();save(EM,TX);
+  $('#ritual').classList.remove('on');const c=$('ceremony');c.classList.add('on');
+  const words=TX||EM;$('#boatWords').textContent=words.length>32?words.slice(0,32)+'…':words;
+  const dust=$('#dust');dust.innerHTML='';
+  for(let i=0;i<30;i++){const d=document.createElement('div');d.className='dust-dot';d.style.left=(18+Math.random()*64)+'%';d.style.bottom=(8+Math.random()*32)+'%';d.style.animationDelay=(Math.random()*2.2)+'s';d.style.animationDuration=(3+Math.random()*3)+'s';dust.appendChild(d)}
+  await pause(1400);$('#boatGroup').classList.add('sailing');$('#boatWords').classList.add('sailing');
+  await pause(4500);c.classList.remove('on');const g=$('#goodnightOverlay');g.classList.add('on');
+  await pause(4200);g.classList.remove('on');$('#ritual').classList.add('on');resetRitual();setGreet();setTonight();
 });
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function pause(ms){return new Promise(r=>setTimeout(r,ms))}
 
-// ==================== RIVER (星河) ====================
+// ==================== RIVER ====================
 function renderRiver(){
-  const h=H();const sub=$('riverSub');const empty=$('riverEmpty');const canvas=$('riverCanvas');
-  if(!h.length){empty.style.display='flex';sub.textContent='';canvas.querySelectorAll('.star').forEach(s=>s.remove());return}
-  empty.style.display='none';sub.textContent=`${days()} 个夜晚 · ${h.length} 颗星星`;
-  // Build stars
-  canvas.querySelectorAll('.star').forEach(s=>s.remove());
-  const total=h.length;const maxPerRow=12;const rows=Math.ceil(total/maxPerRow);
-  const cw=canvas.clientWidth||360;const rh=Math.max(300,rows*28+40);
-  canvas.style.minHeight=rh+'px';
+  const h=H();const area=$('#riverDots');const note=$('#riverNote');const sub=$('#riverSub');
+  area.querySelectorAll('.star-dot').forEach(s=>s.remove());
+  if(!h.length){note.style.display='flex';sub.textContent='';return}
+  note.style.display='none';sub.textContent=`${days()} 个夜晚 · ${h.length} 颗星`;
+  const maxCol=14;const rows=Math.ceil(h.length/maxCol);
+  area.style.minHeight=Math.max(280,rows*28+20)+'px';
+  const w=area.clientWidth||330;
   h.forEach((x,i)=>{
-    const row=Math.floor(i/maxPerRow);const col=i%maxPerRow;
-    const sx=((col+1)/(maxPerRow+1))*cw;
-    const sy=row*28+24;
-    const star=document.createElement('div');star.className='star';
+    const row=Math.floor(i/maxCol);const col=i%maxCol;
+    const sx=((col+1)/(maxCol+1))*w;const sy=row*26+18;
+    const star=document.createElement('div');star.className='star-dot';
     star.style.left=sx+'px';star.style.top=sy+'px';
-    star.style.width='6px';star.style.height='6px';
-    star.style.background=EC[x.e]||'#c9a96e';
-    star.style.boxShadow=`0 0 6px ${EC[x.e]||'#c9a96e'}`;
-    star.title=`${new Date(x.d).toLocaleDateString('zh-CN')} · ${x.e}${x.t?' — '+x.t.slice(0,15):''}`;
-    // Tip
-    const tip=document.createElement('div');tip.className='star-tip';
-    tip.textContent=`${new Date(x.d).getMonth()+1}/${new Date(x.d).getDate()} · ${x.e}`;
-    star.appendChild(tip);
-    canvas.appendChild(star);
+    star.style.width='7px';star.style.height='7px';
+    const color=EC[x.e]||'#c9a060';
+    star.style.background=color;star.style.boxShadow=`0 0 7px ${color}`;
+    const label=document.createElement('div');label.className='star-label';
+    const dt=new Date(x.d);label.textContent=`${dt.getMonth()+1}/${dt.getDate()} · ${x.e}`;
+    star.appendChild(label);area.appendChild(star);
   });
-  canvas.scrollTop=canvas.scrollHeight;
 }
 
-// ==================== LETTER (来信) ====================
+// ==================== LETTER ====================
 function renderLetter(force=false){
-  const h=H();const card=$('letterCard');
-  if(!h.length&&!force){card.innerHTML='<div class="letter-empty">一周后<br>你会收到第一封来信。<br><br>它会告诉你：<br>这些天你放下了什么，<br>什么情绪最常来找你，<br>以及——<br>你已经做得很好了。</div>';return}
-  if(!h.length)return;
-  // Last 7 days
+  const h=H();const pad=$('#letterPad');
+  if(!h.length){pad.innerHTML='<div class="letter-blank">一周后<br>你会收到第一封来信。<br><br>它会告诉你这些天<br>你放下了什么、<br>什么情绪常来找你。<br><br>还有——<br>你已经做得很好了。</div>';return}
   const now7=new Date(Date.now()-7*86400000);const recent=h.filter(x=>new Date(x.d)>now7);
   const total=h.length;const d=days();
   const ec={};h.forEach(x=>{ec[x.e]=(ec[x.e]||0)+1});const t=Object.entries(ec).sort((a,b)=>b[1]-a[1])[0];
-  const weekE={};recent.forEach(x=>{weekE[x.e]=(weekE[x.e]||0)+1});const wt=Object.entries(weekE).sort((a,b)=>b[1]-a[1])[0];
-  // Find longest text
+  const we={};recent.forEach(x=>{we[x.e]=(we[x.e]||0)+1});const wt=Object.entries(we).sort((a,b)=>b[1]-a[1])[0];
   let long=null;h.forEach(x=>{if((x.t||'').length>(long?.t?.length||0))long=x});
-  // Poetic phrases
-  const phrases={焦虑:['像风一样来了又走','今天，你又独自面对了它','它很轻，但你知道它来过'],遗憾:['有些事像沙子，握不住','轻舟已过万重山','放在心里就好'],期待:['对未来温柔的人，不会失眠','明天会因为你而不同','你已经走在路上了'],生气:['火苗亮了又灭','那些情绪，不必道歉','你是对的。但放下是对的'],说不清:['有些情绪不需要名字','它来了。你在。它走了。','就这样吧']};
-  const ph=phrases[wt?wt[0]:'说不清']||phrases['说不清'];
+  const poetry={焦虑:['像雾气一样飘来飘走','今天你又独自面对了它','它很轻——但你知道它来过'],遗憾:['那些沙子，握不住就扬了吧','有时候松开手才是拥有','轻舟已过'],期待:['对未来温柔的人，不会失眠','明天会因为你而不同','你已经走在路上了'],生气:['火苗亮了又灭。没事的。','那种感觉，不需要道歉','你是对的。放下也是对的。'],说不清:['有些情绪不需要名字','它来了。你在。它走了。','就这样。']};
+  const ph=poetry[wt?wt[0]:'说不清']||poetry['说不清'];
   const now=new Date();
-  card.innerHTML=`
-    <div class="letter-header"><div class="letter-date">${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 第${total}次放下</div><div class="letter-to">亲爱的你，</div></div>
-    <div class="letter-body">
-      这一周，你来了 <span class="em">${recent.length}</span> 次。<br><br>
-      ${wt?`最近常来找你的，是<span class="em">「${wt[0]}」</span>。<br>${ph[total%ph.length]}。<br><br>`:''}
-      ${long?.t?`你写过最长的一句话：<br><span class="em">「${long.t.slice(0,40)}${long.t.length>40?'…':''}」</span><br><br>`:''}
-      从第一天到现在，<br>你已经走过了 <span class="em">${d}</span> 个夜晚。<br>
-      最多的陪伴是 <span class="em">「${t?t[0]:'—'}」</span>。<br><br>
-      你知道吗。<br>每一次你打开这个App，<br>都在做同一件事：<br><span class="em">给自己一个句号。</span><br><br>
-      你已经做得很好了。
-    </div>
-    <div class="letter-sign">—— 了</div>
-  `;
+  pad.innerHTML=`<div class="letter-sheet"><div class="let-head"><div class="let-date">${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 第${total}封</div><div class="let-to">亲爱的你，</div></div><div class="let-body">这一周，你来了 <em>${recent.length}</em> 次。<br><br>${wt?`最近常来的，是<em>「${wt[0]}」</em>。<br>${ph[total%ph.length]}<br><br>`:''}${long?.t?`你写过最长的：<br><em>「${long.t.slice(0,36)}${long.t.length>36?'…':''}」</em><br><br>`:''}从第一天到现在，<br>你走过了 <em>${d}</em> 个夜晚。<br>陪伴最久的是 <em>「${t?t[0]:'—'}」</em>。<br><br>你知道吗。<br>你每次打开这个 App，<br>都在做同一件事：<br><em>给今天画一个句号。</em><br><br>你已经做得很好了。</div><div class="let-sign">—— 了</div></div>`;
 }
 
 // ==================== SETTINGS ====================
 function updateSettings(){$('sDays').textContent=days()+' 天';$('sCount').textContent=cnt()+' 次';$('sTop').textContent=topE()}
-$('btnClear').addEventListener('click',()=>{if(confirm('清空所有记录？不可撤销。')){clearH();updateSettings();toast('已清空')}});
-$('btnLetterNow').addEventListener('click',()=>{renderLetter(true);goPage('pageLetter');toast('💌 你的来信')});
+$('btnClear').addEventListener('click',()=>{if(confirm('清空所有记录？')){localStorage.removeItem('le_h');updateSettings();toast('已清空')}});
+$('btnLetterNow').addEventListener('click',()=>{renderLetter(true);go('letter');toast('你的来信已生成')});
 
 // ==================== TOAST ====================
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('on'),2000)}
 
 // ==================== INIT ====================
-function init(){setGreeting();setTonight();resetRitual();goPage('pageRitual')}
+function init(){setGreet();setTonight();resetRitual();go('ritual')}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
 document.addEventListener('DOMContentLoaded',init);
 </script>
