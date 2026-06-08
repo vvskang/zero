@@ -288,12 +288,11 @@
     <button class="btn btn-secondary btn-sm" id="btn-settings-back" style="margin-bottom:16px;">← 返回</button>
     <h2 style="margin-bottom:20px;font-size:20px;">⚙️ 设置</h2>
     <div class="settings-section">
-      <label>DeepSeek API Key（仅本地开发需要）</label>
-      <input type="password" id="api-key-input" placeholder="本地调试时填自己的Key，公网用户不需要">
+      <label>DeepSeek API Key（可选）</label>
+      <input type="password" id="api-key-input" placeholder="想用自己的Key就填，不填自动用站长的">
       <div class="settings-hint">
-        ⚡ <strong>公网用户无需配置</strong>——系统自动走代理。<br>
-        只有你在自己电脑上调试时才需要填。<br>
-        在 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 注册获取 → 充值¥10够用几千次
+        ⚡ 不填也能直接用——系统已配置共享 Key。<br>
+        想用自己的？<a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 注册 → 充值¥10够用几千次
       </div>
     </div>
     <div class="settings-section">
@@ -664,9 +663,9 @@ async function startWorkflow() {
   $('wf-done').classList.remove('show');
   $('btn-view-report').style.display = 'none';
 
-  // Check API key only in dev mode (localhost)
-  if (isDevMode() && !STATE.apiKey) {
-    toast('⚠️ 本地开发模式：请在设置中填写 DeepSeek API Key');
+  // Check API key
+  if (!getActiveKey()) {
+    toast('⚠️ 系统未配置 API Key，请联系站长');
     markStep(steps[0].id, 'error');
     return;
   }
@@ -733,16 +732,22 @@ function isDevMode() {
   return h === 'localhost' || h === '127.0.0.1' || h.startsWith('192.168.');
 }
 
-function getApiConfig() {
-  if (isDevMode()) {
-    return { url: 'https://api.deepseek.com/chat/completions', needsKey: true };
-  }
-  return { url: '/api/proxy', needsKey: false };
+// ⚠️ 公网部署时，把你的 DeepSeek Key 填在这里
+// 公网用户会自动使用这个 Key，不需要自己配置
+// 余额用完了去 platform.deepseek.com 充值即可
+const DEFAULT_API_KEY = 'sk-5d6e743893dd479fb6c237d40767f6b1';
+
+function getActiveKey() {
+  return STATE.apiKey || DEFAULT_API_KEY;
 }
 
 // ---------- DEEPSEEK API ----------
 async function callDeepSeek(systemPrompt, userPrompt, jsonMode = true) {
-  const cfg = getApiConfig();
+  const key = getActiveKey();
+  if (!key) {
+    throw new Error('未配置 API Key，请在设置中填写或联系站长');
+  }
+
   const body = {
     model: 'deepseek-chat',
     messages: [
@@ -756,14 +761,12 @@ async function callDeepSeek(systemPrompt, userPrompt, jsonMode = true) {
     body.response_format = { type: 'json_object' };
   }
 
-  const headers = { 'Content-Type': 'application/json' };
-  if (cfg.needsKey) {
-    headers['Authorization'] = `Bearer ${STATE.apiKey}`;
-  }
-
-  const resp = await fetch(cfg.url, {
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`
+    },
     body: JSON.stringify(body)
   });
 
