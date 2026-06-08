@@ -1,21 +1,21 @@
 {
-  "name": "Zero — 从零开始的搞钱导航",
-  "short_name": "Zero",
-  "description": "AI工作流引擎，帮你找到搞钱方向",
+  "name": "了 — 睡前放下今天",
+  "short_name": "了",
+  "description": "每天睡前，放下今天。选一个情绪，看它变成纸船漂走。",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
+  "background_color": "#0b0f16",
+  "theme_color": "#0b0f16",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='42' fill='%230a0a0f'/><circle cx='96' cy='96' r='52' fill='none' stroke='%236c5ce7' stroke-width='5'/><text x='96' y='118' text-anchor='middle' fill='%23f0f0f5' font-size='64' font-weight='800' font-family='system-ui'>0</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='46' fill='%230b0f16'/><text x='96' y='142' text-anchor='middle' fill='%23c9a96e' font-size='124' font-weight='300' font-family='system-ui'>了</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='%230a0a0f'/><circle cx='256' cy='256' r='140' fill='none' stroke='%236c5ce7' stroke-width='12'/><text x='256' y='316' text-anchor='middle' fill='%23f0f0f5' font-size='172' font-weight='800' font-family='system-ui'>0</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='124' fill='%230b0f16'/><text x='256' y='380' text-anchor='middle' fill='%23c9a96e' font-size='332' font-weight='300' font-family='system-ui'>了</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
