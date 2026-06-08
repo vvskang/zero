@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="description" content="Zero — 从零开始你的一人公司。AI工作流引擎，帮你找到搞钱方向。">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Zero">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230a0a0f'/><text x='50' y='68' text-anchor='middle' fill='%23f0f0f0' font-size='52' font-weight='700' font-family='system-ui'>0</text></svg>">
+  <title>Zero — 从零开始的搞钱导航</title>
+  <style>
+    /* ============ RESET & BASE ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #0a0a0f; color: #e0e0e8; min-height: 100dvh;
+      display: flex; justify-content: center; line-height: 1.6;
+    }
+    #app {
+      width: 100%; max-width: 520px; min-height: 100dvh; padding: 20px 16px 40px;
+      display: flex; flex-direction: column;
+    }
+
+    /* ============ HOME SCREEN ============ */
+    .logo { font-size: 72px; font-weight: 800; letter-spacing: -3px; text-align: center;
+      margin-top: 60px; margin-bottom: 8px; color: #f0f0f5;
+      background: linear-gradient(135deg, #f0f0f5 0%, #a0a0c0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .tagline { text-align: center; color: #808090; font-size: 15px; margin-bottom: 40px; letter-spacing: 0.5px; }
+    .goal-input-wrap { margin-bottom: 24px; }
+    .goal-input-wrap label { display: block; font-size: 13px; color: #707080; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 1px; }
+    .goal-input { width: 100%; padding: 14px 16px; background: #14141c; border: 1px solid #22222e;
+      border-radius: 14px; color: #e0e0e8; font-size: 16px; outline: none; transition: border .2s;
+      font-family: inherit; resize: none; }
+    .goal-input:focus { border-color: #6c5ce7; }
+    .goal-input::placeholder { color: #484858; }
+
+    .cards { display: flex; gap: 12px; margin-bottom: 24px; }
+    .card { flex: 1; background: #14141c; border: 1px solid #1e1e2a; border-radius: 16px;
+      padding: 20px 16px; cursor: pointer; transition: all .2s; text-align: center;
+      text-decoration: none; color: inherit; }
+    .card:hover { border-color: #6c5ce7; background: #181824; transform: translateY(-1px); }
+    .card:active { transform: scale(0.98); }
+    .card-icon { font-size: 32px; margin-bottom: 10px; }
+    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #e0e0e8; }
+    .card-desc { font-size: 12px; color: #707080; }
+
+    .history-link { text-align: center; }
+    .history-link a { color: #606070; font-size: 13px; text-decoration: none; transition: color .2s; }
+    .history-link a:hover { color: #a0a0b0; }
+
+    .settings-gear { position: fixed; top: 16px; right: 16px; width: 36px; height: 36px;
+      background: #14141c; border: 1px solid #1e1e2a; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; cursor: pointer; color: #707080;
+      font-size: 16px; transition: all .2s; z-index: 10; }
+    .settings-gear:hover { border-color: #6c5ce7; color: #a0a0c0; }
+
+    /* ============ ONBOARDING SCREEN ============ */
+    .screen { display: none; flex-direction: column; flex: 1; }
+    .screen.active { display: flex; }
+
+    .ob-header { margin-bottom: 24px; }
+    .ob-back { background: none; border: none; color: #707080; font-size: 14px; cursor: pointer;
+      padding: 8px 0; display: flex; align-items: center; gap: 4px; }
+    .ob-back:hover { color: #a0a0c0; }
+
+    .ob-steps { display: flex; gap: 6px; margin-bottom: 28px; }
+    .ob-step-dot { flex: 1; height: 4px; border-radius: 2px; background: #1e1e2a; transition: background .3s; }
+    .ob-step-dot.done { background: #6c5ce7; }
+    .ob-step-dot.current { background: #6c5ce7; box-shadow: 0 0 8px rgba(108,92,231,.4); }
+
+    .ob-question { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #e8e8f0; line-height: 1.4; }
+    .ob-subtitle { font-size: 13px; color: #707080; margin-bottom: 20px; }
+
+    .option-group { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn { padding: 14px 16px; background: #14141c; border: 1px solid #1e1e2a;
+      border-radius: 12px; color: #c0c0d0; font-size: 15px; cursor: pointer; text-align: left;
+      transition: all .2s; font-family: inherit; display: flex; align-items: center; gap: 10px; }
+    .option-btn:hover { border-color: #6c5ce7; background: #181824; }
+    .option-btn.selected { border-color: #6c5ce7; background: #1a1830; color: #e0d8ff; }
+
+    .tag-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag { padding: 10px 16px; background: #14141c; border: 1px solid #1e1e2a; border-radius: 20px;
+      color: #c0c0d0; font-size: 14px; cursor: pointer; transition: all .2s; user-select: none; }
+    .tag:hover { border-color: #6c5ce7; background: #181824; }
+    .tag.selected { border-color: #6c5ce7; background: #1a1830; color: #e0d8ff; }
+
+    .ob-actions { margin-top: 28px; display: flex; gap: 10px; }
+    .btn { padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; font-family: inherit; transition: all .2s; }
+    .btn-primary { background: #6c5ce7; color: #fff; flex: 1; }
+    .btn-primary:hover { background: #7b6cf0; }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { background: #2a2850; color: #606080; cursor: not-allowed; }
+    .btn-secondary { background: #14141c; color: #a0a0b0; border: 1px solid #1e1e2a; }
+    .btn-secondary:hover { border-color: #6c5ce7; color: #c0c0d0; }
+
+    /* ============ WORKFLOW SCREEN ============ */
+    .wf-title { font-size: 22px; font-weight: 700; text-align: center; margin-top: 40px; margin-bottom: 8px; }
+    .wf-subtitle { text-align: center; color: #707080; font-size: 13px; margin-bottom: 40px; }
+
+    .pipeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .pipeline::before { content: ''; position: absolute; left: 19px; top: 24px; bottom: 24px;
+      width: 2px; background: #1e1e2a; z-index: 0; }
+
+    .pipe-node { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; position: relative; z-index: 1; }
+    .pipe-dot { width: 40px; height: 40px; border-radius: 50%; background: #14141c;
+      border: 2px solid #1e1e2a; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .4s; font-size: 16px; }
+    .pipe-dot.running { border-color: #6c5ce7; background: #1a1830; animation: pulse 1.2s ease-in-out infinite; }
+    .pipe-dot.done { border-color: #00d68f; background: #0a2820; }
+    .pipe-dot.error { border-color: #ff4757; background: #280a10; }
+
+    .pipe-info { flex: 1; min-width: 0; }
+    .pipe-name { font-size: 14px; font-weight: 600; color: #8888a0; transition: color .3s; }
+    .pipe-node.running .pipe-name { color: #e0d8ff; }
+    .pipe-node.done .pipe-name { color: #b0b0c0; }
+    .pipe-desc { font-size: 12px; color: #484858; margin-top: 2px; transition: color .3s; }
+    .pipe-node.running .pipe-desc { color: #707080; }
+    .pipe-sub { font-size: 12px; color: #484858; margin-top: 6px; padding: 8px 10px;
+      background: #0a0a12; border-radius: 8px; overflow: hidden; max-height: 0;
+      transition: max-height .3s, margin .3s; }
+    .pipe-node.running .pipe-sub { max-height: 200px; margin-top: 8px; color: #707090; }
+    .pipe-sub span { display: block; margin: 2px 0; }
+
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(108,92,231,.4)} 50%{box-shadow:0 0 16px 4px rgba(108,92,231,.15)} }
+
+    .wf-done-msg { text-align: center; margin-top: 32px; opacity: 0; transform: translateY(10px);
+      transition: all .5s; }
+    .wf-done-msg.show { opacity: 1; transform: translateY(0); }
+    .wf-done-icon { font-size: 48px; margin-bottom: 12px; }
+    .wf-done-text { font-size: 16px; color: #a0a0b0; margin-bottom: 16px; }
+
+    /* ============ REPORT SCREEN ============ */
+    .report-header { display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; }
+    .report-actions { display: flex; gap: 8px; }
+    .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 10px; }
+
+    .report-card { background: #14141c; border: 1px solid #1e1e2a; border-radius: 16px;
+      padding: 20px; margin-bottom: 16px; }
+    .report-card h2 { font-size: 18px; margin-bottom: 12px; color: #e8e8f0; }
+    .report-card h3 { font-size: 15px; color: #c0c0d0; margin-bottom: 8px; margin-top: 16px; }
+    .report-card p { font-size: 14px; color: #9090a0; line-height: 1.7; margin-bottom: 8px; }
+    .report-card ul, .report-card ol { padding-left: 20px; }
+    .report-card li { font-size: 14px; color: #9090a0; margin-bottom: 4px; line-height: 1.6; }
+
+    .match-badge { display: inline-block; padding: 4px 10px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .match-badge.high { background: #0a2820; color: #00d68f; }
+    .match-badge.mid { background: #281e0a; color: #ffa500; }
+    .match-badge.low { background: #1a1420; color: #8880a0; }
+
+    .plan-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    .plan-table th { text-align: left; padding: 8px 10px; color: #808090; font-weight: 500;
+      border-bottom: 1px solid #1e1e2a; font-size: 12px; }
+    .plan-table td { padding: 8px 10px; color: #9090a0; border-bottom: 1px solid #14141c; vertical-align: top; }
+    .plan-table tr:hover td { background: #14141c; }
+
+    .report-meta { font-size: 12px; color: #484858; margin-top: 8px; text-align: center; }
+
+    /* ============ HISTORY SCREEN ============ */
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-item { background: #14141c; border: 1px solid #1e1e2a; border-radius: 14px;
+      padding: 16px; cursor: pointer; transition: all .2s; }
+    .history-item:hover { border-color: #6c5ce7; background: #181824; }
+    .history-item .hi-date { font-size: 12px; color: #606070; margin-bottom: 4px; }
+    .history-item .hi-title { font-size: 15px; font-weight: 600; color: #c0c0d0; }
+    .history-item .hi-preview { font-size: 13px; color: #707080; margin-top: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #505060; }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ============ SETTINGS SCREEN ============ */
+    .settings-section { margin-bottom: 24px; }
+    .settings-section label { display: block; font-size: 13px; color: #707080; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 1px; }
+    .settings-section input, .settings-section textarea { width: 100%; padding: 12px 14px;
+      background: #14141c; border: 1px solid #1e1e2a; border-radius: 12px; color: #e0e0e8;
+      font-size: 14px; outline: none; font-family: monospace; }
+    .settings-section input:focus { border-color: #6c5ce7; }
+    .settings-hint { font-size: 12px; color: #505060; margin-top: 6px; }
+    .settings-hint a { color: #6c5ce7; text-decoration: none; }
+    .settings-hint a:hover { text-decoration: underline; }
+
+    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #1a1830; border: 1px solid #6c5ce7; color: #e0d8ff; padding: 10px 20px;
+      border-radius: 12px; font-size: 14px; transition: transform .3s; z-index: 100; max-width: 90vw;
+      text-align: center; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 380px) {
+      .logo { font-size: 56px; margin-top: 40px; }
+      .cards { flex-direction: column; }
+      .ob-question { font-size: 19px; }
+      .plan-table { font-size: 11px; }
+      .plan-table th, .plan-table td { padding: 6px 4px; }
+    }
+
+    /* ============ PRINT ============ */
+    @media print {
+      body { background: #fff; color: #000; }
+      .report-card { background: #fff; border: 1px solid #ccc; color: #000; break-inside: avoid; }
+      .report-card p, .report-card li, .report-card td { color: #333; }
+      .btn, .settings-gear, .report-actions, .ob-back { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ===== HOME SCREEN ===== -->
+  <div class="screen active" id="screen-home">
+    <div class="logo">ZERO</div>
+    <div class="tagline">从零开始你的一人公司</div>
+    <div class="goal-input-wrap">
+      <label>我想……</label>
+      <textarea class="goal-input" id="goal-input" rows="2"
+        placeholder="比如：搞副业 / 做自媒体 / 开网店 / 做跨境电商 / 接外包 / 卖数字产品..."></textarea>
+    </div>
+    <div class="cards">
+      <div class="card" id="card-explore">
+        <div class="card-icon">🧭</div>
+        <div class="card-title">不知道方向？</div>
+        <div class="card-desc">先测测你的搞钱方向</div>
+      </div>
+      <div class="card" id="card-direct">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">已有想法？</div>
+        <div class="card-desc">直接生成执行计划</div>
+      </div>
+    </div>
+    <div class="history-link"><a href="#" id="link-history">📋 历史报告</a></div>
+  </div>
+
+  <!-- ===== ONBOARDING SCREEN ===== -->
+  <div class="screen" id="screen-onboarding">
+    <div class="ob-header">
+      <button class="ob-back" id="ob-back">← 返回</button>
+      <div class="ob-steps" id="ob-steps"></div>
+    </div>
+    <div id="ob-content"></div>
+    <div class="ob-actions" id="ob-actions"></div>
+  </div>
+
+  <!-- ===== WORKFLOW SCREEN ===== -->
+  <div class="screen" id="screen-workflow">
+    <div class="wf-title">⚙️ Zero 工作流引擎</div>
+    <div class="wf-subtitle">正在为你分析，请稍候…</div>
+    <div class="pipeline" id="pipeline"></div>
+    <div class="wf-done-msg" id="wf-done">
+      <div class="wf-done-icon">✅</div>
+      <div class="wf-done-text">报告已生成</div>
+      <button class="btn btn-primary" id="btn-view-report">查看报告 →</button>
+    </div>
+  </div>
+
+  <!-- ===== REPORT SCREEN ===== -->
+  <div class="screen" id="screen-report">
+    <div class="report-header">
+      <button class="btn btn-secondary btn-sm" id="btn-report-back">← 返回</button>
+      <div class="report-actions">
+        <button class="btn btn-secondary btn-sm" id="btn-share">📤 分享</button>
+        <button class="btn btn-secondary btn-sm" id="btn-new-analysis">🔄 重新分析</button>
+      </div>
+    </div>
+    <div id="report-content"></div>
+    <div class="report-meta" id="report-meta"></div>
+  </div>
+
+  <!-- ===== HISTORY SCREEN ===== -->
+  <div class="screen" id="screen-history">
+    <button class="btn btn-secondary btn-sm" id="btn-history-back" style="margin-bottom:16px;">← 返回</button>
+    <h2 style="margin-bottom:16px;font-size:20px;">📋 历史报告</h2>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <!-- ===== SETTINGS MODAL ===== -->
+  <div class="screen" id="screen-settings">
+    <button class="btn btn-secondary btn-sm" id="btn-settings-back" style="margin-bottom:16px;">← 返回</button>
+    <h2 style="margin-bottom:20px;font-size:20px;">⚙️ 设置</h2>
+    <div class="settings-section">
+      <label>DeepSeek API Key</label>
+      <input type="password" id="api-key-input" placeholder="sk-...">
+      <div class="settings-hint">
+        在 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 注册获取 →
+        充值¥10够用几千次
+      </div>
+    </div>
+    <div class="settings-section">
+      <label>你的昵称（可选）</label>
+      <input type="text" id="nickname-input" placeholder="你的名字或昵称">
+    </div>
+    <button class="btn btn-primary" id="btn-save-settings">保存设置</button>
+    <button class="btn btn-secondary" id="btn-clear-history" style="margin-top:8px;color:#ff4757;">🗑 清除所有历史报告</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<button class="settings-gear" id="btn-settings" title="设置">⚙</button>
+
+<script>
+// ==================== ZERO APP ENGINE ====================
+
+// ---------- STATE ----------
+const STATE = {
+  screen: 'home',
+  onboardingStep: 0,
+  onboardingData: { goal: '', skills: [], time: '', budget: '', style: '', detail: '' },
+  onboardingMode: 'explore', // 'explore' | 'direct'
+  workflowSteps: [],
+  reportData: null,
+  apiKey: '',
+  nickname: ''
+};
+
+// ---------- DOM REFS ----------
+const $ = id => document.getElementById(id);
+const screens = ['home','onboarding','workflow','report','history','settings'];
+const $app = $('app');
+const $toast = $('toast');
+
+// ---------- PERSISTENCE ----------
+function loadSettings() {
+  STATE.apiKey = localStorage.getItem('zero_api_key') || '';
+  STATE.nickname = localStorage.getItem('zero_nickname') || '';
+  $('api-key-input').value = STATE.apiKey;
+  $('nickname-input').value = STATE.nickname;
+}
+function saveSettings() {
+  STATE.apiKey = $('api-key-input').value.trim();
+  STATE.nickname = $('nickname-input').value.trim();
+  localStorage.setItem('zero_api_key', STATE.apiKey);
+  localStorage.setItem('zero_nickname', STATE.nickname);
+  toast('✅ 设置已保存');
+  goScreen('home');
+}
+function getReports() {
+  try { return JSON.parse(localStorage.getItem('zero_reports') || '[]'); } catch(e) { return []; }
+}
+function saveReport(report) {
+  const reports = getReports();
+  reports.unshift({ id: Date.now(), date: new Date().toISOString(), ...report });
+  localStorage.setItem('zero_reports', JSON.stringify(reports));
+}
+function deleteAllReports() {
+  if (confirm('确定要删除所有历史报告？此操作不可撤销。')) {
+    localStorage.removeItem('zero_reports');
+    toast('🗑 已删除所有历史报告');
+    if (STATE.screen === 'history') renderHistory();
+  }
+}
+
+// ---------- NAVIGATION ----------
+function goScreen(name) {
+  STATE.screen = name;
+  screens.forEach(s => $(`screen-${s}`).classList.remove('active'));
+  $(`screen-${name}`).classList.add('active');
+  $('btn-settings').style.display = (name === 'settings') ? 'none' : 'flex';
+  if (name === 'home') { $('btn-settings').style.display = 'flex'; }
+  if (name === 'history') renderHistory();
+  if (name === 'settings') { loadSettings(); }
+}
+
+// ---------- TOAST ----------
+function toast(msg, duration = 2000) {
+  $toast.textContent = msg;
+  $toast.classList.add('show');
+  clearTimeout($toast._t);
+  $toast._t = setTimeout(() => $toast.classList.remove('show'), duration);
+}
+
+// ---------- SHARE ----------
+async function shareReport() {
+  if (!STATE.reportData) return;
+  const text = `【Zero 搞钱方向分析】\n🔮 第一推荐：${STATE.reportData.top1_title || '—'}\n📊 匹配度：${STATE.reportData.top1_score || '—'}\n\n${(STATE.reportData.summary || '').slice(0,200)}...\n\n—— 由 Zero 工作流引擎生成`;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Zero 搞钱方向分析', text }); } catch(e) {}
+  } else {
+    await navigator.clipboard.writeText(text);
+    toast('📋 已复制到剪贴板，去分享吧');
+  }
+}
+
+// ---------- ONBOARDING ----------
+const ONBOARDING_QUESTIONS = {
+  explore: [
+    {
+      title: '你每天能拿出多少时间？',
+      subtitle: '用于搞钱的可支配时间',
+      type: 'single',
+      key: 'time',
+      options: [
+        { label: '⏰ 1小时以内', value: '小于1小时', desc: '碎片时间居多' },
+        { label: '⏰ 1-3小时', value: '1-3小时', desc: '下班/放学后有一段完整时间' },
+        { label: '⏰ 3-6小时', value: '3-6小时', desc: '有半天左右的自由时间' },
+        { label: '⏰ 6小时以上', value: '6小时以上', desc: '全职投入' }
+      ]
+    },
+    {
+      title: '你最擅长什么？',
+      subtitle: '多选，选你最拿手的',
+      type: 'multi',
+      key: 'skills',
+      options: [
+        { label: '✍️ 写东西', value: '写作' },
+        { label: '💬 聊天沟通', value: '沟通' },
+        { label: '🎨 做图/视频', value: '设计创作' },
+        { label: '📊 数据分析', value: '数据分析' },
+        { label: '🔧 手工/技术', value: '技术手工' },
+        { label: '👥 组织管理', value: '组织管理' },
+        { label: '🔍 搜索/研究', value: '信息搜集' },
+        { label: '💰 销售/谈判', value: '销售谈判' }
+      ]
+    },
+    {
+      title: '你有多少启动资金？',
+      subtitle: '可以用于搞钱的初始投入',
+      type: 'single',
+      key: 'budget',
+      options: [
+        { label: '💵 0-500元', value: '0-500元' },
+        { label: '💵 500-5000元', value: '500-5000元' },
+        { label: '💵 5000-20000元', value: '5000-20000元' },
+        { label: '💵 20000元以上', value: '20000元以上' }
+      ]
+    },
+    {
+      title: '你更偏向哪种搞钱方式？',
+      subtitle: '直觉选择，不用想太多',
+      type: 'single',
+      key: 'style',
+      options: [
+        { label: '📝 做内容积累', value: '内容积累', desc: '写文章、做视频、慢慢建立影响力' },
+        { label: '🔄 快速交易套利', value: '交易套利', desc: '低买高卖、信息差、撮合交易' },
+        { label: '🛠 做一个产品卖', value: '产品变现', desc: '开发工具/服务，规模化销售' },
+        { label: '🤝 服务/接单', value: '服务变现', desc: '用自己的技能直接换钱' }
+      ]
+    },
+    {
+      title: '有没有特别想做的领域？',
+      subtitle: '可选，也可以跳过',
+      type: 'free',
+      key: 'detail',
+      placeholder: '比如：游戏、美妆、教育、AI、跨境电商...（可留空）'
+    }
+  ],
+  direct: [
+    {
+      title: '说说你的想法',
+      subtitle: '越具体越好——你想做什么？',
+      type: 'free',
+      key: 'detail',
+      placeholder: '比如：我想做一个帮人整理旅行攻略的AI工具 / 我想做游戏陪玩中介 / 我想在闲鱼上卖XX...'
+    },
+    {
+      title: '你每天能拿出多少时间？',
+      type: 'single',
+      key: 'time',
+      options: [
+        { label: '⏰ 1小时以内', value: '小于1小时' },
+        { label: '⏰ 1-3小时', value: '1-3小时' },
+        { label: '⏰ 3-6小时', value: '3-6小时' },
+        { label: '⏰ 6小时以上', value: '6小时以上' }
+      ]
+    },
+    {
+      title: '你的启动预算是？',
+      type: 'single',
+      key: 'budget',
+      options: [
+        { label: '💵 0-500元', value: '0-500元' },
+        { label: '💵 500-5000元', value: '500-5000元' },
+        { label: '💵 5000-20000元', value: '5000-20000元' },
+        { label: '💵 20000元以上', value: '20000元以上' }
+      ]
+    }
+  ]
+};
+
+function startOnboarding(mode) {
+  STATE.onboardingMode = mode;
+  STATE.onboardingStep = 0;
+  STATE.onboardingData = { goal: '', skills: [], time: '', budget: '', style: '', detail: '' };
+  STATE.onboardingData.goal = $('goal-input').value.trim() || '搞副业';
+  goScreen('onboarding');
+  renderOnboarding();
+}
+
+function renderOnboarding() {
+  const questions = ONBOARDING_QUESTIONS[STATE.onboardingMode];
+  const totalSteps = questions.length;
+  const currentQ = questions[STATE.onboardingStep];
+
+  // Step dots
+  let dotsHtml = '';
+  for (let i = 0; i < totalSteps; i++) {
+    let cls = '';
+    if (i < STATE.onboardingStep) cls = 'done';
+    if (i === STATE.onboardingStep) cls = 'current';
+    dotsHtml += `<div class="ob-step-dot ${cls}"></div>`;
+  }
+  $('ob-steps').innerHTML = dotsHtml;
+
+  // Question content
+  let contentHtml = `<div class="ob-question">${currentQ.title}</div>`;
+  if (currentQ.subtitle) {
+    contentHtml += `<div class="ob-subtitle">${currentQ.subtitle}</div>`;
+  }
+
+  if (currentQ.type === 'single') {
+    contentHtml += '<div class="option-group">';
+    const currentVal = STATE.onboardingData[currentQ.key];
+    currentQ.options.forEach(opt => {
+      const sel = currentVal === opt.value ? ' selected' : '';
+      contentHtml += `<button class="option-btn${sel}" data-value="${opt.value}">${opt.label}${opt.desc ? `<span style="font-size:12px;color:#606070;margin-left:auto;">${opt.desc}</span>` : ''}</button>`;
+    });
+    contentHtml += '</div>';
+  } else if (currentQ.type === 'multi') {
+    contentHtml += '<div class="tag-group">';
+    currentQ.options.forEach(opt => {
+      const sel = (STATE.onboardingData.skills || []).includes(opt.value) ? ' selected' : '';
+      contentHtml += `<span class="tag${sel}" data-value="${opt.value}">${opt.label}</span>`;
+    });
+    contentHtml += '</div>';
+  } else if (currentQ.type === 'free') {
+    contentHtml += `<textarea class="goal-input" id="free-input" rows="3" placeholder="${currentQ.placeholder || ''}">${STATE.onboardingData.detail || ''}</textarea>`;
+  }
+
+  $('ob-content').innerHTML = contentHtml;
+
+  // Action buttons
+  let actionsHtml = '';
+  if (STATE.onboardingStep > 0) {
+    actionsHtml += '<button class="btn btn-secondary" id="ob-prev">上一步</button>';
+  }
+  if (STATE.onboardingStep < totalSteps - 1) {
+    actionsHtml += '<button class="btn btn-primary" id="ob-next">下一步 →</button>';
+  } else {
+    actionsHtml += '<button class="btn btn-primary" id="ob-go">🚀 启动工作流</button>';
+  }
+  $('ob-actions').innerHTML = actionsHtml;
+
+  // Event bindings
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      STATE.onboardingData[currentQ.key] = this.dataset.value;
+      renderOnboarding();
+    });
+  });
+  document.querySelectorAll('.tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+      const val = this.dataset.value;
+      if (!STATE.onboardingData.skills) STATE.onboardingData.skills = [];
+      const idx = STATE.onboardingData.skills.indexOf(val);
+      if (idx >= 0) STATE.onboardingData.skills.splice(idx, 1);
+      else STATE.onboardingData.skills.push(val);
+      renderOnboarding();
+    });
+  });
+  const freeInput = $('free-input');
+  if (freeInput) {
+    freeInput.addEventListener('input', function() {
+      STATE.onboardingData.detail = this.value;
+    });
+  }
+
+  const prevBtn = $('ob-prev');
+  if (prevBtn) prevBtn.addEventListener('click', () => { STATE.onboardingStep--; renderOnboarding(); });
+  const nextBtn = $('ob-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    const q = ONBOARDING_QUESTIONS[STATE.onboardingMode][STATE.onboardingStep];
+    if (q.type === 'multi' && (!STATE.onboardingData.skills || STATE.onboardingData.skills.length === 0)) {
+      toast('⚠️ 请至少选一个'); return;
+    }
+    if (q.type === 'single' && !STATE.onboardingData[q.key]) {
+      toast('⚠️ 请选择一个选项'); return;
+    }
+    STATE.onboardingStep++; renderOnboarding();
+  });
+  const goBtn = $('ob-go');
+  if (goBtn) goBtn.addEventListener('click', () => {
+    const q = ONBOARDING_QUESTIONS[STATE.onboardingMode][STATE.onboardingStep];
+    if (q.type === 'multi' && (!STATE.onboardingData.skills || STATE.onboardingData.skills.length === 0)) {
+      toast('⚠️ 请至少选一个'); return;
+    }
+    if (q.type === 'single' && !STATE.onboardingData[q.key]) {
+      toast('⚠️ 请选择一个选项'); return;
+    }
+    if (q.type === 'free') {
+      STATE.onboardingData.detail = ($('free-input')?.value || '').trim();
+    }
+    startWorkflow();
+  });
+
+  // Back
+  const backBtn = $('ob-back');
+  if (backBtn) backBtn.onclick = () => goScreen('home');
+}
+
+// ---------- WORKFLOW ENGINE ----------
+const WORKFLOW_DEF = {
+  explore: [
+    { id: 'profile', name: '用户画像分析', desc: '分析你的核心优势、限制条件和独特定位',
+      detail: '正在从你的技能、时间、资金和偏好中提取关键特征…' },
+    { id: 'scan', name: '市场机会扫描', desc: '扫描当前低门槛高回报的副业方向',
+      detail: '正在分析三大赛道：内容创作 · 电商交易 · 服务变现…',
+      subSteps: ['内容创作赛道分析…', '电商/交易赛道分析…', '服务/产品赛道分析…'] },
+    { id: 'match', name: '匹配度打分', desc: '将你的画像与每个机会做交叉评估',
+      detail: '正在计算匹配度矩阵，筛选最优方向…' },
+    { id: 'plan', name: '行动计划生成', desc: '为最优方向生成30天执行清单',
+      detail: '正在规划每一天的具体任务和判断标准…' },
+    { id: 'report', name: '报告组装', desc: '生成结构化的完整分析报告',
+      detail: '正在整理所有分析结果，排版输出…' }
+  ],
+  direct: [
+    { id: 'feasibility', name: '可行性分析', desc: '评估你的想法是否可行',
+      detail: '正在分析市场需求、竞争格局和你的资源匹配度…' },
+    { id: 'risk', name: '风险评估', desc: '识别潜在风险和应对策略',
+      detail: '正在扫描执行路径上的主要障碍和化解方案…' },
+    { id: 'plan', name: '执行计划生成', desc: '生成30天落地清单',
+      detail: '正在拆解目标为每日可执行的具体任务…' },
+    { id: 'report', name: '报告组装', desc: '生成结构化分析报告',
+      detail: '正在整理所有分析结果…' }
+  ]
+};
+
+function buildPipelineHTML(steps) {
+  let html = '';
+  steps.forEach((s, i) => {
+    html += `
+    <div class="pipe-node" id="node-${s.id}">
+      <div class="pipe-dot" id="dot-${s.id}">${i+1}</div>
+      <div class="pipe-info">
+        <div class="pipe-name">${s.name}</div>
+        <div class="pipe-desc">${s.desc}</div>
+        <div class="pipe-sub" id="sub-${s.id}">
+          <span>${s.detail}</span>
+          ${(s.subSteps||[]).map(ss => `<span>↳ ${ss}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+async function startWorkflow() {
+  const mode = STATE.onboardingMode;
+  const steps = WORKFLOW_DEF[mode];
+  STATE.workflowSteps = steps;
+  STATE.reportData = null;
+
+  goScreen('workflow');
+  $('pipeline').innerHTML = buildPipelineHTML(steps);
+  $('wf-done').classList.remove('show');
+  $('btn-view-report').style.display = 'none';
+
+  // Check API key
+  if (!STATE.apiKey) {
+    toast('⚠️ 请先在设置中填写 DeepSeek API Key');
+    markStep(steps[0].id, 'error');
+    return;
+  }
+
+  // Run each step
+  try {
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i];
+      markStep(step.id, 'running');
+      await sleep(600); // Brief pause for animation feel
+
+      const result = await executeWorkflowStep(step, i, mode);
+      step._result = result;
+      markStep(step.id, 'done');
+    }
+
+    // Assemble final report
+    STATE.reportData = assembleReport(steps, mode);
+    saveReport(STATE.reportData);
+    $('wf-done').classList.add('show');
+    $('btn-view-report').style.display = 'inline-block';
+    $('btn-view-report').onclick = () => renderReport(STATE.reportData);
+
+  } catch (err) {
+    console.error('Workflow error:', err);
+    // Find current running step and mark error
+    const running = steps.find(s => {
+      const dot = document.getElementById(`dot-${s.id}`);
+      return dot && dot.classList.contains('running');
+    });
+    if (running) markStep(running.id, 'error');
+    toast('❌ 工作流出错：' + (err.message || '未知错误'));
+  }
+}
+
+function markStep(id, status) {
+  const dot = document.getElementById(`dot-${id}`);
+  const node = document.getElementById(`node-${id}`);
+  if (!dot || !node) return;
+
+  dot.classList.remove('running', 'done', 'error');
+  node.classList.remove('running', 'done', 'error');
+
+  if (status === 'running') {
+    dot.classList.add('running');
+    node.classList.add('running');
+    if (status === 'running') dot.textContent = '◉';
+  } else if (status === 'done') {
+    dot.classList.add('done');
+    node.classList.add('done');
+    dot.textContent = '✓';
+  } else if (status === 'error') {
+    dot.classList.add('error');
+    node.classList.add('error');
+    dot.textContent = '✗';
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ---------- DEEPSEEK API ----------
+async function callDeepSeek(systemPrompt, userPrompt, jsonMode = true) {
+  const body = {
+    model: 'deepseek-chat',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt }
+    ],
+    temperature: 0.7,
+    max_tokens: 4096
+  };
+  if (jsonMode) {
+    body.response_format = { type: 'json_object' };
+  }
+
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${STATE.apiKey}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text();
+    if (resp.status === 401) throw new Error('API Key 无效，请检查设置');
+    if (resp.status === 402) throw new Error('DeepSeek 账户余额不足，请充值');
+    throw new Error(`API 错误 (${resp.status}): ${errText.slice(0,100)}`);
+  }
+
+  const data = await resp.json();
+  const content = data.choices[0].message.content;
+  if (jsonMode) {
+    try {
+      return JSON.parse(content);
+    } catch(e) {
+      // Try to extract JSON from markdown code blocks
+      const match = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (match) return JSON.parse(match[1]);
+      throw new Error('AI 返回格式异常，请重试');
+    }
+  }
+  return content;
+}
+
+async function executeWorkflowStep(step, index, mode) {
+  const d = STATE.onboardingData;
+
+  if (mode === 'explore') {
+    switch (step.id) {
+      case 'profile':
+        return await callDeepSeek(
+          `你是一个商业分析师，专门帮助个人创业者分析自身优势。请根据用户提供的信息，进行用户画像分析。输出JSON格式：{"strengths":["优势1","优势2"],"constraints":["限制1","限制2"],"positioning":"一句话定位描述","archetype":"用户类型标签"}`,
+          `用户目标：${d.goal}\n技能：${(d.skills||[]).join('、')}\n可用时间：${d.time}\n启动资金：${d.budget}\n偏好方式：${d.style}\n备注：${d.detail || '无'}`
+        );
+
+      case 'scan':
+        return await callDeepSeek(
+          `你是一个市场机会分析师。请分析当前中国市场（2025-2026年）适合个人/小团队的低门槛副业方向。分三个赛道各给3个具体机会。输出JSON：{"content":{"赛道1":{"name":"内容创作/AI内容","opportunities":[{"name":"方向名","desc":"具体描述","income_potential":"收入预期","start_cost":"启动成本","difficulty":"难度","why_now":"为什么现在是机会"}]},"赛道2":{"name":"电商/交易","opportunities":[...]},"赛道3":{"name":"服务/产品","opportunities":[...]}}}`,
+          `用户想：${d.goal}\n用户技能：${(d.skills||[]).join('、')}\n可用时间：${d.time}\n资金：${d.budget}\n偏好：${d.style}\n\n请给出最匹配这个用户情况的三个赛道各3个具体搞钱方向。要具体、可执行、有当下时间窗口的方向。`
+        );
+
+      case 'match':
+        const profile = STATE.workflowSteps[0]._result || {};
+        const scan = STATE.workflowSteps[1]._result || {};
+        return await callDeepSeek(
+          `你是一个匹配度评估专家。根据用户画像和市场机会，对每个机会打分（1-100），选出TOP3。输出JSON：{"top3":[{"rank":1,"name":"方向名称","score":92,"reason":"推荐理由（结合用户画像）","differentiation":"用户的差异化优势","risk_warning":"需要注意的风险"}]}`,
+          `用户画像：${JSON.stringify(profile)}\n市场机会：${JSON.stringify(scan)}\n\n请对每个机会评估匹配度，选出最适合这个用户的TOP3方向。`
+        );
+
+      case 'plan':
+        const match = STATE.workflowSteps[2]._result || {};
+        const top1 = (match.top3 || [])[0] || {};
+        return await callDeepSeek(
+          `你是一个行动计划专家。为用户的TOP1搞钱方向制定30天行动计划。每天一个具体任务。输出JSON：{"direction":"方向名称","plan":[{"day":"Day 1-3","task":"具体任务","tool":"推荐工具","success_criteria":"怎么判断做对了","estimated_hours":"预计耗时"}]}`,
+          `TOP1方向：${top1.name || '未知'}\n推荐理由：${top1.reason || ''}\n用户情况：时间${d.time}，资金${d.budget}，技能${(d.skills||[]).join('、')}\n\n请生成一个具体的30天行动计划，每3天为一个阶段。任务要具体到"打开XX网站注册账号"这个粒度。`
+        );
+
+      case 'report':
+        return 'ok'; // Report assembly happens in assembleReport()
+
+      default:
+        return null;
+    }
+  } else {
+    // Direct mode
+    switch (step.id) {
+      case 'feasibility':
+        return await callDeepSeek(
+          `你是一个创业可行性分析师。评估用户的想法是否可行。输出JSON：{"viable":true/false,"score":85,"market_demand":"市场需求分析","competition":"竞争分析","resource_match":"资源匹配度","key_challenges":["挑战1","挑战2"],"suggestions":["建议1","建议2"]}`,
+          `用户想法：${d.detail}\n可用时间：${d.time}\n资金：${d.budget}\n\n请评估这个想法的可行性。`
+        );
+
+      case 'risk':
+        const feas = STATE.workflowSteps[0]._result || {};
+        return await callDeepSeek(
+          `你是一个风险评估专家。识别用户创业想法的主要风险和应对策略。输出JSON：{"risks":[{"risk":"风险描述","severity":"高/中/低","mitigation":"应对方案"}],"go_no_go_factors":["关键因素1","关键因素2"],"pivot_suggestion":"如果不行，可以转向什么方向"}`,
+          `用户想法：${d.detail}\n可行性分析：${JSON.stringify(feas)}\n\n请识别主要风险。`
+        );
+
+      case 'plan':
+        const feas2 = STATE.workflowSteps[0]._result || {};
+        return await callDeepSeek(
+          `你是一个行动计划专家。为用户的想法制定30天执行计划。输出JSON：{"direction":"方向名称","plan":[{"day":"Day 1-3","task":"具体任务","tool":"推荐工具","success_criteria":"判断标准","estimated_hours":"预计耗时"}]}`,
+          `用户想法：${d.detail}\n可用时间：${d.time}\n资金：${d.budget}\n可行性分析：${JSON.stringify(feas2)}\n\n请生成30天行动计划。`
+        );
+
+      case 'report':
+        return 'ok';
+
+      default:
+        return null;
+    }
+  }
+}
+
+// ---------- REPORT ASSEMBLY ----------
+function assembleReport(steps, mode) {
+  const d = STATE.onboardingData;
+  const now = new Date().toLocaleString('zh-CN');
+
+  if (mode === 'explore') {
+    const profile = steps[0]._result || {};
+    const scan = steps[1]._result || {};
+    const match = steps[2]._result || {};
+    const plan = steps[3]._result || {};
+
+    // Flatten all opportunities for display
+    const allOpps = [];
+    const content = scan.content || scan;
+    if (content['赛道1']) allOpps.push(...(content['赛道1'].opportunities||[]).map(o=>({...o, track: content['赛道1'].name})));
+    if (content['赛道2']) allOpps.push(...(content['赛道2'].opportunities||[]).map(o=>({...o, track: content['赛道2'].name})));
+    if (content['赛道3']) allOpps.push(...(content['赛道3'].opportunities||[]).map(o=>({...o, track: content['赛道3'].name})));
+
+    const top3 = match.top3 || [];
+    const top1 = top3[0] || {};
+
+    const planItems = plan.plan || [];
+
+    return {
+      mode: 'explore',
+      goal: d.goal,
+      date: now,
+      profile,
+      allOpps,
+      top3,
+      top1_title: top1.name,
+      top1_score: top1.score ? `${top1.score}%` : '—',
+      planItems,
+      planDirection: plan.direction || top1.name || '',
+      summary: `基于对${d.goal}方向的分析，你的最佳切入点是「${top1.name || '待定'}」，匹配度${top1.score || '—'}%。${top1.reason || ''}`
+    };
+  } else {
+    const feas = steps[0]._result || {};
+    const risk = steps[1]._result || {};
+    const plan = steps[2]._result || {};
+
+    return {
+      mode: 'direct',
+      goal: d.detail,
+      date: now,
+      feasibility: feas,
+      risks: risk.risks || [],
+      goNoGo: risk.go_no_go_factors || [],
+      pivot: risk.pivot_suggestion || '',
+      planItems: plan.plan || [],
+      planDirection: plan.direction || d.detail,
+      summary: feas.viable ? `你的想法「${d.detail}」可行性评分${feas.score || '—'}分，关键挑战是${(feas.key_challenges||[]).join('、')}` : `「${d.detail}」可能面临较大挑战：${(feas.key_challenges||[]).join('；')}`
+    };
+  }
+}
+
+// ---------- RENDER REPORT ----------
+function renderReport(data, fromHistory = false) {
+  if (!fromHistory) {
+    STATE.reportData = data;
+  }
+  goScreen('report');
+
+  let html = '';
+  html += `<div style="margin-bottom:20px;"><h1 style="font-size:24px;font-weight:800;color:#f0f0f5;">🔮 ${data.mode === 'explore' ? '搞钱方向分析报告' : '项目可行性分析报告'}</h1></div>`;
+
+  if (data.mode === 'explore') {
+    // Profile section
+    const p = data.profile || {};
+    html += `<div class="report-card"><h2>👤 你的画像</h2>`;
+    html += `<p><strong>定位：</strong>${p.positioning || '—'}</p>`;
+    html += `<p><strong>类型：</strong>${p.archetype || '—'}</p>`;
+    html += `<p><strong>核心优势：</strong>${(p.strengths||[]).join('、') || '—'}</p>`;
+    html += `<p><strong>主要限制：</strong>${(p.constraints||[]).join('、') || '—'}</p>`;
+    html += `</div>`;
+
+    // TOP3
+    const top3 = data.top3 || [];
+    if (top3.length > 0) {
+      html += `<div class="report-card"><h2>🏆 TOP3 推荐方向</h2>`;
+      top3.forEach((t, i) => {
+        const badgeCls = t.score >= 85 ? 'high' : (t.score >= 65 ? 'mid' : 'low');
+        const emoji = i === 0 ? '🥇' : (i === 1 ? '🥈' : '🥉');
+        html += `<h3>${emoji} ${t.name || '—'}</h3>`;
+        html += `<span class="match-badge ${badgeCls}">匹配度 ${t.score || '—'}%</span>`;
+        html += `<p>${t.reason || ''}</p>`;
+        if (t.differentiation) html += `<p><strong>你的优势：</strong>${t.differentiation}</p>`;
+        if (t.risk_warning) html += `<p style="color:#ffa500;">⚠️ ${t.risk_warning}</p>`;
+      });
+      html += `</div>`;
+    }
+
+    // All scanned opportunities
+    const opps = data.allOpps || [];
+    if (opps.length > 0) {
+      html += `<div class="report-card"><h2>🔍 市场机会全扫描</h2>`;
+      const tracks = {};
+      opps.forEach(o => { if (!tracks[o.track]) tracks[o.track] = []; tracks[o.track].push(o); });
+      Object.entries(tracks).forEach(([track, items]) => {
+        html += `<h3>${track}</h3>`;
+        items.forEach(o => {
+          html += `<p style="margin-left:8px;margin-bottom:6px;"><strong>▸ ${o.name}</strong><br>${o.desc || ''}<br><span style="font-size:12px;color:#606070;">💰${o.income_potential||'—'} · 💰启动${o.start_cost||'—'} · 📊${o.difficulty||'—'}</span></p>`;
+        });
+      });
+      html += `</div>`;
+    }
+
+    // 30-day plan
+    const planItems = data.planItems || [];
+    if (planItems.length > 0) {
+      html += `<div class="report-card"><h2>📅 30天行动计划</h2>`;
+      html += `<p style="color:#9090a0;margin-bottom:12px;">方向：<strong>${data.planDirection || '—'}</strong></p>`;
+      html += `<table class="plan-table"><tr><th>时间</th><th>任务</th><th>工具</th><th>标准</th><th>耗时</th></tr>`;
+      planItems.forEach(p => {
+        html += `<tr><td>${p.day||''}</td><td>${p.task||''}</td><td>${p.tool||''}</td><td>${p.success_criteria||''}</td><td>${p.estimated_hours||''}</td></tr>`;
+      });
+      html += `</table></div>`;
+    }
+
+  } else {
+    // Direct mode
+    const f = data.feasibility || {};
+    html += `<div class="report-card"><h2>📊 可行性评估</h2>`;
+    html += `<span class="match-badge ${f.viable ? 'high' : 'low'}">${f.viable ? '✅ 可行' : '⚠️ 需谨慎'} · 评分 ${f.score||'—'}</span>`;
+    if (f.market_demand) html += `<p><strong>市场需求：</strong>${f.market_demand}</p>`;
+    if (f.competition) html += `<p><strong>竞争分析：</strong>${f.competition}</p>`;
+    if (f.resource_match) html += `<p><strong>资源匹配：</strong>${f.resource_match}</p>`;
+    if (f.key_challenges) html += `<p><strong>关键挑战：</strong>${f.key_challenges.join('、')}</p>`;
+    if (f.suggestions) html += `<p><strong>建议：</strong>${f.suggestions.join('；')}</p>`;
+    html += `</div>`;
+
+    const risks = data.risks || [];
+    if (risks.length > 0) {
+      html += `<div class="report-card"><h2>⚠️ 风险评估</h2>`;
+      risks.forEach(r => {
+        html += `<p><strong>${r.risk}</strong> <span style="color:${r.severity==='高'?'#ff4757':'#ffa500'};">[${r.severity}]</span><br>→ ${r.mitigation}</p>`;
+      });
+      html += `</div>`;
+    }
+
+    if (data.pivot) {
+      html += `<div class="report-card"><h2>🔄 如果不行怎么办</h2><p>${data.pivot}</p></div>`;
+    }
+
+    const planItems = data.planItems || [];
+    if (planItems.length > 0) {
+      html += `<div class="report-card"><h2>📅 30天执行计划</h2>`;
+      html += `<table class="plan-table"><tr><th>时间</th><th>任务</th><th>工具</th><th>标准</th><th>耗时</th></tr>`;
+      planItems.forEach(p => {
+        html += `<tr><td>${p.day||''}</td><td>${p.task||''}</td><td>${p.tool||''}</td><td>${p.success_criteria||''}</td><td>${p.estimated_hours||''}</td></tr>`;
+      });
+      html += `</table></div>`;
+    }
+  }
+
+  html += `<div class="report-card" style="text-align:center;padding:16px;">
+    <p style="color:#707080;font-size:13px;margin:0;">⚡ 由 <strong>Zero 工作流引擎</strong> 自动生成 · ${data.date || ''}</p>
+    <p style="color:#505060;font-size:12px;margin-top:4px;">报告基于AI分析，仅供参考。真正的答案在你行动之后。</p>
+  </div>`;
+
+  $('report-content').innerHTML = html;
+  $('report-meta').textContent = `生成时间：${data.date || ''}`;
+}
+
+// ---------- HISTORY ----------
+function renderHistory() {
+  const reports = getReports();
+  const list = $('history-list');
+  if (reports.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>还没有报告</p><p style="font-size:12px;color:#484858;">回首页生成你的第一份搞钱分析</p></div>`;
+  } else {
+    list.innerHTML = reports.map((r, i) => {
+      const date = new Date(r.date).toLocaleString('zh-CN');
+      const title = r.mode === 'explore' ? `搞钱方向分析：${r.top1_title || r.goal || '—'}` : `项目分析：${r.goal || '—'}`;
+      const preview = r.summary || '';
+      return `<div class="history-item" data-idx="${i}">
+        <div class="hi-date">${date}</div>
+        <div class="hi-title">${title}</div>
+        <div class="hi-preview">${preview}</div>
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('.history-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.idx);
+        const report = reports[idx];
+        if (report) {
+          STATE.reportData = report;
+          renderReport(report, true);
+        }
+      });
+    });
+  }
+}
+
+// ---------- EVENT BINDINGS ----------
+function init() {
+  loadSettings();
+
+  // Home screen
+  $('card-explore').addEventListener('click', () => startOnboarding('explore'));
+  $('card-direct').addEventListener('click', () => startOnboarding('direct'));
+  $('link-history').addEventListener('click', (e) => { e.preventDefault(); goScreen('history'); });
+
+  // Settings
+  $('btn-settings').addEventListener('click', () => goScreen('settings'));
+  $('btn-settings-back').addEventListener('click', () => goScreen('home'));
+  $('btn-save-settings').addEventListener('click', saveSettings);
+  $('btn-clear-history').addEventListener('click', deleteAllReports);
+
+  // Report screen
+  $('btn-report-back').addEventListener('click', () => goScreen('home'));
+  $('btn-share').addEventListener('click', shareReport);
+  $('btn-new-analysis').addEventListener('click', () => goScreen('home'));
+
+  // History screen
+  $('btn-history-back').addEventListener('click', () => goScreen('home'));
+
+  // Enter key in goal input
+  $('goal-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      startOnboarding('explore');
+    }
+  });
+
+  // Initial load
+  goScreen('home');
+}
+
+// ---------- PWA REGISTRATION ----------
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ---------- START ----------
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
