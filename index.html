@@ -288,11 +288,12 @@
     <button class="btn btn-secondary btn-sm" id="btn-settings-back" style="margin-bottom:16px;">← 返回</button>
     <h2 style="margin-bottom:20px;font-size:20px;">⚙️ 设置</h2>
     <div class="settings-section">
-      <label>DeepSeek API Key</label>
-      <input type="password" id="api-key-input" placeholder="sk-...">
+      <label>DeepSeek API Key（仅本地开发需要）</label>
+      <input type="password" id="api-key-input" placeholder="本地调试时填自己的Key，公网用户不需要">
       <div class="settings-hint">
-        在 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 注册获取 →
-        充值¥10够用几千次
+        ⚡ <strong>公网用户无需配置</strong>——系统自动走代理。<br>
+        只有你在自己电脑上调试时才需要填。<br>
+        在 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 注册获取 → 充值¥10够用几千次
       </div>
     </div>
     <div class="settings-section">
@@ -663,9 +664,9 @@ async function startWorkflow() {
   $('wf-done').classList.remove('show');
   $('btn-view-report').style.display = 'none';
 
-  // Check API key
-  if (!STATE.apiKey) {
-    toast('⚠️ 请先在设置中填写 DeepSeek API Key');
+  // Check API key only in dev mode (localhost)
+  if (isDevMode() && !STATE.apiKey) {
+    toast('⚠️ 本地开发模式：请在设置中填写 DeepSeek API Key');
     markStep(steps[0].id, 'error');
     return;
   }
@@ -726,8 +727,22 @@ function markStep(id, status) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ---------- DEV/PROD DETECTION ----------
+function isDevMode() {
+  const h = window.location.hostname;
+  return h === 'localhost' || h === '127.0.0.1' || h.startsWith('192.168.');
+}
+
+function getApiConfig() {
+  if (isDevMode()) {
+    return { url: 'https://api.deepseek.com/chat/completions', needsKey: true };
+  }
+  return { url: '/api/proxy', needsKey: false };
+}
+
 // ---------- DEEPSEEK API ----------
 async function callDeepSeek(systemPrompt, userPrompt, jsonMode = true) {
+  const cfg = getApiConfig();
   const body = {
     model: 'deepseek-chat',
     messages: [
@@ -741,20 +756,22 @@ async function callDeepSeek(systemPrompt, userPrompt, jsonMode = true) {
     body.response_format = { type: 'json_object' };
   }
 
-  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+  const headers = { 'Content-Type': 'application/json' };
+  if (cfg.needsKey) {
+    headers['Authorization'] = `Bearer ${STATE.apiKey}`;
+  }
+
+  const resp = await fetch(cfg.url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${STATE.apiKey}`
-    },
+    headers,
     body: JSON.stringify(body)
   });
 
   if (!resp.ok) {
-    const errText = await resp.text();
+    const errData = await resp.json().catch(() => ({}));
     if (resp.status === 401) throw new Error('API Key 无效，请检查设置');
     if (resp.status === 402) throw new Error('DeepSeek 账户余额不足，请充值');
-    throw new Error(`API 错误 (${resp.status}): ${errText.slice(0,100)}`);
+    throw new Error(errData.error || `API 错误 (${resp.status})`);
   }
 
   const data = await resp.json();
