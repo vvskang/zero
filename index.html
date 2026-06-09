@@ -165,17 +165,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .sheet .ba button{flex:1;padding:14px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
 .sheet .ba .bs{background:#3b82f6;color:#fff}.sheet .ba .bc{background:#f0f0f5;color:#3c3c43}
 
-/* Activation */
-.act-gate{position:fixed;inset:0;z-index:999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px 32px}
-.act-gate.off{display:none}
-.act-gate .ag-icon{font-size:56px;margin-bottom:16px}
-.act-gate .ag-title{font-size:22px;font-weight:700;margin-bottom:6px}
-.act-gate .ag-sub{font-size:13px;color:#8e8e93;margin-bottom:28px;text-align:center}
-.act-gate input{width:80%;padding:14px 18px;border:2px solid #e5e5ea;border-radius:14px;font-size:18px;text-align:center;outline:none;font-family:inherit;letter-spacing:2px;text-transform:uppercase}
-.act-gate input:focus{border-color:#3b82f6}
-.act-gate .ag-err{font-size:12px;color:#ff3b30;margin-top:8px;min-height:20px}
-.act-gate button{width:80%;padding:15px;border-radius:14px;border:none;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;background:#3b82f6;color:#fff;margin-top:18px}
-.act-gate .ag-foot{font-size:11px;color:#aeaeb2;margin-top:16px;text-align:center;line-height:1.6}
 
 /* Toast */
 .toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(120px);z-index:300;background:rgba(60,60,67,.92);color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;transition:transform .35s;pointer-events:none;font-weight:500}
@@ -187,17 +176,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 </style>
 </head>
 <body>
-
-<!-- Activation Gate -->
-<div class="act-gate" id="actGate">
-  <div class="ag-icon">🔐</div>
-  <div class="ag-title">激活工具箱</div>
-  <div class="ag-sub">输入激活码以开始使用。</div>
-  <input id="actInput" placeholder="输入激活码" autocomplete="off">
-  <div class="ag-err" id="actErr"></div>
-  <button id="actBtn">激活</button>
-  <div class="ag-foot">没有激活码？联系服务商获取。<br>一个激活码绑定一台设备。</div>
-</div>
 
 <div id="app">
   <!-- ===== HEADER ===== -->
@@ -306,18 +284,6 @@ const FL=[{id:'w',key:'wx',l:'微信',c:CL.wx},{id:'a',key:'ali',l:'支付宝',c
 if(!ld(K).length){const a=[];const n=new Date();for(let i=6;i>=0;i--){const d=new Date(n);d.setDate(n.getDate()-i);const ds=d.toISOString().slice(0,10);if(i===0)continue;a.push({date:ds,wx:~~(2200+Math.random()*1800),ali:~~(500+Math.random()*700),cash:~~(200+Math.random()*350),cost:~~(500+Math.random()*600),credit:Math.random()>.5?~~(Math.random()*100):0,note:['下雨','隔壁促销','正常','进货价涨了','周末人多','正常'][i]||''})}sv(K,a)}
 if(!ld(KP).length){sv(KP,[{id:1,name:'可口可乐330ml',pPrice:2.8,sPrice:4.0,supplier:'李老板',stock:24,unit:'箱',expiry:'2025-12-15'},{id:2,name:'康师傅红烧牛肉面',pPrice:3.5,sPrice:5.0,supplier:'张供应商',stock:5,unit:'箱',expiry:'2025-06-17'},{id:3,name:'青岛啤酒500ml',pPrice:5.5,sPrice:8.0,supplier:'李老板',stock:18,unit:'箱',expiry:'2026-01-20'},{id:4,name:'农夫山泉550ml',pPrice:1.2,sPrice:2.0,supplier:'王代理',stock:42,unit:'箱',expiry:'2026-08-10'}])}
 if(!ld(KC).length){sv(KC,[{id:1,person:'老王',amount:165,reason:'中华1包65元·青岛啤酒2箱100元',date:'2025-06-03',paid:false},{id:2,person:'隔壁理发店',amount:80,reason:'洗发水2瓶',date:'2025-06-05',paid:false}])}
-
-// ==================== ACTIVATION ====================
-const CODES=['GM-0001','GM-0002','GM-0003','GM-0004','GM-0005','GM-0006','GM-0007','GM-0008','GM-0009','GM-0010'];
-if(localStorage.getItem('gm_activated')==='1'){document.getElementById('actGate').classList.add('off');document.getElementById('app').style.display='flex'}
-document.getElementById('actBtn').onclick=function(){
-  const c=document.getElementById('actInput').value.trim().toUpperCase();
-  if(!c){document.getElementById('actErr').textContent='请输入激活码';return}
-  if(!CODES.includes(c)){document.getElementById('actErr').textContent='激活码无效，请重试';return}
-  localStorage.setItem('gm_activated','1');localStorage.setItem('gm_code',c);
-  document.getElementById('actGate').classList.add('off');document.getElementById('app').style.display='flex';toast('✅ 激活成功');renderDaily();
-};
-document.getElementById('actInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('actBtn').click()});
 
 // ==================== NAVIGATION ====================
 let curTab='entry',curSub='daily',curSt='list',curBz='overview';
