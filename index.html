@@ -3,143 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#1a2538">
+<meta name="theme-color" content="#f5f5f5">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="关门">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a2538'/><text x='50' y='55' text-anchor='middle' fill='white' font-size='30' font-weight='700' font-family='system-ui'>关门</text><text x='50' y='78' text-anchor='middle' fill='%2388a0c0' font-size='16'>日结</text></svg>">
-<title>关门 · 每日对账</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233b6ff5'/><text x='50' y='68' text-anchor='middle' fill='white' font-size='52' font-weight='700' font-family='system-ui'>关</text></svg>">
+<title>关门</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f5;color:#1a2538;min-height:100dvh}
-#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100dvh}
+#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:#f5f5f5}
 
-/* Top bar */
-.topbar{background:#1a2538;color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
-.topbar h1{font-size:18px;font-weight:700;letter-spacing:1px}
-.topbar .date{font-size:12px;color:#8898b0}
+/* Header */
+.header{display:flex;align-items:center;padding:12px 16px;background:#fff;gap:12px}
+.header .back{font-size:20px;color:#333;background:none;border:none;cursor:pointer;padding:4px}
+.header h1{font-size:18px;font-weight:600;flex:1}
+.header .hdate{font-size:13px;color:#999}
 
-/* Dashboard */
-.dash{padding:16px 14px 100px;flex:1;overflow-y:auto}
+/* Content */
+.content{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:80px}
 
-/* Cards */
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.c-card{background:#fff;border-radius:14px;padding:18px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.c-card .val{font-size:30px;font-weight:800;color:#1a2538;margin-bottom:2px}
-.c-card .lbl{font-size:12px;color:#8898b0}
-.c-card .trend{font-size:11px;margin-top:4px}
-.c-card .trend.up{color:#2e8b57}
-.c-card .trend.down{color:#c05050}
+/* Revenue card */
+.rev-card{background:linear-gradient(135deg,#3b6ff5,#5b8ff9);border-radius:16px;padding:20px;color:#fff;position:relative;overflow:hidden}
+.rev-card::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+.rev-card .rev-label{font-size:14px;opacity:.85;margin-bottom:8px}
+.rev-card .rev-value{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:6px}
+.rev-card .rev-sub{font-size:12px;opacity:.6}
+.rev-card .rev-btn{position:absolute;right:18px;bottom:18px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit}
+.rev-card .rev-btn:active{background:rgba(255,255,255,.35)}
 
 /* Chart section */
-.sec-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.sec-head::before{content:'';width:3px;height:16px;border-radius:2px;background:#3b5f9e}
-.sec-head h2{font-size:14px;font-weight:700;color:#3a4a5a}
-.chart-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.chart-box{background:#fff;border-radius:14px;padding:18px 14px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.chart-box h3{font-size:13px;font-weight:700;color:#3a4a5a;margin-bottom:12px}
-.chart-box canvas{width:120px;height:120px}
-.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
-.legend span{font-size:11px;color:#5a6a7a;display:flex;align-items:center;gap:4px}
-.legend span i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chart-card{background:#fff;border-radius:16px;padding:16px}
+.chart-card h3{font-size:14px;font-weight:600;margin-bottom:12px;color:#333}
+.chart-card canvas{display:block;margin:0 auto}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.chart-legend span{font-size:11px;color:#888;display:flex;align-items:center;gap:4px}
+.chart-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
 
-/* Quick actions */
-.quick{display:flex;gap:10px;margin-bottom:18px}
-.quick button{flex:1;padding:14px 6px;background:#fff;border:none;border-radius:12px;font-size:13px;font-weight:600;color:#3a4a5a;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.04);font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px}
-.quick button:active{transform:scale(.96);background:#f0f2f5}
-.quick .qicon{font-size:22px}
+/* Profit card */
+.profit-card{background:#fff;border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+.profit-card .pf-label{font-size:14px;color:#666}
+.profit-card .pf-value{font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:-.5px}
+.profit-card .pf-pct{font-size:16px;font-weight:600;color:#ff6b6b;padding:4px 10px;background:#fff0f0;border-radius:8px}
 
-/* Week table */
-.week-table{width:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.week-table .wrow{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #f0f2f5}
-.week-table .wrow:last-child{border-bottom:none}
-.week-table .wdate{font-size:13px;color:#3a4a5a;font-weight:500}
-.week-table .wsub{font-size:11px;color:#8898b0}
-.week-table .wval{font-size:16px;font-weight:700}
-.week-table .wval.up{color:#2e8b57}
-.week-table .wval.down{color:#c05050}
-
-/* History */
-.hlist{display:flex;flex-direction:column;gap:6px}
-.hitem{background:#fff;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.02);cursor:pointer}
-.hitem:active{background:#f8f9fb}
-.hitem .hdate{font-size:13px;font-weight:500;color:#3a4a5a}
-.hitem .hsub{font-size:11px;color:#8898b0;margin-top:2px}
-.hitem .hval{font-size:16px;font-weight:700}
-.hitem .hval.up{color:#2e8b57}
-.hitem .hval.down{color:#c05050}
-
-/* FAB */
-.fab{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;background:#3b5f9e;color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(59,95,158,.3);z-index:50;display:flex;align-items:center;justify-content:center}
-.fab:active{transform:translateX(-50%) scale(.93)}
+/* Bottom nav */
+.bnav{display:flex;background:#fff;border-top:1px solid #eee;padding:8px 12px max(8px,env(safe-area-inset-bottom))}
+.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:none;background:none;cursor:pointer;font-size:10px;color:#999;font-family:inherit}
+.bnav button.active{color:#3b6ff5}
+.bnav button .bicon{font-size:22px}
 
 /* Modal */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .modal.on{display:flex}
 .sheet{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 18px 34px;animation:up .25s ease-out}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.sheet .handle{width:36px;height:4px;border-radius:2px;background:#d0d4da;margin:0 auto 18px}
-.sheet h3{font-size:18px;font-weight:700;text-align:center;margin-bottom:20px;color:#1a2538}
-.frow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f2f5}
-.frow .fl{font-size:14px;color:#4a5a6a;display:flex;align-items:center;gap:8px}
+.sheet .handle{width:36px;height:4px;border-radius:2px;background:#ddd;margin:0 auto 18px}
+.sheet h3{font-size:18px;font-weight:600;text-align:center;margin-bottom:20px}
+.frow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0}
+.frow .fl{font-size:14px;color:#555;display:flex;align-items:center;gap:8px}
 .frow .fl .dot{width:10px;height:10px;border-radius:3px}
-.frow input{width:120px;padding:10px 12px;border:1px solid #dde0e6;border-radius:10px;font-size:16px;text-align:right;outline:none;background:#f8f9fb;font-family:inherit}
-.frow input:focus{border-color:#3b5f9e;background:#fff}
+.frow input{width:130px;padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:16px;text-align:right;outline:none;background:#fafafa;font-family:inherit}
+.frow input:focus{border-color:#3b6ff5;background:#fff}
 .sheet .btns{display:flex;gap:10px;margin-top:20px}
 .sheet .btns button{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
-.btn-save{background:#3b5f9e;color:#fff}
-.btn-save:active{transform:scale(.97)}
-.btn-cancel{background:#eef1f5;color:#6a7a8a}
+.btn-save{background:#3b6ff5;color:#fff}
+.btn-cancel{background:#f0f0f0;color:#666}
+.btn-save:active,.btn-cancel:active{transform:scale(.97)}
 
 /* Toast */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:#1a2538;color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;pointer-events:none}
+.toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(120px);z-index:300;background:#333;color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
 
-/* Nav */
-.nav{display:flex;background:#fff;border-top:1px solid #eef1f5;padding:8px 14px;gap:4px}
-.nav button{flex:1;padding:10px 6px;border:none;background:none;font-size:12px;font-weight:600;color:#8898b0;cursor:pointer;border-radius:10px;font-family:inherit}
-.nav button.active{color:#3b5f9e;background:#eef2f8}
+/* Pages */
+.page{display:none;flex-direction:column;flex:1}
+.page.on{display:flex}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="topbar"><h1>关门</h1><span class="date" id="topDate"></span></div>
-
-  <!-- Tab: 仪表盘 -->
-  <div class="dash" id="tabDash">
-    <div class="cards" id="cardsArea"></div>
-    <div class="sec-head"><h2>营收结构</h2></div>
-    <div class="chart-wrap" id="chartsArea"></div>
-    <div class="quick" id="quickArea"></div>
-    <div class="sec-head"><h2>本周</h2></div>
-    <div class="week-table" id="weekArea"></div>
+  <!-- ===== DASHBOARD ===== -->
+  <div class="page on" id="pageDash">
+    <div class="header"><span class="back">‹</span><h1>数据看板</h1><span class="hdate" id="hdate"></span></div>
+    <div class="content">
+      <div class="rev-card">
+        <div class="rev-label">今日营收</div>
+        <div class="rev-value" id="revVal">¥0</div>
+        <div class="rev-sub" id="revSub">较昨日 --</div>
+        <button class="rev-btn" onclick="openModal()">＋ 记一笔</button>
+      </div>
+      <div class="chart-row" id="chartsArea"></div>
+      <div class="profit-card">
+        <div><div class="pf-label">今日毛利</div><div class="pf-value" id="profitVal">¥0</div></div>
+        <div class="pf-pct" id="profitPct">0%</div>
+      </div>
+    </div>
+    <div class="bnav">
+      <button id="navDash"><span class="bicon">🧾</span>数据</button>
+      <button id="navHist"><span class="bicon">📋</span>记录</button>
+      <button id="navExport"><span class="bicon">📤</span>导出</button>
+    </div>
   </div>
 
-  <!-- Tab: 历史 -->
-  <div class="dash" id="tabHistory" style="display:none">
-    <div class="sec-head"><h2>全部记录</h2></div>
-    <div class="hlist" id="histArea"></div>
+  <!-- ===== HISTORY ===== -->
+  <div class="page" id="pageHist">
+    <div class="header"><span class="back" onclick="goPage('dash')">‹</span><h1>历史记录</h1></div>
+    <div class="content" id="histContent"></div>
+    <div class="bnav">
+      <button id="navDash2"><span class="bicon">🧾</span>数据</button>
+      <button id="navHist2"><span class="bicon">📋</span>记录</button>
+      <button id="navExport2"><span class="bicon">📤</span>导出</button>
+    </div>
   </div>
-
-  <div class="nav">
-    <button class="active" id="navDash">📊 仪表盘</button>
-    <button id="navHist">📋 历史</button>
-    <button id="navExport">📤 导出</button>
-  </div>
-  <button class="fab" id="fabAdd">+</button>
 </div>
 
+<!-- Modal -->
 <div class="modal" id="modal">
   <div class="sheet">
-    <div class="handle"></div>
-    <h3>今日对账</h3>
-    <div class="frow"><span class="fl"><span class="dot" style="background:#4a90d9"></span>微信</span><input id="mw" type="number" placeholder="0" inputmode="numeric"></div>
-    <div class="frow"><span class="fl"><span class="dot" style="background:#f0a050"></span>支付宝</span><input id="ma" type="number" placeholder="0" inputmode="numeric"></div>
-    <div class="frow"><span class="fl"><span class="dot" style="background:#5cb880"></span>现金</span><input id="mc" type="number" placeholder="0" inputmode="numeric"></div>
-    <div class="frow"><span class="fl"><span class="dot" style="background:#8b7ec8"></span>进货</span><input id="mcost" type="number" placeholder="0" inputmode="numeric"></div>
-    <div class="frow"><span class="fl"><span class="dot" style="background:#e0a060"></span>赊账</span><input id="mcr" type="number" placeholder="0" inputmode="numeric"></div>
+    <div class="handle"></div><h3>今日对账</h3>
+    <div class="frow"><span class="fl"><span class="dot" style="background:#3b6ff5"></span>微信</span><input id="mw" type="number" placeholder="0" inputmode="decimal"></div>
+    <div class="frow"><span class="fl"><span class="dot" style="background:#f5a623"></span>支付宝</span><input id="ma" type="number" placeholder="0" inputmode="decimal"></div>
+    <div class="frow"><span class="fl"><span class="dot" style="background:#7ed321"></span>现金</span><input id="mc" type="number" placeholder="0" inputmode="decimal"></div>
+    <div class="frow"><span class="fl"><span class="dot" style="background:#8b7ec8"></span>进货成本</span><input id="mcost" type="number" placeholder="0" inputmode="decimal"></div>
+    <div class="frow"><span class="fl"><span class="dot" style="background:#e0a060"></span>赊账</span><input id="mcr" type="number" placeholder="0" inputmode="decimal"></div>
     <div class="btns"><button class="btn-cancel" id="btnCancel">取消</button><button class="btn-save" id="btnSave">保存</button></div>
   </div>
 </div>
@@ -147,139 +135,89 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 
 <script>
 // ============ DATA ============
-const KEY='gm';
-function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
-function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+const K='gm';
+function ld(){try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return[]}}
+function sv(d){localStorage.setItem(K,JSON.stringify(d))}
 function today(){return new Date().toISOString().slice(0,10)}
-function getAll(){return load().sort((a,b)=>b.date.localeCompare(a.date))}
+function fm(n){return n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:0})}
 
-// ============ INIT DEMO ============
-(function(){
-  if(!load().length){
-    const arr=[];const n=new Date();
-    for(let i=6;i>=0;i--){const d=new Date(n);d.setDate(n.getDate()-i);const ds=d.toISOString().slice(0,10);arr.push({date:ds,wx:1900+~~(Math.random()*1700),ali:500+~~(Math.random()*700),cash:200+~~(Math.random()*350),cost:400+~~(Math.random()*600),credit:Math.random()>.5?~~(Math.random()*120):0})}
-    save(arr);
-  }
-})();
+// Demo
+if(!ld().length){const a=[];const n=new Date();for(let i=6;i>=0;i--){const d=new Date(n);d.setDate(n.getDate()-i);const ds=d.toISOString().slice(0,10);a.push({date:ds,wx:~~(2000+Math.random()*2000),ali:~~(500+Math.random()*800),cash:~~(200+Math.random()*400),cost:~~(400+Math.random()*700),credit:Math.random()>.5?~~(Math.random()*100):0})}sv(a)}
 
 // ============ RENDER ============
-function fmt(n){return n.toLocaleString()}
-function todayData(){return load().find(x=>x.date===today())||null}
-function monthData(){const m=today().slice(0,7);return load().filter(x=>x.date.startsWith(m))}
-function weekData(){
-  const n=new Date();const day=n.getDay();const mon=new Date(n);mon.setDate(n.getDate()-(day===0?6:day-1));mon.setHours(0,0,0,0);
-  const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
-  return load().filter(x=>{const d=new Date(x.date);return d>=mon&&d<=sun});
+const COLORS={wx:'#3b6ff5',ali:'#f5a623',cash:'#7ed321',cost:'#8b7ec8',credit:'#e0a060'};
+
+function drawRing(segs,label,total){
+  const r=52;const c=62;const w=16;const circ=2*Math.PI*r;let offset=0;let paths='';
+  segs.filter(x=>x.v>0).forEach(s=>{const pct=s.v/(total||1);const len=pct*circ;paths+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.c}" stroke-width="${w}" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-(offset*circ)}" transform="rotate(-90 ${c} ${c})"/>`;offset+=pct});
+  const leg=segs.filter(x=>x.v>0).map(s=>`<span><i style="background:${s.c}"></i>${s.l} ${Math.round(s.v/(total||1)*100)}%</span>`).join('');
+  return `<svg viewBox="0 0 124 124" style="width:110px;height:110px">${paths}<text x="${c}" y="${c-4}" text-anchor="middle" font-size="12" font-weight="600" fill="#333">${label}</text><text x="${c}" y="${c+14}" text-anchor="middle" font-size="10" fill="#999">¥${fm(total)}</text></svg><div class="chart-legend">${leg}</div>`;
 }
 
 function renderDash(){
-  const td=todayData();const mth=monthData();const wk=weekData();
+  const all=ld();const td=all.find(x=>x.date===today());const wk=all.filter(x=>{const d=new Date(x.date);const n=new Date();const day=n.getDay();const mon=new Date(n);mon.setDate(n.getDate()-(day===0?6:day-1));mon.setHours(0,0,0,0);const sun=new Date(mon);sun.setDate(mon.getDate()+6);return d>=mon&&d<=sun});
+  const yest=all.filter(x=>x.date!==today()).sort((a,b)=>b.date.localeCompare(a.date))[0];
   const rev=td?td.wx+td.ali+td.cash:0;const cost=td?td.cost:0;const profit=rev-cost-(td?td.credit:0);
-  const mProfit=mth.reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0);
-  const all=getAll();const yest=all.length>1?all[1]:null;
-  const yProfit=yest?yest.wx+yest.ali+yest.cash-yest.cost-yest.credit:0;
-  const diff=profit-yProfit;
+  const yrev=yest?yest.wx+yest.ali+yest.cash:0;const yprofit=yrev-(yest?yest.cost:0)-(yest?yest.credit:0);
+  const diff=profit-yprofit;const pct=rev>0?Math.round(profit/rev*100):0;
 
-  // Cards
-  document.getElementById('cardsArea').innerHTML=`
-    <div class="c-card"><div class="val">¥${fmt(rev)}</div><div class="lbl">今日营收</div></div>
-    <div class="c-card"><div class="val">¥${fmt(cost)}</div><div class="lbl">今日成本</div></div>
-    <div class="c-card"><div class="val">¥${fmt(profit)}</div><div class="lbl">今日利润</div>${yest?`<div class="trend ${diff>=0?'up':'down'}">较昨日 ${diff>=0?'+':''}¥${fmt(diff)}</div>`:''}</div>
-    <div class="c-card"><div class="val">¥${fmt(mProfit)}</div><div class="lbl">本月累计</div><div class="trend" style="color:#8898b0">${mth.length} 天</div></div>
-  `;
+  document.getElementById('revVal').textContent='¥'+fm(rev);
+  document.getElementById('revSub').textContent=yest?'较昨日 '+(diff>=0?'+':'')+'¥'+fm(diff):'暂无昨日数据';
+  document.getElementById('profitVal').textContent='¥'+fm(profit);
+  document.getElementById('profitPct').textContent=pct+'%';
+  document.getElementById('profitPct').style.color='#ff6b6b';
+  document.getElementById('hdate').textContent=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'/');
 
-  // Charts
-  const chData=mth.length?mth:load().slice(0,7);
-  const tw=chData.reduce((s,x)=>s+x.wx,0);const ta=chData.reduce((s,x)=>s+x.ali,0);const tc=chData.reduce((s,x)=>s+x.cash,0);
-  const trev=tw+ta+tc||1;const tcost=chData.reduce((s,x)=>s+x.cost,0);
-  const revSegs=[{l:'微信',v:tw,c:'#4a90d9'},{l:'支付宝',v:ta,c:'#f0a050'},{l:'现金',v:tc,c:'#5cb880'}].filter(x=>x.v>0);
-  const costSegs=[{l:'进货',v:tcost,c:'#8b7ec8'}];
+  const chData=wk.length?wk:all.slice(0,7);
+  const tw=chData.reduce((s,x)=>s+x.wx,0);const ta=chData.reduce((s,x)=>s+x.ali,0);const tca=chData.reduce((s,x)=>s+x.cash,0);
+  const trev=tw+ta+tca||1;const tc=chData.reduce((s,x)=>s+x.cost,0);
   document.getElementById('chartsArea').innerHTML=
-    `<div class="chart-box"><h3>收款来源</h3>${drawRing(revSegs,trev,'总营收')}</div>
-     <div class="chart-box"><h3>成本构成</h3>${tcost?drawRing(costSegs,tcost,'总成本'):'<p style="color:#8898b0;font-size:13px;padding:20px">暂无数据</p>'}</div>`;
-
-  // Week
-  const wks=wk.sort((a,b)=>a.date.localeCompare(b.date));
-  document.getElementById('weekArea').innerHTML=wks.length?wks.map(x=>{
-    const r=x.wx+x.ali+x.cash;const p=r-x.cost-x.credit;
-    return `<div class="wrow"><div><div class="wdate">${x.date.slice(5)}</div><div class="wsub">收${fmt(r)} · 进${fmt(x.cost)} · 赊${fmt(x.credit)}</div></div><div class="wval ${p>=0?'up':'down'}">¥${fmt(p)}</div></div>`;
-  }).join(''):'<div style="text-align:center;color:#8898b0;padding:20px">本周暂无记录</div>';
-
-  // Quick actions
-  document.getElementById('quickArea').innerHTML=`
-    <button onclick="openModal()"><span class="qicon">✏️</span>记一笔</button>
-    <button onclick="renderDash();toast('已刷新')"><span class="qicon">🔄</span>刷新</button>
-  `;
-
-  document.getElementById('topDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
-}
-
-function drawRing(segs,total,label){
-  const r=55;const c=65;const w=18;const circ=2*Math.PI*r;
-  let offset=0;let paths='';
-  segs.forEach(s=>{
-    const pct=s.v/total;const len=pct*circ;
-    paths+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.c}" stroke-width="${w}" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-(offset*circ)}" stroke-linecap="butt" transform="rotate(-90 ${c} ${c})"/>`;
-    offset+=pct;
-  });
-  const leg=segs.map(s=>`<span><i style="background:${s.c}"></i>${s.l} ${Math.round(s.v/total*100)}%</span>`).join('');
-  return `<svg viewBox="0 0 130 130" style="width:120px;height:120px">${paths}<text x="${c}" y="${c-4}" text-anchor="middle" font-size="13" font-weight="700" fill="#1a2538">${label}</text><text x="${c}" y="${c+14}" text-anchor="middle" font-size="10" fill="#8898b0">¥${fmt(total)}</text></svg><div class="legend">${leg}</div>`;
+    `<div class="chart-card"><h3>收款构成</h3>${drawRing([{l:'微信',v:tw,c:COLORS.wx},{l:'支付宝',v:ta,c:COLORS.ali},{l:'现金',v:tca,c:COLORS.cash}],'总收款',trev)}</div>
+     <div class="chart-card"><h3>成本构成</h3>${tc?drawRing([{l:'进货',v:tc,c:COLORS.cost}],'总成本',tc):'<p style="color:#999;font-size:13px;text-align:center;padding:20px">暂无</p>'}</div>`;
 }
 
 function renderHist(){
-  const all=getAll();
-  document.getElementById('histArea').innerHTML=all.length?all.map(x=>{
+  const all=ld().sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('histContent').innerHTML=all.length?all.map(x=>{
     const r=x.wx+x.ali+x.cash;const p=r-x.cost-x.credit;
-    return `<div class="hitem" onclick="editData('${x.date}')"><div><div class="hdate">${x.date}</div><div class="hsub">收${fmt(r)} · 进${fmt(x.cost)} · 赊${fmt(x.credit)}</div></div><div class="hval ${p>=0?'up':'down'}">¥${fmt(p)}</div></div>`;
-  }).join(''):'<div style="text-align:center;color:#8898b0;padding:40px">暂无记录</div>';
+    return `<div style="background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="editRec('${x.date}')"><div><div style="font-size:14px;font-weight:500">${x.date.slice(5)}</div><div style="font-size:11px;color:#999;margin-top:2px">收${fm(r)} · 进${fm(x.cost)} · 赊${fm(x.credit)}</div></div><div style="font-size:16px;font-weight:700;color:${p>=0?'#333':'#ff4757'}">¥${fm(p)}</div></div>`;
+  }).join(''):'<p style="text-align:center;color:#999;padding:40px">暂无记录</p>';
 }
 
 // ============ MODAL ============
-function openModal(ds){
-  const td=ds?load().find(x=>x.date===ds):todayData();
-  document.getElementById('mw').value=td?td.wx:'';document.getElementById('ma').value=td?td.ali:'';
-  document.getElementById('mc').value=td?td.cash:'';document.getElementById('mcost').value=td?td.cost:'';
-  document.getElementById('mcr').value=td?td.credit:'';
-  document.getElementById('modal').classList.add('on');
-  document.getElementById('mw').focus();
-}
+function openModal(){const td=ld().find(x=>x.date===today());document.getElementById('mw').value=td?td.wx:'';document.getElementById('ma').value=td?td.ali:'';document.getElementById('mc').value=td?td.cash:'';document.getElementById('mcost').value=td?td.cost:'';document.getElementById('mcr').value=td?td.credit:'';document.getElementById('modal').classList.add('on');setTimeout(()=>document.getElementById('mw').focus(),300)}
 function closeModal(){document.getElementById('modal').classList.remove('on')}
-function editData(ds){openModal(ds)}
-
-document.getElementById('btnSave').onclick=function(){
-  const data={date:today(),wx:+document.getElementById('mw').value||0,ali:+document.getElementById('ma').value||0,cash:+document.getElementById('mc').value||0,cost:+document.getElementById('mcost').value||0,credit:+document.getElementById('mcr').value||0};
-  const all=load();const idx=all.findIndex(x=>x.date===data.date);
-  if(idx>=0)all[idx]=data;else all.push(data);
-  save(all);closeModal();renderDash();renderHist();toast('✅ 已保存');
-};
+function editRec(ds){const td=ld().find(x=>x.date===ds);if(!td)return;document.getElementById('mw').value=td.wx;document.getElementById('ma').value=td.ali;document.getElementById('mc').value=td.cash;document.getElementById('mcost').value=td.cost;document.getElementById('mcr').value=td.credit;document.getElementById('modal').classList.add('on')}
 document.getElementById('btnCancel').onclick=closeModal;
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
-document.getElementById('fabAdd').onclick=function(){openModal()};
-
-// ============ NAV ============
-document.getElementById('navDash').onclick=function(){
-  document.getElementById('tabDash').style.display='block';document.getElementById('tabHistory').style.display='none';
-  document.getElementById('navDash').classList.add('active');document.getElementById('navHist').classList.remove('active');
-  renderDash();
-};
-document.getElementById('navHist').onclick=function(){
-  document.getElementById('tabDash').style.display='none';document.getElementById('tabHistory').style.display='block';
-  document.getElementById('navHist').classList.add('active');document.getElementById('navDash').classList.remove('active');
-  renderHist();
-};
-document.getElementById('navExport').onclick=function(){
-  const all=load();if(!all.length){toast('暂无数据');return}
-  let csv='日期,微信,支付宝,现金,进货,赊账,利润\n';
-  all.forEach(x=>{const r=x.wx+x.ali+x.cash;csv+=`${x.date},${x.wx},${x.ali},${x.cash},${x.cost},${x.credit},${r-x.cost-x.credit}\n`});
-  const b=new Blob(['﻿'+csv],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='关门_'+today()+'.csv';a.click();URL.revokeObjectURL(u);toast('📤 已导出');
+document.getElementById('btnSave').onclick=function(){
+  const data={date:today(),wx:+document.getElementById('mw').value||0,ali:+document.getElementById('ma').value||0,cash:+document.getElementById('mc').value||0,cost:+document.getElementById('mcost').value||0,credit:+document.getElementById('mcr').value||0};
+  const all=ld();const idx=all.findIndex(x=>x.date===data.date);
+  if(idx>=0)all[idx]=data;else all.push(data);
+  sv(all);closeModal();renderDash();renderHist();toast('✅ 已保存');
 };
 
-// ============ TOAST ============
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._tid);t._tid=setTimeout(function(){t.classList.remove('on')},1800)}
+// ============ PAGES ============
+function goPage(p){
+  document.getElementById('pageDash').classList.toggle('on',p==='dash');
+  document.getElementById('pageHist').classList.toggle('on',p==='hist');
+  if(p==='dash')renderDash();if(p==='hist')renderHist();
+}
+// Nav buttons
+function setNav(n){['Dash','Hist','Export'].forEach(x=>{const b=document.getElementById('nav'+x);if(b)b.classList.toggle('active',x===n);const b2=document.getElementById('nav'+x+'2');if(b2)b2.classList.toggle('active',x===n)})}
+document.getElementById('navDash').onclick=()=>{goPage('dash');setNav('Dash')};
+document.getElementById('navHist').onclick=()=>{goPage('hist');setNav('Hist')};
+document.getElementById('navExport').onclick=()=>{const all=ld();if(!all.length){toast('暂无数据');return}let c='日期,微信,支付宝,现金,进货,赊账,利润\n';all.forEach(x=>{const r=x.wx+x.ali+x.cash;c+=`${x.date},${x.wx},${x.ali},${x.cash},${x.cost},${x.credit},${r-x.cost-x.credit}\n`});const b=new Blob(['﻿'+c],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='关门_'+today()+'.csv';a.click();URL.revokeObjectURL(u);toast('📤 已导出')};
+document.getElementById('navDash2').onclick=()=>{goPage('dash');setNav('Dash')};
+document.getElementById('navHist2').onclick=()=>{goPage('hist');setNav('Hist')};
+document.getElementById('navExport2').onclick=document.getElementById('navExport').onclick;
+// Initial
+setNav('Dash');
 
-// ============ INIT ============
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
+
 renderDash();
-if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 </script>
 </body>
 </html>
