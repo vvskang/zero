@@ -3,393 +3,481 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#080b12">
+<meta name="theme-color" content="#1e2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="了">
+<meta name="apple-mobile-web-app-title" content="关门">
+<meta name="description" content="关门 — 超市每日对账，30秒算清今天赚多少。">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23080b12'/><circle cx='50' cy='44' r='18' fill='none' stroke='%23c9a060' stroke-width='2.5'/><circle cx='47' cy='42' r='13' fill='%23080b12'/><line x1='50' y1='64' x2='50' y2='78' stroke='%23c9a060' stroke-width='2' stroke-linecap='round'/></svg>">
-<title>了</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231e2a3a'/><text x='50' y='54' text-anchor='middle' fill='%23fff' font-size='28' font-weight='700' font-family='system-ui'>关门</text><text x='50' y='78' text-anchor='middle' fill='%23a0b0c0' font-size='16' font-weight='400'>日结</text></svg>">
+<title>关门 · 每日对账</title>
 <style>
 /* ============ ROOT ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:#080b12;color:#ddd8cf;min-height:100dvh;overflow-x:hidden;
-  display:flex;justify-content:center;
+  background:#eef0f4;color:#2c2c2c;min-height:100dvh;
 }
-#app{position:relative;z-index:1;width:100%;max-width:440px;min-height:100dvh;padding-bottom:82px}
+#app{width:100%;max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
 
-/* ============ PAGES ============ */
-.page{display:none;flex-direction:column;align-items:center;min-height:calc(100dvh - 82px)}
-.page.on{display:flex}
+/* ============ TOP BAR ============ */
+.topbar{
+  background:#1e2a3a;color:#fff;padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-logo{font-size:18px;font-weight:700;letter-spacing:1px}
+.topbar-date{font-size:12px;color:#8898aa}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-icon{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;position:relative;color:#a0b0c0}
+.topbar-icon:hover{background:rgba(255,255,255,.14);color:#fff}
+.topbar-badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:#e05555;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:600}
 
-/* ============ CSS ILLUSTRATION: MOON ============ */
-.moon-art{position:relative;width:72px;height:72px;margin:56px 0 32px;flex-shrink:0}
-.moon-body{
-  width:72px;height:72px;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,#f8f0dd 0%,#e8d8b0 35%,#d4c090 100%);
-  box-shadow:0 0 60px rgba(210,180,130,.12),0 0 120px rgba(210,180,130,.05);
-}
-/* Crescent cut */
-.moon-body::after{
-  content:'';position:absolute;width:62px;height:62px;border-radius:50%;
-  background:#080b12;top:-10px;right:-14px;
-}
-/* Subtle crater dots */
-.moon-dot1,.moon-dot2,.moon-dot3{position:absolute;border-radius:50%;background:rgba(180,160,130,.15)}
-.moon-dot1{width:10px;height:10px;top:28px;left:18px}
-.moon-dot2{width:6px;height:6px;top:44px;left:32px}
-.moon-dot3{width:8px;height:8px;top:22px;left:30px}
+/* ============ CONTENT AREA ============ */
+.content{flex:1;padding:16px 14px 90px;display:flex;flex-direction:column;gap:16px}
+.content.scroll{overflow-y:auto}
 
-/* ============ GREETING & QUESTION ============ */
-.greet{font-size:13px;color:#6b6254;margin-bottom:14px;letter-spacing:1.5px;font-weight:400}
-.question{font-size:23px;color:#cfc8ba;font-weight:300;text-align:center;line-height:1.55;margin-bottom:28px;letter-spacing:.5px}
+/* ============ CARD GRID (2x2) ============ */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{
+  background:#fff;border-radius:14px;padding:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);cursor:pointer;transition:all .15s;
+}
+.card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card:active{transform:scale(.98)}
+.card-value{font-size:28px;font-weight:800;color:#1e2a3a;margin-bottom:4px;letter-spacing:-.5px}
+.card-value.up{color:#2e8b57}
+.card-value.down{color:#c05050}
+.card-label{font-size:12px;color:#8898a8;margin-bottom:4px}
+.card-trend{font-size:11px;display:flex;align-items:center;gap:3px}
+.card-trend.up{color:#2e8b57}
+.card-trend.down{color:#c05050}
 
-/* ============ EMOTION TAGS ============ */
-.tag-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px;padding:0 16px}
-.tag{
-  padding:11px 22px;border-radius:22px;font-size:14px;cursor:pointer;transition:all .28s;
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);color:#8a8276;
-  letter-spacing:.5px;font-weight:400;
+/* ============ SECTION TITLE ============ */
+.sec-title{font-size:14px;font-weight:700;color:#3a4a5a;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:3px;height:16px;border-radius:2px;background:#3b5998}
+.sec-tabs{display:flex;gap:4px}
+.sec-tab{
+  padding:2px 10px;border-radius:10px;font-size:11px;cursor:pointer;color:#8898a8;background:transparent;border:none;transition:all .15s
 }
-.tag:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.06);color:#b0a898}
-.tag.pick{border-color:rgba(200,160,90,.3);background:rgba(200,160,90,.05);color:#c9a060}
+.sec-tab.active{background:#3b5998;color:#fff}
 
-/* ============ TEXT TOGGLE & INPUT ============ */
-.toggle-wrap{display:flex;align-items:center;gap:8px;margin-bottom:30px}
-.toggle-line{width:28px;height:1px;background:rgba(255,255,255,.04)}
-.toggle-btn{font-size:12px;color:#4d4638;cursor:pointer;transition:color .2s;letter-spacing:.5px}
-.toggle-btn:hover{color:#6b6254}
-.text-box{
-  width:100%;max-width:300px;padding:15px 18px;background:rgba(255,255,255,.01);
-  border:1px solid rgba(255,255,255,.03);border-radius:14px;color:#9b9284;
-  font-size:15px;outline:none;font-family:inherit;resize:none;text-align:center;
-  line-height:1.8;transition:all .3s;height:0;opacity:0;overflow:hidden;margin-bottom:10px;
+/* ============ DONUT CHARTS ============ */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chart-box{
+  background:#fff;border-radius:14px;padding:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
 }
-.text-box.show{height:88px;opacity:1;margin-bottom:30px}
-.text-box:focus{border-color:rgba(200,160,90,.12)}
-.text-box::placeholder{color:#3d362c}
+.chart-box h3{font-size:13px;font-weight:700;color:#3a4a5a;text-align:center;margin-bottom:10px}
+.chart-svg{width:100%;max-width:160px;margin:0 auto;display:block}
+.chart-center-text{font-size:13px;font-weight:700;fill:#1e2a3a;text-anchor:middle}
+.chart-center-sub{font-size:9px;fill:#8898a8;text-anchor:middle}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#5a6a7a}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
-/* ============ LET-GO BUTTON ============ */
-.btn-letgo{
-  width:88px;height:88px;border-radius:50%;cursor:pointer;transition:all .35s;
-  background:rgba(200,160,90,.03);border:1.5px solid rgba(200,160,90,.18);
-  color:#c9a060;font-size:18px;font-weight:400;letter-spacing:1px;
-  display:flex;align-items:center;justify-content:center;font-family:inherit;
+/* ============ QUICK ACTIONS ============ */
+.quick-row{display:flex;gap:10px}
+.quick-btn{
+  flex:1;background:#fff;border-radius:12px;padding:14px 8px;text-align:center;
+  cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .15s;border:none;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
 }
-.btn-letgo:hover{background:rgba(200,160,90,.08);border-color:rgba(200,160,90,.3);box-shadow:0 0 36px rgba(200,160,90,.06)}
-.btn-letgo:active{transform:scale(.93)}
-.tonight-line{font-size:11px;color:#383022;margin-top:28px;text-align:center;line-height:1.6;padding:0 20px}
+.quick-btn:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.quick-btn:active{transform:scale(.97)}
+.quick-icon{font-size:22px}
+.quick-label{font-size:12px;color:#4a5a6a;font-weight:500}
 
-/* ============ CEREMONY OVERLAY ============ */
-.overlay{position:fixed;inset:0;z-index:100;background:#080b12;display:none;flex-direction:column;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.cer-moon{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f8f0dd,#e0d0a0);box-shadow:0 0 50px rgba(210,180,130,.1);margin-bottom:48px;opacity:.6}
-/* CSS Boat */
-.boat-scene{position:relative;width:280px;height:220px;margin-bottom:48px}
-/* Water */
-.water-area{position:absolute;bottom:0;left:0;right:0;height:70px}
-.wave1,.wave2,.wave3{position:absolute;left:-10%;right:-10%;height:2px;border-radius:50%;animation:waveMove 4s ease-in-out infinite}
-.wave1{bottom:50px;background:rgba(255,255,255,.02);animation-delay:0s}
-.wave2{bottom:40px;background:rgba(255,255,255,.015);animation-delay:.8s}
-.wave3{bottom:30px;background:rgba(255,255,255,.01);animation-delay:1.6s}
-@keyframes waveMove{0%,100%{transform:translateX(0)}50%{transform:translateX(4%)}}
-/* Boat hull */
-.boat-hull{
-  position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
-  width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;
-  border-bottom:14px solid rgba(210,180,140,.25);
-  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2;
+/* ============ FAB (Floating Action Button) ============ */
+.fab{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;
+  width:56px;height:56px;border-radius:50%;background:#3b5998;color:#fff;font-size:26px;
+  border:none;cursor:pointer;box-shadow:0 4px 16px rgba(59,89,152,.3);
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
 }
-/* Boat sail */
-.boat-sail{
-  position:absolute;bottom:64px;left:50%;transform:translateX(-2px);
-  width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
-  border-bottom:28px solid rgba(210,180,140,.18);
-  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:2;
-}
-.boat-group.sailing .boat-hull{bottom:260px;opacity:0;border-bottom-color:rgba(210,180,140,0)}
-.boat-group.sailing .boat-sail{bottom:272px;opacity:0;border-bottom-color:rgba(210,180,140,0)}
-/* Boat text */
-.boat-words{
-  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
-  font-size:12px;color:#8a8276;text-align:center;max-width:200px;
-  transition:all 4s cubic-bezier(.4,0,.2,1);z-index:1;line-height:1.6;
-}
-.boat-words.sailing{bottom:320px;opacity:0}
-/* Particles */
-.dust{position:absolute;inset:0;pointer-events:none}
-.dust-dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(210,180,130,.3);animation:riseUp 4s ease-out forwards;opacity:0}
-@keyframes riseUp{0%{opacity:0;transform:translateY(0)}20%{opacity:.6}100%{opacity:0;transform:translateY(-140px)}}
-/* Goodnight */
-.gn-wrap{display:none;flex-direction:column;align-items:center;text-align:center}
-.gn-wrap.on{display:flex}
-.gn1{font-size:17px;color:#8a8276;margin-bottom:10px;font-weight:300;letter-spacing:1px}
-.gn2{font-size:28px;color:#c9a060;font-weight:300;letter-spacing:3px;margin-bottom:44px}
-.gn-star{width:8px;height:8px;border-radius:50%;background:rgba(200,160,90,.2);box-shadow:0 0 12px rgba(200,160,90,.1);animation:floatStar 5s ease-in-out infinite}
+.fab:hover{background:#4a6ab0;box-shadow:0 6px 20px rgba(59,89,152,.4);transform:translateX(-50%) translateY(-2px)}
+.fab:active{transform:translateX(-50%) scale(.94)}
 
-/* ============ RIVER (星河) ============ */
-.river-top{text-align:center;margin:44px 0 24px}
-.river-title{font-size:18px;color:#bfb8aa;font-weight:300;letter-spacing:1px}
-.river-sub{font-size:11px;color:#5b5444;margin-top:6px}
-.river-area{width:100%;max-width:350px;min-height:320px;border-radius:20px;background:rgba(255,255,255,.008);border:1px solid rgba(255,255,255,.015);position:relative;overflow:hidden;margin-bottom:16px;padding:16px 20px}
-.river-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3d362c;font-size:13px;text-align:center;line-height:2}
-.river-dots{position:relative;width:100%;min-height:280px}
-.star-dot{position:absolute;border-radius:50%;cursor:default;transition:all .3s}
-.star-dot:hover{transform:scale(2.5);z-index:10}
-.star-label{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);font-size:10px;color:#8a8276;white-space:nowrap;background:rgba(8,11,18,.95);padding:5px 10px;border-radius:8px;pointer-events:none;border:1px solid rgba(255,255,255,.04)}
-.star-dot:hover .star-label{display:block}
-.river-keys{display:flex;gap:18px;justify-content:center;font-size:10px;color:#4d4638;flex-wrap:wrap;padding-bottom:8px}
-.river-keys span{display:flex;align-items:center;gap:5px}
-.key-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-
-/* ============ LETTER (来信) ============ */
-.letter-pad{width:100%;max-width:350px;margin-top:44px}
-.letter-sheet{
-  background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.025);
-  border-radius:20px;padding:32px 28px;line-height:2.2;margin-bottom:14px;
-  position:relative;
+/* ============ INPUT MODAL ============ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;
+  align-items:flex-end;justify-content:center;
 }
-.letter-sheet::before{content:'';position:absolute;top:0;left:28px;right:28px;height:1px;background:rgba(200,160,90,.06)}
-.let-head{text-align:center;margin-bottom:22px}
-.let-date{font-size:11px;color:#4d4638;margin-bottom:4px;letter-spacing:1px}
-.let-to{font-size:16px;color:#bfb8aa;font-weight:300}
-.let-body{font-size:14px;color:#8a8276;line-height:2.3}
-.let-body em{color:#c9a060;font-style:normal}
-.let-sign{text-align:right;margin-top:20px;font-size:12px;color:#5b5444;letter-spacing:1px}
-.letter-blank{text-align:center;color:#4d4638;padding:50px 20px;line-height:2.2;font-size:14px}
+.modal-overlay.on{display:flex}
+.modal-sheet{
+  background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;
+  padding:20px 18px 34px;animation:slideUp .25s ease-out;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:#d0d4da;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:700;color:#1e2a3a;margin-bottom:18px;text-align:center}
+.form-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eef0f4}
+.form-label{font-size:14px;color:#4a5a6a;display:flex;align-items:center;gap:8px}
+.form-label .dot{width:10px;height:10px;border-radius:3px}
+.form-input{width:120px;padding:8px 12px;border:1px solid #dde0e6;border-radius:10px;font-size:16px;text-align:right;outline:none;font-family:inherit;background:#f8f9fb}
+.form-input:focus{border-color:#3b5998;background:#fff}
+.form-unit{font-size:13px;color:#8898a8;margin-left:4px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions .btn{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.btn-save{background:#3b5998;color:#fff}
+.btn-save:hover{background:#4a6ab0}
+.btn-save:active{transform:scale(.97)}
+.btn-cancel{background:#eef0f4;color:#6a7a8a}
+.btn-cancel:hover{background:#e0e4ea}
+
+/* ============ DETAIL PANEL ============ */
+.detail-panel{display:none;background:#fff;border-radius:14px;padding:18px;margin-top:-6px}
+.detail-panel.on{display:block}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f6f8;font-size:13px;color:#5a6a7a}
+.detail-row:last-child{border-bottom:none;font-weight:700;color:#1e2a3a}
+
+/* ============ WEEKLY REPORT ============ */
+.report-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.report-back{background:none;border:none;font-size:20px;cursor:pointer;color:#5a6a7a;padding:4px}
+.week-list{display:flex;flex-direction:column;gap:8px}
+.week-item{background:#fff;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.week-date{font-size:13px;color:#5a6a7a}
+.week-profit{font-size:16px;font-weight:700}
+.week-profit.up{color:#2e8b57}
+.week-profit.down{color:#c05050}
+
+/* ============ HISTORY PAGE ============ */
+.history-list{display:flex;flex-direction:column;gap:6px}
+.history-item{background:#fff;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 2px rgba(0,0,0,.02)}
+.history-date{font-size:13px;font-weight:500;color:#3a4a5a}
+.history-detail{font-size:11px;color:#8898a8;margin-top:2px}
+.history-profit{font-size:16px;font-weight:700}
+.history-profit.up{color:#2e8b57}
+.history-profit.down{color:#c05050}
 
 /* ============ SETTINGS ============ */
-.set-card{width:100%;max-width:320px;margin-top:44px}
-.set-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.015)}
-.set-l{font-size:14px;color:#8a8276}
-.set-v{font-size:13px;color:#5b5444}
-.s-btn{
-  width:100%;padding:12px;border-radius:16px;font-size:13px;cursor:pointer;font-family:inherit;
-  background:rgba(200,160,90,.04);border:1px solid rgba(200,160,90,.1);color:#b09870;
-  transition:all .2s;text-align:center;letter-spacing:.5px;margin-top:6px;
-}
-.s-btn:hover{background:rgba(200,160,90,.08)}
-.s-btn:active{transform:scale(.96)}
-.s-btn.danger{color:#9b7a6a;border-color:rgba(180,130,100,.08);background:rgba(180,130,100,.02)}
-.set-foot{font-size:11px;color:#383022;text-align:center;line-height:2;margin-top:16px}
+.settings-list{display:flex;flex-direction:column;gap:2px}
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eef0f4;font-size:14px;color:#4a5a6a}
+.set-val{color:#8898a8;font-size:13px}
+.set-btn-sm{padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid #dde0e6;background:#fff;color:#6a7a8a;font-family:inherit}
 
-/* ============ BOTTOM NAV ============ */
-.bottom-nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;
-  width:100%;max-width:440px;display:flex;justify-content:space-around;
-  padding:10px 24px max(10px,env(safe-area-inset-bottom));
-  background:rgba(8,11,18,.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-  border-top:1px solid rgba(255,255,255,.02);
-}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .2s;color:#4d4638;font-size:10px;letter-spacing:.5px;background:none;border:none;font-family:inherit;padding:4px 14px;border-radius:10px}
-.nav-btn.active{color:#c9a060}
-.nav-btn:hover{color:#8a8276}
-.nav-btn:active{transform:scale(.9)}
-/* CSS nav icons */
-.nav-icon{position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-/* 放下 icon: circle with a line dropping down */
-.nav-icon-ritual{width:10px;height:10px;border:1.5px solid currentColor;border-radius:50%;position:relative}
-.nav-icon-ritual::after{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:1px;height:8px;background:currentColor;border-radius:1px}
-/* 星河 icon: three dots in triangle */
-.nav-icon-river{display:flex;gap:6px;justify-content:center}
-.nav-dot{width:3.5px;height:3.5px;border-radius:50%;background:currentColor}
-.nav-dots-col{display:flex;flex-direction:column;gap:7px;align-items:center}
-/* 来信 icon: envelope */
-.nav-icon-letter{width:16px;height:12px;border:1.5px solid currentColor;border-radius:2px;position:relative}
-.nav-icon-letter::after{content:'';position:absolute;top:-3px;left:-1.5px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:5px solid currentColor}
-/* 设置 icon: circle with dot */
-.nav-icon-gear{width:4px;height:4px;border-radius:50%;background:currentColor;box-shadow:0 0 0 6px currentColor;opacity:.3;position:relative}
-.nav-icon-gear::after{content:'';position:absolute;top:-9px;left:-9px;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;opacity:.5}
+/* ============ PAGE TRANSITIONS ============ */
+.page{display:none;flex-direction:column;flex:1}
+.page.on{display:flex}
 
 /* Toast */
-.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:rgba(16,18,28,.95);border:1px solid rgba(200,160,90,.08);color:#9b9080;padding:10px 20px;border-radius:12px;font-size:13px;transition:transform .35s;pointer-events:none}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:#1e2a3a;color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .3s;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
 
-@media(max-width:360px){.question{font-size:20px}.tag{padding:10px 16px;font-size:13px}.tag-row{gap:8px}}
+@media(max-width:360px){
+  .card-value{font-size:24px}.chart-row{grid-template-columns:1fr}
+  .quick-row{gap:6px}.quick-btn{padding:12px 4px}
+}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- ===== RITUAL ===== -->
-  <div class="page on" id="ritual">
-    <!-- CSS-drawn crescent moon -->
-    <div class="moon-art"><div class="moon-body"></div><div class="moon-dot1"></div><div class="moon-dot2"></div><div class="moon-dot3"></div></div>
-    <div class="greet" id="greeting"></div>
-    <div class="question">今天有什么<br>放不下的？</div>
-    <div class="tag-row" id="tagsRow">
-      <span class="tag" data-e="焦虑">焦虑</span>
-      <span class="tag" data-e="遗憾">遗憾</span>
-      <span class="tag" data-e="期待">期待</span>
-      <span class="tag" data-e="生气">生气</span>
-      <span class="tag" data-e="说不清">说不清</span>
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div class="page on" id="pageDashboard">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-logo">关门</span><span class="topbar-date" id="topDate"></span></div>
+      <div class="topbar-right">
+        <div class="topbar-icon" id="btnHistory" title="历史">📋</div>
+        <div class="topbar-icon" id="btnSettings" title="设置">⚙</div>
+      </div>
     </div>
-    <div class="toggle-wrap"><span class="toggle-line"></span><span class="toggle-btn" id="toggleText">写几句</span><span class="toggle-line"></span></div>
-    <textarea class="text-box" id="textBox" rows="3" placeholder="想说什么就说吧。也可以不说。"></textarea>
-    <button class="btn-letgo" id="btnLetGo">放下</button>
-    <div class="tonight-line" id="tonightHint"></div>
+    <div class="content scroll" id="dashboardContent"></div>
+    <button class="fab" id="btnAddRecord">+</button>
   </div>
 
-  <!-- ===== RIVER (星河) ===== -->
-  <div class="page" id="river">
-    <div class="river-top"><div class="river-title">情绪星河</div><div class="river-sub" id="riverSub"></div></div>
-    <div class="river-area"><div class="river-note" id="riverNote">还没有星星。<br>每天来一次，这里会是一片星空。</div><div class="river-dots" id="riverDots"></div></div>
-    <div class="river-keys">
-      <span><span class="key-dot" style="background:#c9a060"></span>焦虑</span>
-      <span><span class="key-dot" style="background:#8b9dc3"></span>遗憾</span>
-      <span><span class="key-dot" style="background:#a8c97e"></span>期待</span>
-      <span><span class="key-dot" style="background:#c97e7e"></span>生气</span>
-      <span><span class="key-dot" style="background:#b8a0c8"></span>说不清</span>
+  <!-- ===== WEEKLY REPORT PAGE ===== -->
+  <div class="page" id="pageWeekly">
+    <div class="topbar"><div class="topbar-left"><span class="topbar-logo">关门</span></div></div>
+    <div class="content scroll">
+      <div class="report-header"><button class="report-back" id="btnWeeklyBack">←</button><span style="font-size:16px;font-weight:700;color:#1e2a3a">周报</span></div>
+      <div class="week-list" id="weekList"></div>
     </div>
   </div>
 
-  <!-- ===== LETTER (来信) ===== -->
-  <div class="page" id="letter">
-    <div class="letter-pad" id="letterPad"><div class="letter-blank">一周后<br>你会收到第一封来信。<br><br>它会告诉你这些天<br>你放下了什么、<br>什么情绪常来找你。<br><br>还有——<br>你已经做得很好了。</div></div>
+  <!-- ===== HISTORY PAGE ===== -->
+  <div class="page" id="pageHistory">
+    <div class="topbar"><div class="topbar-left"><span class="topbar-logo">关门</span></div></div>
+    <div class="content scroll">
+      <div class="report-header"><button class="report-back" id="btnHistBack">←</button><span style="font-size:16px;font-weight:700;color:#1e2a3a">历史记录</span></div>
+      <div class="history-list" id="historyList"></div>
+    </div>
   </div>
 
-  <!-- ===== SETTINGS ===== -->
-  <div class="page" id="settings">
-    <div class="set-card">
-      <div class="set-item"><span class="set-l">记录天数</span><span class="set-v" id="sDays">0 天</span></div>
-      <div class="set-item"><span class="set-l">放下次数</span><span class="set-v" id="sCount">0 次</span></div>
-      <div class="set-item"><span class="set-l">最常放下的</span><span class="set-v" id="sTop">—</span></div>
-      <button class="s-btn" id="btnLetterNow">💌 现在生成一封来信</button>
-      <button class="s-btn danger" id="btnClear">清空所有记录</button>
-      <div class="set-foot">每一句话都存在本机。<br>没有人能看到——包括你自己。<br>除非你来这里。</div>
+  <!-- ===== SETTINGS PAGE ===== -->
+  <div class="page" id="pageSettings">
+    <div class="topbar"><div class="topbar-left"><span class="topbar-logo">关门</span></div></div>
+    <div class="content scroll">
+      <div class="report-header"><button class="report-back" id="btnSetBack">←</button><span style="font-size:16px;font-weight:700;color:#1e2a3a">设置</span></div>
+      <div class="settings-list">
+        <div class="set-row"><span>记录天数</span><span class="set-val" id="sDays">0 天</span></div>
+        <div class="set-row"><span>总记录数</span><span class="set-val" id="sCount">0 条</span></div>
+        <div class="set-row"><span>本月利润</span><span class="set-val" id="sMonth">¥0</span></div>
+        <div class="set-row"><span>数据存储</span><span class="set-val">本机</span></div>
+        <div style="margin-top:12px"><button class="set-btn-sm" id="btnExport" style="width:100%;padding:12px">📤 导出备份</button></div>
+        <div style="margin-top:6px"><button class="set-btn-sm" id="btnClearAll" style="width:100%;padding:12px;color:#c05050;border-color:#f0d0d0">🗑 清空所有数据</button></div>
+        <div style="font-size:11px;color:#8898a8;text-align:center;margin-top:12px;line-height:1.7">数据存储在本地手机中。<br>清空不可恢复，建议先导出备份。</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn active" data-page="ritual">
-    <div class="nav-icon"><div class="nav-icon-ritual"></div></div>放下
-  </button>
-  <button class="nav-btn" data-page="river">
-    <div class="nav-icon"><div class="nav-dots-col"><div class="nav-dot"></div><div class="nav-dot"></div></div></div>星河
-  </button>
-  <button class="nav-btn" data-page="letter">
-    <div class="nav-icon"><div class="nav-icon-letter"></div></div>来信
-  </button>
-  <button class="nav-btn" data-page="settings">
-    <div class="nav-icon"><div class="nav-icon-gear"></div></div>设置
-  </button>
-</nav>
-
-<!-- CEREMONY -->
-<div class="overlay" id="ceremony">
-  <div class="cer-moon"></div>
-  <div class="boat-scene">
-    <div class="dust" id="dust"></div>
-    <div class="boat-words" id="boatWords"></div>
-    <div class="boat-group" id="boatGroup"><div class="boat-sail"></div><div class="boat-hull"></div></div>
-    <div class="water-area"><div class="wave1"></div><div class="wave2"></div><div class="wave3"></div></div>
+<!-- INPUT MODAL -->
+<div class="modal-overlay" id="inputModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">今日对账</div>
+    <div class="form-row"><span class="form-label"><span class="dot" style="background:#4a90d9"></span>微信收款</span><div><input class="form-input" id="inpWx" type="number" placeholder="0"><span class="form-unit">元</span></div></div>
+    <div class="form-row"><span class="form-label"><span class="dot" style="background:#f0a050"></span>支付宝</span><div><input class="form-input" id="inpAli" type="number" placeholder="0"><span class="form-unit">元</span></div></div>
+    <div class="form-row"><span class="form-label"><span class="dot" style="background:#5cb880"></span>现金</span><div><input class="form-input" id="inpCash" type="number" placeholder="0"><span class="form-unit">元</span></div></div>
+    <div class="form-row"><span class="form-label"><span class="dot" style="background:#8b7ec8"></span>今日进货</span><div><input class="form-input" id="inpCost" type="number" placeholder="0"><span class="form-unit">元</span></div></div>
+    <div class="form-row"><span class="form-label"><span class="dot" style="background:#e0a060"></span>赊账</span><div><input class="form-input" id="inpCredit" type="number" placeholder="0"><span class="form-unit">元</span></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" id="btnCancel">取消</button>
+      <button class="btn btn-save" id="btnSave">保存</button>
+    </div>
   </div>
-</div>
-<div class="overlay" id="goodnightOverlay">
-  <div class="gn-wrap on"><div class="gn1">今天结束了</div><div class="gn2">晚安</div><div class="gn-star"></div></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== STATE ====================
-let EM='',TX='',curr='ritual';
-const EC={焦虑:'#c9a060',遗憾:'#8b9dc3',期待:'#a8c97e',生气:'#c97e7e',说不清:'#b8a0c8'};
-function H(){try{return JSON.parse(localStorage.getItem('le_h')||'[]')}catch(e){return[]}}
-function save(e,t){const h=H();h.push({d:new Date().toISOString(),e,t});if(h.length>600)h.splice(0,h.length-600);localStorage.setItem('le_h',JSON.stringify(h))}
-function cnt(){return H().length}
-function days(){return new Set(H().map(x=>x.d.slice(0,10))).size}
-function topE(){const c={};H().forEach(x=>{c[x.e]=(c[x.e]||0)+1});const e=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'—'}
+// ==================== DATA ====================
+const DKEY='gm_data';
+function load(){try{return JSON.parse(localStorage.getItem(DKEY)||'[]')}catch(e){return[]}}
+function save(data){localStorage.setItem(DKEY,JSON.stringify(data))}
+function today(){return new Date().toISOString().slice(0,10)}
+function getToday(){return load().find(x=>x.date===today())||null}
+function getAll(){return load().sort((a,b)=>b.date.localeCompare(a.date))}
+function getWeek(ds){
+  const now=ds?new Date(ds):new Date();const day=now.getDay();const monday=new Date(now);
+  monday.setDate(now.getDate()-(day===0?6:day-1));monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);sunday.setHours(23,59,59,999);
+  return load().filter(x=>{const d=new Date(x.date);return d>=monday&&d<=sunday});
+}
+function getMonth(){const m=today().slice(0,7);return load().filter(x=>x.date.startsWith(m))}
+function addRecord(data){
+  const all=load();const idx=all.findIndex(x=>x.date===data.date);
+  if(idx>=0)all[idx]=data;else all.push(data);
+  save(all);
+}
 const $=id=>document.getElementById(id);
+const CHART_COLORS={wx:'#4a90d9',ali:'#f0a050',cash:'#5cb880',cost:'#8b7ec8',credit:'#e0a060'};
 
-// ==================== NAVIGATION ====================
-function go(name){
-  curr=name;
-  ['ritual','river','letter','settings'].forEach(p=>$(p).classList.remove('on'));
+// ==================== PAGES ====================
+function goPage(name){
+  ['pageDashboard','pageWeekly','pageHistory','pageSettings'].forEach(p=>$(p).classList.remove('on'));
   $(name).classList.add('on');
-  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
-  document.querySelector(`[data-page="${name}"]`).classList.add('active');
-  if(name==='ritual'){resetRitual();setGreet();setTonight()}
-  if(name==='river')renderRiver();
-  if(name==='letter')renderLetter();
-  if(name==='settings')updateSettings();
+  if(name==='pageDashboard')renderDashboard();
+  if(name==='pageWeekly')renderWeekly();
+  if(name==='pageHistory')renderHistory();
+  if(name==='pageSettings')renderSettings();
 }
-document.querySelectorAll('.nav-btn').forEach(n=>n.addEventListener('click',()=>go(n.dataset.page)));
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('on'),1800)}
 
-// ==================== GREETING ====================
-function setGreet(){const h=new Date().getHours();const g=$('greeting');if(h<5)g.textContent='夜深了';else if(h<12)g.textContent='早上好';else if(h<17)g.textContent='下午好';else if(h<21)g.textContent='傍晚好';else g.textContent='夜深了'}
-function setTonight(){const h=new Date().getHours();if(h>=22||h<5){const n=Math.floor(Math.random()*7000+3000);$('tonightHint').innerHTML=`今夜，还有 <span style="color:#c9a060">${n.toLocaleString()}</span> 个人也醒着`}else $('tonightHint').textContent=''}
+// ==================== DASHBOARD ====================
+let chartPeriod='month';
+function renderDashboard(){
+  const td=getToday();const month=getMonth();
+  const todayRev=(td?td.wx+td.ali+td.cash:0);const todayCost=(td?td.cost:0);
+  const todayProfit=todayRev-todayCost-(td?td.credit:0);
+  const monthProfit=month.reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0);
+  const monthRev=month.reduce((s,x)=>s+x.wx+x.ali+x.cash,0);
+  const monthCost=month.reduce((s,x)=>s+x.cost,0);
+  // Yesterday comparison
+  const all=getAll();const yest=all.length>1?all[1]:null;
+  const yestProfit=yest?yest.wx+yest.ali+yest.cash-yest.cost-yest.credit:0;
+  const profitDiff=todayProfit-yestProfit;
 
-// ==================== RITUAL ====================
-function resetRitual(){EM='';TX='';$('textBox').value='';$('textBox').classList.remove('show');document.querySelectorAll('.tag').forEach(t=>t.classList.remove('pick'));$('btnLetGo').style.opacity='.3';$('btnLetGo').disabled=true;$('toggleText').textContent='写几句'}
-document.querySelectorAll('.tag').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.tag').forEach(x=>x.classList.remove('pick'));this.classList.add('pick');EM=this.dataset.e;$('btnLetGo').style.opacity='1';$('btnLetGo').disabled=false}));
-$('toggleText').addEventListener('click',function(){const tb=$('textBox');if(tb.classList.contains('show')){tb.classList.remove('show');this.textContent='写几句'}else{tb.classList.add('show');this.textContent='不写了';setTimeout(()=>tb.focus(),300)}});
-$('textBox').addEventListener('input',function(){TX=this.value.trim()});
-$('btnLetGo').addEventListener('click',async function(){
-  if(!EM)return;TX=$('textBox').value.trim();save(EM,TX);
-  $('#ritual').classList.remove('on');const c=$('ceremony');c.classList.add('on');
-  const words=TX||EM;$('#boatWords').textContent=words.length>32?words.slice(0,32)+'…':words;
-  const dust=$('#dust');dust.innerHTML='';
-  for(let i=0;i<30;i++){const d=document.createElement('div');d.className='dust-dot';d.style.left=(18+Math.random()*64)+'%';d.style.bottom=(8+Math.random()*32)+'%';d.style.animationDelay=(Math.random()*2.2)+'s';d.style.animationDuration=(3+Math.random()*3)+'s';dust.appendChild(d)}
-  await pause(1400);$('#boatGroup').classList.add('sailing');$('#boatWords').classList.add('sailing');
-  await pause(4500);c.classList.remove('on');const g=$('#goodnightOverlay');g.classList.add('on');
-  await pause(4200);g.classList.remove('on');$('#ritual').classList.add('on');resetRitual();setGreet();setTonight();
-});
-function pause(ms){return new Promise(r=>setTimeout(r,ms))}
+  $('topDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
 
-// ==================== RIVER ====================
-function renderRiver(){
-  const h=H();const area=$('#riverDots');const note=$('#riverNote');const sub=$('#riverSub');
-  area.querySelectorAll('.star-dot').forEach(s=>s.remove());
-  if(!h.length){note.style.display='flex';sub.textContent='';return}
-  note.style.display='none';sub.textContent=`${days()} 个夜晚 · ${h.length} 颗星`;
-  const maxCol=14;const rows=Math.ceil(h.length/maxCol);
-  area.style.minHeight=Math.max(280,rows*28+20)+'px';
-  const w=area.clientWidth||330;
-  h.forEach((x,i)=>{
-    const row=Math.floor(i/maxCol);const col=i%maxCol;
-    const sx=((col+1)/(maxCol+1))*w;const sy=row*26+18;
-    const star=document.createElement('div');star.className='star-dot';
-    star.style.left=sx+'px';star.style.top=sy+'px';
-    star.style.width='7px';star.style.height='7px';
-    const color=EC[x.e]||'#c9a060';
-    star.style.background=color;star.style.boxShadow=`0 0 7px ${color}`;
-    const label=document.createElement('div');label.className='star-label';
-    const dt=new Date(x.d);label.textContent=`${dt.getMonth()+1}/${dt.getDate()} · ${x.e}`;
-    star.appendChild(label);area.appendChild(star);
+  const cards=[
+    {v:'¥'+(todayRev||0).toLocaleString(),l:'今日营收',t:''},
+    {v:'¥'+(todayCost||0).toLocaleString(),l:'今日成本',t:''},
+    {v:'¥'+todayProfit.toLocaleString(),l:'今日利润',t:yest?`较昨日 ${profitDiff>=0?'+':''}¥${profitDiff}`:'',c:profitDiff>=0?'up':'down'},
+    {v:'¥'+monthProfit.toLocaleString(),l:'本月累计',t:`${month.length} 天记录`},
+  ];
+
+  const chartData=chartPeriod==='month'?month:(getWeek());
+  const totalRev=chartData.reduce((s,x)=>s+x.wx+x.ali+x.cash,0)||1;
+  const totalCost=chartData.reduce((s,x)=>s+x.cost,0)||0;
+  const wxS=chartData.reduce((s,x)=>s+x.wx,0);const aliS=chartData.reduce((s,x)=>s+x.ali,0);const cashS=chartData.reduce((s,x)=>s+x.cash,0);
+  const revSegments=[
+    {label:'微信',value:wxS,color:CHART_COLORS.wx,pct:Math.round(wxS/totalRev*100)},
+    {label:'支付宝',value:aliS,color:CHART_COLORS.ali,pct:Math.round(aliS/totalRev*100)},
+    {label:'现金',value:cashS,color:CHART_COLORS.cash,pct:Math.round(cashS/totalRev*100)},
+  ].filter(s=>s.value>0);
+  const costSegments=[
+    {label:'进货',value:totalCost,color:CHART_COLORS.cost,pct:100},
+  ];
+
+  const h=`
+    <div class="card-grid">
+      ${cards.map(c=>`<div class="card" onclick="showDetail()"><div class="card-value ${c.c||''}">${c.v}</div><div class="card-label">${c.l}</div>${c.t?`<div class="card-trend ${c.c||''}">${c.t}</div>`:''}</div>`).join('')}
+    </div>
+    <div class="detail-panel" id="detailPanel"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="sec-title">营收结构</div>
+      <div class="sec-tabs"><button class="sec-tab ${chartPeriod==='week'?'active':''}" id="tabWeek">本周</button><button class="sec-tab ${chartPeriod==='month'?'active':''}" id="tabMonth">本月</button></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><h3>收款来源</h3>${buildDonut(revSegments,'总营收',totalRev)}</div>
+      <div class="chart-box"><h3>成本构成</h3>${buildDonut(costSegments,'总成本',totalCost)||'<div style="text-align:center;color:#8898a8;font-size:13px;padding:20px">暂无成本数据</div>'}</div>
+    </div>
+    <div class="quick-row">
+      <button class="quick-btn" id="btnQuickWeek"><span class="quick-icon">📊</span><span class="quick-label">周报</span></button>
+      <button class="quick-btn" id="btnQuickMonth"><span class="quick-icon">📈</span><span class="quick-label">月报</span></button>
+      <button class="quick-btn" id="btnQuickRecord"><span class="quick-icon">✏️</span><span class="quick-label">记一笔</span></button>
+      <button class="quick-btn" id="btnQuickExport"><span class="quick-icon">📤</span><span class="quick-label">导出</span></button>
+    </div>
+  `;
+  $('#dashboardContent').innerHTML=h;
+  // Events
+  document.querySelectorAll('#tabWeek,#tabMonth').forEach(b=>b.onclick=function(){
+    chartPeriod=this.id==='tabWeek'?'week':'month';renderDashboard();
   });
+  $('#btnQuickWeek').onclick=()=>goPage('pageWeekly');
+  $('#btnQuickMonth').onclick=()=>{chartPeriod='month';renderDashboard();toast('已切换到月度视图')};
+  $('#btnQuickRecord').onclick=openInput;
+  $('#btnQuickExport').onclick=exportData;
 }
 
-// ==================== LETTER ====================
-function renderLetter(force=false){
-  const h=H();const pad=$('#letterPad');
-  if(!h.length){pad.innerHTML='<div class="letter-blank">一周后<br>你会收到第一封来信。<br><br>它会告诉你这些天<br>你放下了什么、<br>什么情绪常来找你。<br><br>还有——<br>你已经做得很好了。</div>';return}
-  const now7=new Date(Date.now()-7*86400000);const recent=h.filter(x=>new Date(x.d)>now7);
-  const total=h.length;const d=days();
-  const ec={};h.forEach(x=>{ec[x.e]=(ec[x.e]||0)+1});const t=Object.entries(ec).sort((a,b)=>b[1]-a[1])[0];
-  const we={};recent.forEach(x=>{we[x.e]=(we[x.e]||0)+1});const wt=Object.entries(we).sort((a,b)=>b[1]-a[1])[0];
-  let long=null;h.forEach(x=>{if((x.t||'').length>(long?.t?.length||0))long=x});
-  const poetry={焦虑:['像雾气一样飘来飘走','今天你又独自面对了它','它很轻——但你知道它来过'],遗憾:['那些沙子，握不住就扬了吧','有时候松开手才是拥有','轻舟已过'],期待:['对未来温柔的人，不会失眠','明天会因为你而不同','你已经走在路上了'],生气:['火苗亮了又灭。没事的。','那种感觉，不需要道歉','你是对的。放下也是对的。'],说不清:['有些情绪不需要名字','它来了。你在。它走了。','就这样。']};
-  const ph=poetry[wt?wt[0]:'说不清']||poetry['说不清'];
-  const now=new Date();
-  pad.innerHTML=`<div class="letter-sheet"><div class="let-head"><div class="let-date">${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 第${total}封</div><div class="let-to">亲爱的你，</div></div><div class="let-body">这一周，你来了 <em>${recent.length}</em> 次。<br><br>${wt?`最近常来的，是<em>「${wt[0]}」</em>。<br>${ph[total%ph.length]}<br><br>`:''}${long?.t?`你写过最长的：<br><em>「${long.t.slice(0,36)}${long.t.length>36?'…':''}」</em><br><br>`:''}从第一天到现在，<br>你走过了 <em>${d}</em> 个夜晚。<br>陪伴最久的是 <em>「${t?t[0]:'—'}」</em>。<br><br>你知道吗。<br>你每次打开这个 App，<br>都在做同一件事：<br><em>给今天画一个句号。</em><br><br>你已经做得很好了。</div><div class="let-sign">—— 了</div></div>`;
+function buildDonut(segments,centerLabel,centerValue){
+  const r=70;const cx=100;const cy=100;const strokeW=24;
+  const circ=2*Math.PI*r;let offset=0;
+  let paths='';let legend='';
+  // Filter out zero and sort
+  const valid=segments.filter(s=>s.value>0);
+  if(!valid.length)return '';
+  const total=valid.reduce((s,x)=>s+x.value,0);
+  valid.forEach(s=>{
+    const pct=s.value/total;const len=pct*circ;
+    const dash=len+' '+ (circ-len);
+    const angle=offset;offset+=pct;
+    const midAngle=(angle+pct/2)*2*Math.PI-Math.PI/2;
+    paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${strokeW}" stroke-dasharray="${dash}" stroke-dashoffset="${-(angle*circ)}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>\n`;
+    legend+=`<div class="legend-item"><span class="legend-dot" style="background:${s.color}"></span>${s.label} ${Math.round(s.value/total*100)}%</div>`;
+  });
+  return `
+    <svg viewBox="0 0 200 200" class="chart-svg">
+      ${paths}
+      <text x="${cx}" y="${cy-4}" class="chart-center-text">${centerLabel}</text>
+      <text x="${cx}" y="${cy+14}" class="chart-center-sub">¥${centerValue.toLocaleString()}</text>
+    </svg>
+    <div class="chart-legend">${legend}</div>
+  `;
+}
+
+function showDetail(){
+  const all=getAll();const today=all[0];
+  if(!today){$('#detailPanel').innerHTML='';$('#detailPanel').classList.remove('on');return}
+  const rev=today.wx+today.ali+today.cash;const profit=rev-today.cost-today.credit;
+  $('#detailPanel').innerHTML=`
+    <div class="detail-row"><span>微信</span><span>¥${today.wx.toLocaleString()}</span></div>
+    <div class="detail-row"><span>支付宝</span><span>¥${today.ali.toLocaleString()}</span></div>
+    <div class="detail-row"><span>现金</span><span>¥${today.cash.toLocaleString()}</span></div>
+    <div class="detail-row"><span>进货</span><span>¥${today.cost.toLocaleString()}</span></div>
+    <div class="detail-row"><span>赊账</span><span>¥${today.credit.toLocaleString()}</span></div>
+    <div class="detail-row"><span>今日利润</span><span style="color:${profit>=0?'#2e8b57':'#c05050'}">¥${profit.toLocaleString()}</span></div>
+  `;$('#detailPanel').classList.toggle('on');
+}
+
+// ==================== INPUT MODAL ====================
+function openInput(){
+  const td=getToday();if(td){$('#inpWx').value=td.wx||'';$('#inpAli').value=td.ali||'';$('#inpCash').value=td.cash||'';$('#inpCost').value=td.cost||'';$('#inpCredit').value=td.credit||''}
+  else{$('#inpWx,#inpAli,#inpCash,#inpCost,#inpCredit').val=[];$('#inpWx').value='';$('#inpAli').value='';$('#inpCash').value='';$('#inpCost').value='';$('#inpCredit').value=''}
+  $('#inputModal').classList.add('on');setTimeout(()=>$('#inpWx').focus(),300);
+}
+function closeInput(){$('#inputModal').classList.remove('on')}
+$('#btnCancel').onclick=closeInput;
+$('#btnAddRecord').onclick=openInput;
+$('#btnSave').onclick=function(){
+  const d=today();
+  const data={date:d,wx:parseFloat($('#inpWx').value)||0,ali:parseFloat($('#inpAli').value)||0,cash:parseFloat($('#inpCash').value)||0,cost:parseFloat($('#inpCost').value)||0,credit:parseFloat($('#inpCredit').value)||0};
+  addRecord(data);closeInput();renderDashboard();toast('✅ 已保存');
+};
+// Close modal on overlay click
+$('#inputModal').addEventListener('click',function(e){if(e.target===this)closeInput()});
+
+// ==================== WEEKLY ====================
+function renderWeekly(){
+  const weeks=[];const all=getAll();if(!all.length){$('#weekList').innerHTML='<div style="text-align:center;color:#8898a8;padding:40px">暂无数据</div>';return}
+  // Group by week
+  const weekMap={};all.forEach(x=>{const dt=new Date(x.date);const day=dt.getDay();const mon=new Date(dt);mon.setDate(dt.getDate()-(day===0?6:day-1));const key=mon.toISOString().slice(0,10);if(!weekMap[key])weekMap[key]=[];weekMap[key].push(x)});
+  Object.entries(weekMap).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([mon,items])=>{
+    const sun=new Date(mon);sun.setDate(sun.getDate()+6);
+    const profit=items.reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0);
+    const rev=items.reduce((s,x)=>s+x.wx+x.ali+x.cash,0);
+    weeks.push({mon,sun: sun.toISOString().slice(0,10),profit,rev,days:items.length});
+  });
+  $('#weekList').innerHTML=weeks.map(w=>{
+    const monStr=new Date(w.mon).toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
+    const sunStr=new Date(w.sun).toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
+    return `<div class="week-item"><div><div class="week-date">${monStr} — ${sunStr}</div><div style="font-size:11px;color:#8898a8">${w.days}天 · 营收 ¥${w.rev.toLocaleString()}</div></div><div class="week-profit ${w.profit>=0?'up':'down'}">¥${w.profit.toLocaleString()}</div></div>`;
+  }).join('');
+}
+
+// ==================== HISTORY ====================
+function renderHistory(){
+  const all=getAll();
+  if(!all.length){$('#historyList').innerHTML='<div style="text-align:center;color:#8898a8;padding:40px">暂无记录</div>';return}
+  $('#historyList').innerHTML=all.map(x=>{
+    const rev=x.wx+x.ali+x.cash;const profit=rev-x.cost-x.credit;
+    return `<div class="history-item" onclick="editRecord('${x.date}')"><div><div class="history-date">${x.date}</div><div class="history-detail">收 ¥${rev.toLocaleString()} · 进 ¥${x.cost.toLocaleString()} · 赊 ¥${x.credit.toLocaleString()}</div></div><div class="history-profit ${profit>=0?'up':'down'}">¥${profit.toLocaleString()}</div></div>`;
+  }).join('');
+}
+function editRecord(ds){
+  const all=load();const rec=all.find(x=>x.date===ds);if(!rec)return;
+  $('#inpWx').value=rec.wx;$('#inpAli').value=rec.ali;$('#inpCash').value=rec.cash;$('#inpCost').value=rec.cost;$('#inpCredit').value=rec.credit;
+  $('#inputModal').classList.add('on');
 }
 
 // ==================== SETTINGS ====================
-function updateSettings(){$('sDays').textContent=days()+' 天';$('sCount').textContent=cnt()+' 次';$('sTop').textContent=topE()}
-$('btnClear').addEventListener('click',()=>{if(confirm('清空所有记录？')){localStorage.removeItem('le_h');updateSettings();toast('已清空')}});
-$('btnLetterNow').addEventListener('click',()=>{renderLetter(true);go('letter');toast('你的来信已生成')});
+function renderSettings(){
+  const all=load();const month=getMonth();
+  $('#sDays').textContent=new Set(all.map(x=>x.date)).size+' 天';
+  $('#sCount').textContent=all.length+' 条';
+  $('#sMonth').textContent='¥'+month.reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0).toLocaleString();
+}
+function exportData(){
+  const all=load();if(!all.length){toast('暂无数据可导出');return}
+  let csv='日期,微信,支付宝,现金,进货,赊账,利润\n';
+  all.forEach(x=>{const rev=x.wx+x.ali+x.cash;csv+=`${x.date},${x.wx},${x.ali},${x.cash},${x.cost},${x.credit},${rev-x.cost-x.credit}\n`});
+  const blob=new Blob(['﻿'+csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='关门_数据_'+(new Date().toISOString().slice(0,10))+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('📤 已导出CSV文件');
+}
+$('#btnExport').onclick=exportData;
+$('#btnClearAll').onclick=()=>{if(confirm('清空所有数据？此操作不可恢复。\n\n建议先导出备份。')){localStorage.removeItem(DKEY);renderDashboard();renderSettings();toast('已清空')}};
 
-// ==================== TOAST ====================
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('on'),2000)}
+// ==================== NAV ====================
+$('#btnHistory').onclick=()=>goPage('pageHistory');
+$('#btnSettings').onclick=()=>goPage('pageSettings');
+$('#btnWeeklyBack').onclick=()=>goPage('pageDashboard');
+$('#btnHistBack').onclick=()=>goPage('pageDashboard');
+$('#btnSetBack').onclick=()=>goPage('pageDashboard');
 
 // ==================== INIT ====================
-function init(){setGreet();setTonight();resetRitual();go('ritual')}
+function init(){
+  renderDashboard();
+  // Demo data for first-time users
+  if(!load().length){
+    const demo=[
+      {date:'2025-06-06',wx:2350,ali:850,cash:320,cost:620,credit:65},
+      {date:'2025-06-05',wx:2100,ali:780,cash:290,cost:550,credit:40},
+      {date:'2025-06-04',wx:1980,ali:920,cash:410,cost:480,credit:0},
+      {date:'2025-06-03',wx:2560,ali:760,cash:350,cost:710,credit:80},
+      {date:'2025-06-02',wx:1890,ali:640,cash:280,cost:520,credit:30},
+      {date:'2025-06-01',wx:3100,ali:1100,cash:450,cost:900,credit:120},
+      {date:'2025-05-31',wx:2200,ali:800,cash:300,cost:580,credit:50},
+    ];
+    save(demo);
+    renderDashboard();
+  }
+}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
 document.addEventListener('DOMContentLoaded',init);
 </script>
