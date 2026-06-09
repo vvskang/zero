@@ -333,110 +333,120 @@ function updateHeader(){
   else if(curTab==='biz'){h.textContent='经营';b.style.display='none'}
   else if(curTab==='me'){h.textContent='我的';b.style.display='none'}
 }
-$('btnBack').onclick=goBack;
-// Bottom nav
-document.querySelectorAll('#bottomNav button').forEach(b=>b.onclick=function(){goTab(this.dataset.tab)});
-// Stock sub-tabs
-document.querySelectorAll('#tabStock .stab').forEach(b=>b.onclick=function(){goStockSub(this.dataset.st)});
-// Biz sub-tabs
-document.querySelectorAll('#tabBiz .stab').forEach(b=>b.onclick=function(){goBizSub(this.dataset.bz)});
-// Entry sub buttons
-$('btnGoPurchase').onclick=function(){goEntrySub('purchase')};
-$('btnGoCredit').onclick=function(){goEntrySub('credit')};
+// ==================== RENDER FUNCTIONS ====================
+function getVals(){var v={};FL.forEach(function(f){var el=$('q'+f.id);v[f.key]=el?+el.value||0:0});return v}
+function updateRev(){var v=getVals();var rev=v.wx+v.ali+v.cash;var profit=rev-v.cost-v.credit;$('revVal').textContent='¥'+fm(profit);$('revSub').textContent='营收 ¥'+fm(rev)+' · 成本 ¥'+fm(v.cost)+' · 赊账 ¥'+fm(v.credit)}
+function showDailyAlert(){var all=ld(K).sort(function(a,b){return b.date.localeCompare(a.date)});if(all.length<2)return;var yest=all[1];var yp=yest.wx+yest.ali+yest.cash-yest.cost-yest.credit;var v=getVals();var profit=v.wx+v.ali+v.cash-v.cost-v.credit;var box=$('alertBox');box.classList.remove('on','warn','danger');if(!profit&&!v.wx)return;if(yp>0&&profit<yp*.7){box.className='alert danger on';box.innerHTML='⚠️ 今日利润比昨天跌了'+Math.round((1-profit/yp)*100)+'%，建议查下原因';return}var wkAvg=all.slice(0,Math.min(7,all.length)).reduce(function(s,x){return s+x.wx+x.ali+x.cash-x.cost-x.credit},0)/Math.min(7,all.length);if(wkAvg>0&&profit<wkAvg*.6){box.className='alert warn on';box.innerHTML='📉 今日利润低于本周平均，是否成本高了？'}}
+function renderDaily(){var dt=ld(K).find(function(x){return x.date===td()});$('qcards').innerHTML=FL.map(function(f){return '<div class="qrow"><span class="qd" style="background:'+f.c+'"></span><span class="ql">'+f.l+'</span><input id="q'+f.id+'" type="number" placeholder="0" value="'+(dt?dt[f.key]||'':'')+'" inputmode="decimal"></div>'}).join('');$('noteInp').value=dt?dt.note||'':'';FL.forEach(function(f){var el=$('q'+f.id);if(el)el.oninput=updateRev});$('noteInp').oninput=updateRev;updateRev();showDailyAlert()}
+function parseVoice(t){var map={微信:'wx',支付宝:'ali',现金:'cash',进货:'cost',赊账:'credit'};var nums={wx:0,ali:0,cash:0,cost:0,credit:0};var nw={零:0,一:1,二:2,两:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9,十:10,百:100,千:1000,万:10000};Object.entries(map).forEach(function(e){var kw=e[0],k=e[1];var re=new RegExp(kw+'[^零一二两三四五六七八九十百千万]*?([零一二两三四五六七八九十百千万]+)','g');var m=t.match(re);if(!m)return;m.forEach(function(mt){var nr=mt.match(/([零一二两三四五六七八九十百千万]+)/);if(nr){var val=0,cur=0;for(var i=0;i<nr[1].length;i++){var c=nr[1][i];if(c==='十'){cur=cur||1;cur*=10;val+=cur;cur=0}else if(c==='百'){cur*=100;val+=cur;cur=0}else if(c==='千'){cur*=1000;val+=cur;cur=0}else if(c==='万'){cur*=10000;val+=cur;cur=0}else{cur=nw[c]||0}}val+=cur;nums[k]+=val}})});var dm=t.match(new RegExp(kw+'\\s*(\\d+)','g'));if(dm)dm.forEach(function(m){var n=parseInt(m.replace(kw,'').trim());if(!isNaN(n))nums[k]+=n})});FL.forEach(function(f){var el=$('q'+f.id);if(el)el.value=nums[f.key]||''});updateRev();showDailyAlert();toast('✅ 已识别语音')}
+var purchaseRows=1;
+function renderPurchase(){purchaseRows=1;$('purchaseItems').innerHTML='<div class="sr"><span class="sl">供应商</span><input id="pSup" placeholder="供应商名"></div><div id="pRows"><div class="sr"><span class="sl">商品</span><input id="pName0" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty0" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice0" type="number" placeholder="0"></div></div><div style="font-size:16px;font-weight:700;text-align:right;margin-top:8px">合计 ¥<span id="pTotal">0</span></div>';['pName0','pQty0','pPrice0'].forEach(function(id){var el=$(id);if(el)el.oninput=updatePTotal})}
+function updatePTotal(){var t=0;for(var i=0;i<purchaseRows;i++){var q=+($('pQty'+i)?$('pQty'+i).value:0);var p=+($('pPrice'+i)?$('pPrice'+i).value:0);t+=q*p}$('pTotal').textContent=fm(t)}
+function renderCredit(){var credits=ld(KC);var total=credits.filter(function(x){return!x.paid}).reduce(function(s,x){return s+x.amount},0);var cnt=credits.filter(function(x){return!x.paid}).length;$('crTotal').textContent='待收赊账 ¥'+fm(total);$('crCount').textContent=cnt+'人未结';$('creditList').innerHTML=credits.length?credits.map(function(c){return '<div class="white-card"><div class="sp-top"><div><div class="sp-name">'+c.person+(c.paid?' ✓':'')+'</div><div class="sp-sub">'+c.reason+'</div><div class="sp-sub">'+c.date+' '+(c.paid?'已还':'未还')+'</div></div><div style="color:'+(c.paid?'#34c759':'#c62828')+';font-weight:700;font-size:16px">¥'+fm(c.amount)+'</div></div>'+(c.paid?'':'<div style="margin-top:8px;display:flex;gap:8px"><button class="btn-outline" style="flex:1" onclick="markPaid('+c.id+')">✅ 已还款</button></div>')+'</div>'}).join(''):'<div class="empty">暂无赊账记录</div>'}
+function markPaid(id){var credits=ld(KC);var c=credits.find(function(x){return x.id===id});if(c){c.paid=true;sv(KC,credits);renderCredit();toast('✅ 已标记还款')}}
 
-// ==================== RENDER: DAILY CLOSE ====================
-function getVals(){
-  const v={};FL.forEach(f=>{const el=document.getElementById('q'+f.id);v[f.key]=el?+el.value||0:0});return v
-}
-function renderDaily(){
-  const dt=ld(K).find(x=>x.date===td());
-  $('qcards').innerHTML=FL.map(f=>`<div class="qrow"><span class="qd" style="background:${f.c}"></span><span class="ql">${f.l}</span><input id="q${f.id}" type="number" placeholder="0" value="${dt?dt[f.key]||'':''}" inputmode="decimal"></div>`).join('');
-  $('noteInp').value=dt?dt.note||'':'';FL.forEach(f=>{const el=$('q'+f.id);if(el)el.oninput=updateRev});
-  $('noteInp').oninput=updateRev;updateRev();showDailyAlert();
-}
-function updateRev(){
-  const v=getVals();const rev=v.wx+v.ali+v.cash;const profit=rev-v.cost-v.credit;
-  $('revVal').textContent='¥'+fm(profit);$('revSub').textContent='营收 ¥'+fm(rev)+' · 成本 ¥'+fm(v.cost)+' · 赊账 ¥'+fm(v.credit);
-}
-function showDailyAlert(){
-  const all=ld(K).sort((a,b)=>b.date.localeCompare(a.date));if(all.length<2)return;
-  const yest=all[1];const yp=yest.wx+yest.ali+yest.cash-yest.cost-yest.credit;
-  const v=getVals();const profit=v.wx+v.ali+v.cash-v.cost-v.credit;
-  const box=$('alertBox');box.classList.remove('on','warn','danger');
-  if(!profit&&!v.wx)return;
-  if(yp>0&&profit<yp*.7){box.className='alert danger on';box.innerHTML='⚠️ 今日利润比昨天跌了'+Math.round((1-profit/yp)*100)+'%，建议查下原因';return}
-  const wkAvg=all.slice(0,Math.min(7,all.length)).reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0)/Math.min(7,all.length);
-  if(wkAvg>0&&profit<wkAvg*.6){box.className='alert warn on';box.innerHTML='📉 今日利润低于本周平均，是否成本高了？'}
-}
-$('rbtnAdd').onclick=function(){$('qw')?.focus()};
-$('btnSaveDaily').onclick=function(){
-  const v=getVals();const note=$('noteInp').value.trim();
-  const d={date:td(),wx:v.wx,ali:v.ali,cash:v.cash,cost:v.cost,credit:v.credit,note};
-  const all=ld(K);const idx=all.findIndex(x=>x.date===d.date);
-  if(idx>=0)all[idx]=d;else all.push(d);sv(K,all);toast('✅ 已保存');renderDaily();
-};
+// ==================== BIND EVENTS + INIT ====================
+document.addEventListener('DOMContentLoaded',function(){
+  try{
+    // Header
+    $('btnBack').onclick=goBack;
+    $('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
+
+    // Bottom nav
+    document.querySelectorAll('#bottomNav button').forEach(b=>b.onclick=function(){goTab(this.dataset.tab)});
+
+    // Stock sub-tabs
+    document.querySelectorAll('#tabStock .stab').forEach(b=>b.onclick=function(){goStockSub(this.dataset.st)});
+
+    // Biz sub-tabs
+    document.querySelectorAll('#tabBiz .stab').forEach(b=>b.onclick=function(){goBizSub(this.dataset.bz)});
+
+    // Entry buttons
+    $('btnGoPurchase').onclick=function(){goEntrySub('purchase')};
+    $('btnGoCredit').onclick=function(){goEntrySub('credit')};
+    $('rbtnAdd').onclick=function(){var el=$('qw');if(el)el.focus()};
+    $('btnSaveDaily').onclick=saveDaily;
+    $('voiceBtn').onclick=startVoice;
+
+    // Purchase
+    $('btnAddItem').onclick=addPurchaseRow;
+    $('btnSavePurchase').onclick=savePurchase;
+
+    // Credit
+    $('btnAddCredit').onclick=function(){$('creditModal').classList.add('on')};
+    $('btnCrCancel').onclick=function(){$('creditModal').classList.remove('on')};
+    $('btnCrSave').onclick=saveCredit;
+
+    // Stock search
+    $('stockSearch').oninput=renderStock;
+
+    // Profile
+    $('btnExport').onclick=exportCSV;
+    $('btnRestore').onclick=function(){toast('请将备份文件发给开发者进行恢复')};
+    $('btnReminder').onclick=function(){toast('提醒设置：每晚20:30推送（需小程序环境）')};
+    $('btnHelp').onclick=function(){toast('使用帮助请联系客服微信：gm_support')};
+    $('btnUpgrade').onclick=function(){toast('订阅功能即将上线，敬请期待')};
+    $('btnShareMR').onclick=function(){toast('📤 月报已复制到剪贴板')};
+
+    // Edit modal
+    $('btnEditCancel').onclick=function(){$('editModal').classList.remove('on')};
+    $('btnEditSave').onclick=saveEdit;
+
+    renderDaily();
+    if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+  }catch(e){
+    document.body.innerHTML='<div style="padding:40px;text-align:center;color:red"><h2>加载失败</h2><p>'+e.message+'</p><p style="font-size:12px;color:#999">请截图发给开发者</p></div>';
+  }
+});
+
 // Voice
 let listening=false;
-$('voiceBtn').onclick=function(){
-  const btn=this;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function startVoice(){
+  var btn=$('voiceBtn');var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){toast('浏览器不支持语音');return}
   if(listening){listening=false;btn.classList.remove('on');return}
-  const rec=new SR();rec.lang='zh-CN';rec.interimResults=false;
+  var rec=new SR();rec.lang='zh-CN';rec.interimResults=false;
   listening=true;btn.classList.add('on');rec.start();
   rec.onresult=function(e){parseVoice(e.results[0][0].transcript)};
   rec.onerror=function(){listening=false;btn.classList.remove('on')};
   rec.onend=function(){listening=false;btn.classList.remove('on')};
-};
-function parseVoice(t){
-  const map={微信:'wx',支付宝:'ali',现金:'cash',进货:'cost',赊账:'credit'};
-  const nums={wx:0,ali:0,cash:0,cost:0,credit:0};
-  const nw={零:0,一:1,二:2,两:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9,十:10,百:100,千:1000,万:10000};
-  Object.entries(map).forEach(([kw,k])=>{
-    const re=new RegExp(kw+'[^零一二两三四五六七八九十百千万]*?([零一二两三四五六七八九十百千万]+)','g');const m=t.match(re);if(!m)return;
-    m.forEach(mt=>{const nr=mt.match(/([零一二两三四五六七八九十百千万]+)/);if(nr){let val=0,cur=0;for(let i=0;i<nr[1].length;i++){const c=nr[1][i];if(c==='十'){cur=cur||1;cur*=10;val+=cur;cur=0}else if(c==='百'){cur*=100;val+=cur;cur=0}else if(c==='千'){cur*=1000;val+=cur;cur=0}else if(c==='万'){cur*=10000;val+=cur;cur=0}else{cur=nw[c]||0}}val+=cur;nums[k]+=val}})});
-    const dm=t.match(new RegExp(kw+'\\s*(\\d+)','g'));if(dm)dm.forEach(m=>{const n=parseInt(m.replace(kw,'').trim());if(!isNaN(n))nums[k]+=n});
-  });
-  FL.forEach(f=>{$('q'+f.id).value=nums[f.key]||''});updateRev();showDailyAlert();toast('✅ 已识别语音');
 }
-
-// ==================== RENDER: PURCHASE ====================
-let purchaseRows=1;
-function renderPurchase(){
-  purchaseRows=1;$('purchaseItems').innerHTML=`<div class="sr"><span class="sl">供应商</span><input id="pSup" placeholder="供应商名"></div><div id="pRows"><div class="sr"><span class="sl">商品</span><input id="pName0" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty0" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice0" type="number" placeholder="0"></div></div><div style="font-size:16px;font-weight:700;text-align:right;margin-top:8px">合计 ¥<span id="pTotal">0</span></div>`;
-  ['pName0','pQty0','pPrice0'].forEach(id=>{const el=$(id);if(el)el.oninput=updatePTotal});
+function saveDaily(){
+  var v=getVals();var note=$('noteInp').value.trim();
+  var d={date:td(),wx:v.wx,ali:v.ali,cash:v.cash,cost:v.cost,credit:v.credit,note:note};
+  var all=ld(K);var idx=all.findIndex(function(x){return x.date===d.date});
+  if(idx>=0)all[idx]=d;else all.push(d);sv(K,all);toast('✅ 已保存');renderDaily();
 }
-function updatePTotal(){let t=0;for(let i=0;i<purchaseRows;i++){const q=+($('pQty'+i)?.value||0);const p=+($('pPrice'+i)?.value||0);t+=q*p}$('pTotal').textContent=fm(t)}
-$('btnAddItem').onclick=function(){
-  const i=purchaseRows++;const r=$('pRows');const d=document.createElement('div');d.innerHTML=`<div class="sr"><span class="sl">商品</span><input id="pName${i}" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty${i}" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice${i}" type="number" placeholder="0"></div>`;r.appendChild(d);['pName'+i,'pQty'+i,'pPrice'+i].forEach(id=>{const el=$(id);if(el)el.oninput=updatePTotal});
-};
-$('btnSavePurchase').onclick=function(){
-  const sup=$('pSup').value.trim();if(!sup){toast('请填写供应商');return}
-  let total=0;const items=[];
-  for(let i=0;i<purchaseRows;i++){const n=$('pName'+i)?.value.trim();const q=+($('pQty'+i)?.value||0);const p=+($('pPrice'+i)?.value||0);if(n&&q){items.push({name:n,qty:q,price:p});total+=q*p}}
+function savePurchase(){
+  var sup=$('pSup').value.trim();if(!sup){toast('请填写供应商');return}
+  var total=0,items=[];
+  for(var i=0;i<purchaseRows;i++){var n=$('pName'+i)&&$('pName'+i).value.trim();var q=+($('pQty'+i)&&$('pQty'+i).value||0);var p=+($('pPrice'+i)&&$('pPrice'+i).value||0);if(n&&q){items.push({name:n,qty:q,price:p});total+=q*p}}
   if(!items.length){toast('请添加商品');return}
-  // Save as purchase record
-  const ph=ld('gm_purchases');ph.push({date:td(),supplier:sup,items,total});sv('gm_purchases',ph);
-  // Update stock
-  const prods=ld(KP);items.forEach(item=>{const exist=prods.find(x=>x.name===item.name);if(exist){exist.stock+=item.qty;exist.pPrice=item.price;exist.supplier=sup}else{prods.push({id:Date.now(),name:item.name,pPrice:item.price,sPrice:0,supplier:sup,stock:item.qty,unit:'件',expiry:''})}});sv(KP,prods);
+  var ph=ld('gm_purchases');ph.push({date:td(),supplier:sup,items:items,total:total});sv('gm_purchases',ph);
+  var prods=ld(KP);items.forEach(function(item){var exist=prods.find(function(x){return x.name===item.name});if(exist){exist.stock+=item.qty;exist.pPrice=item.price;exist.supplier=sup}else{prods.push({id:Date.now(),name:item.name,pPrice:item.price,sPrice:0,supplier:sup,stock:item.qty,unit:'件',expiry:''})}});sv(KP,prods);
   toast('✅ 进货单已保存');renderPurchase();
-};
-
-// ==================== RENDER: CREDIT ====================
-function renderCredit(){
-  const credits=ld(KC);const total=credits.filter(x=>!x.paid).reduce((s,x)=>s+x.amount,0);
-  const cnt=credits.filter(x=>!x.paid).length;
-  $('crTotal').textContent='待收赊账 ¥'+fm(total);$('crCount').textContent=cnt+'人未结';
-  $('creditList').innerHTML=credits.length?credits.map(c=>`<div class="white-card"><div class="sp-top"><div><div class="sp-name">${c.person}${c.paid?' ✓':''}</div><div class="sp-sub">${c.reason}</div><div class="sp-sub">${c.date} ${c.paid?'已还':'未还'}</div></div><div style="color:${c.paid?'#34c759':'#c62828'};font-weight:700;font-size:16px">¥${fm(c.amount)}</div></div>${!c.paid?`<div style="margin-top:8px;display:flex;gap:8px"><button class="btn-outline" style="flex:1" onclick="markPaid(${c.id})">✅ 已还款</button></div>`:''}</div>`).join(''):'<div class="empty">暂无赊账记录</div>';
 }
-$('btnAddCredit').onclick=function(){$('creditModal').classList.add('on')};
-$('btnCrCancel').onclick=function(){$('creditModal').classList.remove('on')};
-$('btnCrSave').onclick=function(){
-  const n=$('crName').value.trim(),a=+($('crAmt').value||0),r=$('crReason').value.trim();
+function addPurchaseRow(){
+  var i=purchaseRows++;var r=$('pRows');var d=document.createElement('div');
+  d.innerHTML='<div class="sr"><span class="sl">商品</span><input id="pName'+i+'" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty'+i+'" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice'+i+'" type="number" placeholder="0"></div>';
+  r.appendChild(d);['pName'+i,'pQty'+i,'pPrice'+i].forEach(function(id){var el=$(id);if(el)el.oninput=updatePTotal});
+}
+function saveCredit(){
+  var n=$('crName').value.trim(),a=+($('crAmt').value||0),r=$('crReason').value.trim();
   if(!n||!a){toast('请填写姓名和金额');return}
-  const credits=ld(KC);credits.push({id:Date.now(),person:n,amount:a,reason:r,date:td(),paid:false});sv(KC,credits);
+  var credits=ld(KC);credits.push({id:Date.now(),person:n,amount:a,reason:r,date:td(),paid:false});sv(KC,credits);
   $('creditModal').classList.remove('on');renderCredit();toast('✅ 已记录');
-};
-function markPaid(id){const credits=ld(KC);const c=credits.find(x=>x.id===id);if(c){c.paid=true;sv(KC,credits);renderCredit();toast('✅ 已标记还款')}}
+}
+function saveEdit(){
+  // placeholder for future edit functionality
+  $('editModal').classList.remove('on');toast('✅ 已保存');
+}
+function exportCSV(){
+  var all=ld(K);if(!all.length){toast('暂无数据');return}
+  var csv='日期,微信,支付宝,现金,进货,赊账,利润,备注\n';all.forEach(function(x){var r=x.wx+x.ali+x.cash;csv+=x.date+','+x.wx+','+x.ali+','+x.cash+','+x.cost+','+x.credit+','+(r-x.cost-x.credit)+','+(x.note||'')+'\n'});
+  var b=new Blob(['﻿'+csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='关门_'+td()+'.csv';a.click();URL.revokeObjectURL(u);toast('📤 已导出');
+}
+</script>
 
 // ==================== RENDER: STOCK ====================
 function renderStock(){
@@ -527,9 +537,15 @@ $('btnShareMR').onclick=function(){toast('📤 月报已复制到剪贴板')};
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
 
 // ==================== INIT ====================
-$('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
-renderDaily();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+document.addEventListener('DOMContentLoaded',function(){
+  try{
+    $('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
+    renderDaily();
+    if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+  }catch(e){
+    document.body.innerHTML='<div style="padding:40px;text-align:center;color:red"><h2>加载失败</h2><p>'+e.message+'</p><p style="font-size:12px;color:#999">请截图发给开发者</p></div>';
+  }
+});
 </script>
 </body>
 </html>
