@@ -180,9 +180,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .legend i{width:7px;height:7px;border-radius:2px;display:inline-block}
 
 .empty-state{text-align:center;padding:40px 20px;color:#8e8e93;font-size:14px;line-height:1.8}
+
+/* Activation */
+.act-overlay{position:fixed;inset:0;z-index:999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px 32px}
+.act-overlay.off{display:none}
+.act-icon{font-size:56px;margin-bottom:16px}
+.act-title{font-size:22px;font-weight:700;color:#1d1d1f;margin-bottom:6px}
+.act-sub{font-size:13px;color:#8e8e93;margin-bottom:28px;text-align:center;line-height:1.6}
+.act-input{width:100%;max-width:260px;padding:14px 18px;border:2px solid #e5e5ea;border-radius:14px;font-size:18px;text-align:center;outline:none;font-family:inherit;letter-spacing:2px;text-transform:uppercase}
+.act-input:focus{border-color:#3b82f6}
+.act-input::placeholder{color:#c7c7cc;letter-spacing:0;text-transform:none}
+.act-err{font-size:12px;color:#ff3b30;margin-top:8px;min-height:20px}
+.act-btn{margin-top:18px;width:100%;max-width:260px;padding:15px;border-radius:14px;border:none;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;background:#3b82f6;color:#fff}
+.act-btn:active{transform:scale(.97)}
+.act-btn:disabled{background:#d0d5dd;color:#999}
+.act-foot{font-size:11px;color:#aeaeb2;margin-top:16px;text-align:center;line-height:1.6}
 </style>
 </head>
 <body>
+<!-- Activation Gate -->
+<div class="act-overlay" id="actGate">
+  <div class="act-icon">🔐</div>
+  <div class="act-title">激活工具箱</div>
+  <div class="act-sub">输入你的激活码以开始使用。</div>
+  <input class="act-input" id="actInput" placeholder="输入激活码" autocomplete="off">
+  <div class="act-err" id="actErr"></div>
+  <button class="act-btn" id="actBtn">激活</button>
+  <div class="act-foot">没有激活码？联系老板获取。<br>一个激活码绑定一台设备。</div>
+</div>
+
 <div id="app">
   <div class="hdr"><h1 id="hdrTitle">记账</h1><span class="hdr-r" id="hdrDate"></span></div>
 
@@ -437,12 +463,37 @@ document.getElementById('btnSaveModal').onclick=function(){
 };
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)document.getElementById('modal').classList.remove('on')});
 
+// ============ ACTIVATION ============
+const VALID_CODES=['GM-0001','GM-0002','GM-0003','GM-0004','GM-0005','GM-0006','GM-0007','GM-0008','GM-0009','GM-0010'];
+const ACT_KEY='gm_activated';
+function isActivated(){return localStorage.getItem(ACT_KEY)==='1'}
+function activate(code){
+  const c=code.trim().toUpperCase();
+  if(!c)return'请输入激活码';
+  if(!VALID_CODES.includes(c))return'激活码无效';
+  localStorage.setItem(ACT_KEY,'1');localStorage.setItem('gm_code',c);
+  document.getElementById('actGate').classList.add('off');
+  toast('✅ 激活成功');
+  return null;
+}
+document.getElementById('actBtn').onclick=function(){
+  const err=activate(document.getElementById('actInput').value);
+  document.getElementById('actErr').textContent=err||'';
+  if(!err)renderEntry();
+};
+document.getElementById('actInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){document.getElementById('actBtn').click()}
+});
+
 // ============ INIT ============
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
 document.getElementById('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
-// Reminder
 if('Notification' in window&&Notification.permission==='default'){setTimeout(()=>Notification.requestPermission(),3000)}
-renderEntry();
+
+if(isActivated()){
+  document.getElementById('actGate').classList.add('off');
+  renderEntry();
+}
 if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 </script>
 </body>
