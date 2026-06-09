@@ -462,21 +462,21 @@ $('#btnSetBack').onclick=()=>goPage('pageDashboard');
 
 // ==================== INIT ====================
 function init(){
-  renderDashboard();
-  // Demo data for first-time users
+  // Generate demo data for last 7 days if empty
   if(!load().length){
-    const demo=[
-      {date:'2025-06-06',wx:2350,ali:850,cash:320,cost:620,credit:65},
-      {date:'2025-06-05',wx:2100,ali:780,cash:290,cost:550,credit:40},
-      {date:'2025-06-04',wx:1980,ali:920,cash:410,cost:480,credit:0},
-      {date:'2025-06-03',wx:2560,ali:760,cash:350,cost:710,credit:80},
-      {date:'2025-06-02',wx:1890,ali:640,cash:280,cost:520,credit:30},
-      {date:'2025-06-01',wx:3100,ali:1100,cash:450,cost:900,credit:120},
-      {date:'2025-05-31',wx:2200,ali:800,cash:300,cost:580,credit:50},
-    ];
+    const demo=[];
+    const now=new Date();
+    for(let i=6;i>=0;i--){
+      const d=new Date(now);d.setDate(now.getDate()-i);
+      const ds=d.toISOString().slice(0,10);
+      const wx=Math.floor(1800+Math.random()*1800);const ali=Math.floor(500+Math.random()*700);
+      const cash=Math.floor(200+Math.random()*300);const cost=Math.floor(400+Math.random()*600);
+      const credit=Math.random()>.5?Math.floor(Math.random()*120):0;
+      demo.push({date:ds,wx,ali,cash,cost,credit});
+    }
     save(demo);
-    renderDashboard();
   }
+  renderDashboard();
 }
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
 document.addEventListener('DOMContentLoaded',init);
