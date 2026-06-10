@@ -3,549 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#f5f5f7">
+<meta name="theme-color" content="#f8f6f2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>关门 · 老板工具箱</title>
+<title>决定了</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%233b82f6'/><text x='50' y='70' text-anchor='middle' fill='white' font-size='54' font-weight='700' font-family='system-ui'>关</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%23f8f6f2'/><text x='50' y='58' text-anchor='middle' fill='%2333353a' font-size='20' font-weight='700' font-family='system-ui'>决定了</text><text x='50' y='76' text-anchor='middle' fill='%23999' font-size='10' font-family='system-ui'>pick one</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-tap-highlight-color:transparent;height:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;background:#f5f5f7;color:#1d1d1f;height:100dvh;overflow:hidden}
-#app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;background:#fff;position:relative}
-
-/* Header */
-.hdr{display:flex;align-items:center;padding:12px 16px;background:#fff;flex-shrink:0;min-height:44px}
-.hdr .back{color:#3b82f6;font-size:15px;background:none;border:none;cursor:pointer;padding:4px 8px 4px 0;font-family:inherit}
-.hdr .title{flex:1;text-align:center;font-size:17px;font-weight:600;margin-right:40px}
-.hdr .rt{font-size:13px;color:#8e8e93;white-space:nowrap}
-
-/* Pages & Panels */
-.pg{display:none;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.pg.on{display:flex}
-.pad{padding:12px 16px 20px}
-.sub{display:none;flex:1;flex-direction:column;overflow-y:auto}
-.sub.on{display:flex}
-
-/* Sub-tabs */
-.stabs{display:flex;gap:0;margin:0 16px 12px;background:#f0f0f5;border-radius:10px;padding:3px;flex-shrink:0}
-.stab{flex:1;padding:9px 4px;text-align:center;border-radius:8px;font-size:13px;color:#8e8e93;cursor:pointer;border:none;background:none;font-family:inherit}
-.stab.active{background:#fff;color:#1d1d1f;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-
-/* Cards */
-.rev-card{background:linear-gradient(135deg,#3b82f6,#5b9af9);border-radius:16px;padding:20px;color:#fff;margin-bottom:14px;position:relative}
-.rev-card .rl{font-size:13px;opacity:.85}
-.rev-card .rv{font-size:36px;font-weight:700;margin:4px 0}
-.rev-card .rs{font-size:12px;opacity:.6}
-.rev-card .rbtn{position:absolute;right:16px;bottom:16px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit}
-
-.voice-area{display:flex;flex-direction:column;align-items:center;padding:12px 0 16px}
-.voice-btn{width:72px;height:72px;border-radius:50%;background:#f0f0f5;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.voice-btn svg{width:30px;height:30px;fill:#3b82f6}
-.voice-btn:active{background:#e5e5ea;transform:scale(.94)}
-.voice-btn.on{background:#3b82f6}.voice-btn.on svg{fill:#fff;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.voice-label{font-size:12px;color:#8e8e93;margin-top:6px}
-.voice-hint{font-size:10px;color:#aeaeb2;text-align:center;margin-top:4px;line-height:1.5}
-
-.qrow{display:flex;align-items:center;justify-content:space-between;background:#f5f5f7;border-radius:14px;padding:14px 16px;margin-bottom:8px}
-.qrow .qd{width:10px;height:10px;border-radius:3px;margin-right:10px}
-.qrow .ql{font-size:15px;flex:1}
-.qrow input{width:110px;border:none;background:transparent;font-size:18px;font-weight:600;text-align:right;outline:none;font-family:inherit}
-.qrow input::placeholder{color:#c7c7cc;font-weight:400}
-
-.note-row{display:flex;align-items:center;background:#f5f5f7;border-radius:14px;padding:12px 16px;margin-bottom:14px;gap:8px}
-.note-row input{border:none;background:transparent;flex:1;font-size:13px;outline:none;font-family:inherit}
-.note-row input::placeholder{color:#c7c7cc}
-
-.qlinks{display:flex;gap:8px;margin-bottom:14px}
-.qlinks button{flex:1;padding:14px;background:#fff;border:none;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;color:#3c3c43;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.qlinks button:active{background:#f5f5f7}
-
-.btn-save{width:100%;padding:15px;border-radius:14px;border:none;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;background:#3b82f6;color:#fff;margin-bottom:16px}
-.btn-save:active{transform:scale(.98)}
-.btn-outline{width:100%;padding:13px;border-radius:14px;border:1px solid #3b82f6;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;background:#fff;color:#3b82f6;text-align:center}
-
-/* Alert */
-.alert{display:none;padding:12px 14px;border-radius:12px;font-size:12px;margin-bottom:12px;align-items:center;gap:8px}
-.alert.on{display:flex}
-.alert.warn{background:#fff8e1;color:#856404}
-.alert.danger{background:#ffebee;color:#a94442}
-
-/* Cards */
-.white-card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.03);margin-bottom:10px}
-
-/* Chart row */
-.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-
-/* Metric row */
-.met-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.met{background:#fff;border-radius:14px;padding:14px;text-align:center}
-.met .ml{font-size:10px;color:#8e8e93;margin-bottom:4px}
-.met .mv{font-size:17px;font-weight:700}
-
-/* Bar chart */
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.bar-row .bl{width:40px;font-size:11px;color:#8e8e93;text-align:right;flex-shrink:0}
-.bar-row .bb{flex:1;height:26px;border-radius:7px;min-width:2px}
-.bar-row .br{font-size:13px;font-weight:600;flex-shrink:0}
-
-/* Lists */
-.itm{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #f0f0f5;cursor:pointer}
-.itm:last-child{border:none}.itm:active{opacity:.6}
-.itm .id{font-size:13px;font-weight:500}.itm .is{font-size:11px;color:#8e8e93;margin-top:2px}
-.itm .iv{font-size:14px;font-weight:600}.itm .iv.up{color:#34c759}.itm .iv.down{color:#ff3b30}
-
-/* Stock list */
-.stock-item{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 0;border-bottom:1px solid #f0f0f5}
-.stock-item:last-child{border:none}
-.stock-item .si-l{flex:1}.stock-item .si-name{font-size:15px;font-weight:500}
-.stock-item .si-sub{font-size:11px;color:#8e8e93;margin-top:2px;line-height:1.5}
-.stock-item .si-r{text-align:right}.stock-item .si-qty{font-size:18px;font-weight:700}
-.stock-item .si-tag{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500;margin-top:2px}
-.stock-item .si-tag.g{background:#e8f5e9;color:#2e7d32}.stock-item .si-tag.o{background:#fff8e1;color:#e65100}.stock-item .si-tag.r{background:#ffebee;color:#c62828}
-
-/* Search */
-.search-bar{display:flex;align-items:center;background:#f0f0f5;border-radius:12px;padding:10px 14px;margin-bottom:12px}
-.search-bar input{border:none;background:transparent;flex:1;font-size:14px;outline:none;font-family:inherit}
-.search-bar input::placeholder{color:#aeaeb2}
-
-/* Monthly report dark card */
-.mr-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;padding:24px;color:#fff;margin-bottom:14px}
-.mr-card h3{text-align:center;font-size:16px;margin-bottom:16px}
-.mr-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}
-.mr-row:last-child{border:none}.mr-row .mrr{font-weight:600}
-.mr-best{text-align:center;margin-top:12px;font-size:13px;opacity:.8}
-.mr-best span{color:#ffd700;font-weight:700}
-
-/* Supplier */
-.sup-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.02);cursor:pointer}
-.sup-card:active{background:#f9f9fb}
-.sup-card .sp-top{display:flex;justify-content:space-between;align-items:center}
-.sup-card .sp-name{font-size:15px;font-weight:500}
-.sup-card .sp-amt{font-size:16px;font-weight:700;color:#c62828}
-.sup-card .sp-sub{font-size:11px;color:#8e8e93;margin-top:4px}
-.sup-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f5;font-size:12px;color:#8e8e93;line-height:1.8}
-.sup-detail.on{display:block}
-
-/* Profile */
-.prof-card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px}
-.prof-card .pn{font-size:18px;font-weight:600;margin-bottom:6px}
-.prof-card .pd{font-size:13px;color:#8e8e93;line-height:1.8}
-.menu-list{background:#fff;border-radius:14px;margin-bottom:14px}
-.menu-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #f0f0f5;font-size:14px;cursor:pointer}
-.menu-row:last-child{border:none}.menu-row:active{background:#f9f9fb}
-.menu-row span{flex:1}.menu-row .ar{color:#c7c7cc}
-.sub-card{background:#f0f5ff;border-radius:14px;padding:18px;margin-bottom:14px}
-.sub-card .st{font-size:14px;color:#8e8e93;margin-bottom:2px}
-.sub-card .sp{font-size:22px;font-weight:700;color:#3b82f6;margin-bottom:8px}
-.sub-card .sf{font-size:11px;color:#8e8e93;line-height:1.6;margin-bottom:12px}
-.btn-upgrade{width:100%;padding:13px;border-radius:14px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;background:#3b82f6;color:#fff}
-.btn-upgrade:active{transform:scale(.98)}
-
-/* Bottom nav */
-.bnav{display:flex;background:#fff;border-top:1px solid rgba(0,0,0,.04);padding:6px 12px max(6px,env(safe-area-inset-bottom));flex-shrink:0}
-.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;border:none;background:none;cursor:pointer;font-size:10px;color:#8e8e93;font-family:inherit}
-.bnav button.active{color:#3b82f6}.bnav button .bi{font-size:22px}
-
-/* Modal */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:none;align-items:flex-end;justify-content:center}
-.modal.on{display:flex}
-.sheet{background:#fff;width:100%;max-width:430px;border-radius:24px 24px 0 0;padding:8px 20px 30px;animation:up .3s ease-out}
-@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.sheet .sh{width:36px;height:5px;border-radius:3px;background:#d1d1d6;margin:8px auto 16px}
-.sheet h3{font-size:17px;font-weight:600;text-align:center;margin-bottom:16px}
-.sr{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #f0f0f5}
-.sr .sl{font-size:14px;display:flex;align-items:center;gap:8px}
-.sr .sl .sd{width:10px;height:10px;border-radius:3px}
-.sr input{width:120px;border:1px solid #e5e5ea;border-radius:12px;padding:10px 12px;font-size:16px;text-align:right;outline:none;background:#fafafa;font-family:inherit}
-.sr input:focus{border-color:#3b82f6;background:#fff}
-.sheet .ba{display:flex;gap:10px;margin-top:18px}
-.sheet .ba button{flex:1;padding:14px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
-.sheet .ba .bs{background:#3b82f6;color:#fff}.sheet .ba .bc{background:#f0f0f5;color:#3c3c43}
-
-
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:#f8f6f2;color:#33353a;min-height:100dvh;overflow-x:hidden;
+}
+#app{max-width:440px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:50px 28px 40px}
+/* Spinner */
+.spin-area{width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
+.spin-label{font-size:12px;color:#b0ada6;letter-spacing:2px;margin-bottom:24px}
+/* Wheel */
+.wheel-wrap{position:relative;width:240px;height:240px}
+.wheel-svg{width:100%;height:100%;transform:rotate(0deg);transition:transform 4s cubic-bezier(.17,.67,.12,.99)}
+.wheel-svg.spinning{transform:rotate(1800deg)}
+.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);z-index:2}
+/* Input */
+.input-area{width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.opt-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:10px 18px;box-shadow:0 1px 4px rgba(0,0,0,.03);transition:all .15s}
+.opt-row:focus-within{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.opt-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.opt-row input{border:none;flex:1;font-size:17px;outline:none;font-family:inherit;background:transparent;color:#33353a}
+.opt-row input::placeholder{color:#c5c0b8}
+.opt-del{width:28px;height:28px;border-radius:50%;border:none;background:#f0eeea;color:#b0ada6;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.opt-del:active{background:#e5e2dc}
+/* Add btn */
+.add-btn{width:100%;padding:14px;border:2px dashed #e0dcd5;border-radius:18px;background:transparent;color:#b0ada6;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:all .15s}
+.add-btn:hover{border-color:#c5c0b8;color:#8a8680}
+/* Decide btn */
+.decide-btn{width:100%;padding:18px;border-radius:20px;border:none;background:#33353a;color:#fff;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:1px;margin-top:8px;margin-bottom:24px;transition:all .15s}
+.decide-btn:active{transform:scale(.97);opacity:.9}
+.decide-btn:disabled{background:#d5d2cc;color:#b0ada6;cursor:not-allowed}
+/* Result */
+.result{text-align:center;display:none;animation:fadeIn .5s}
+.result.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result .re-label{font-size:13px;color:#b0ada6;letter-spacing:2px;margin-bottom:8px}
+.result .re-value{font-size:40px;font-weight:800;color:#33353a;letter-spacing:-1px;margin-bottom:6px;word-break:break-all}
+.result .re-sub{font-size:14px;color:#8a8680;margin-bottom:16px}
+.result .re-actions{display:flex;gap:10px;justify-content:center}
+.result .re-actions button{padding:10px 24px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;border:none}
+.re-again{background:#f0eeea;color:#555}
+.re-share{background:#33353a;color:#fff}
+.re-again:active,.re-share:active{transform:scale(.96)}
+/* History */
+.hist-section{margin-top:32px;width:100%}
+.hist-title{font-size:12px;color:#c5c0b8;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.hist-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-radius:14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.02);transition:all .15s}
+.hist-item:active{background:#faf9f7}
+.hist-item .hi-q{font-size:13px;color:#8a8680;flex:1}
+.hist-item .hi-a{font-size:15px;font-weight:700;color:#33353a;margin:0 12px}
+.hist-item .hi-del{width:24px;height:24px;border-radius:50%;border:none;background:transparent;color:#d0ccc6;cursor:pointer;font-size:12px;flex-shrink:0}
 /* Toast */
-.toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(120px);z-index:300;background:rgba(60,60,67,.92);color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;transition:transform .35s;pointer-events:none;font-weight:500}
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:#33353a;color:#fff;padding:10px 20px;border-radius:22px;font-size:14px;transition:transform .35s;pointer-events:none;font-weight:500}
 .toast.on{transform:translateX(-50%) translateY(0)}
-
-.leg{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px;font-size:10px;color:#8e8e93}
-.leg span{display:flex;align-items:center;gap:4px}.leg i{width:7px;height:7px;border-radius:2px;display:inline-block}
-.empty{text-align:center;padding:40px;color:#8e8e93;font-size:14px;line-height:1.8}
+/* Empty */
+.empty{text-align:center;color:#d0ccc6;font-size:13px;padding:20px;line-height:1.8}
+@media(max-width:360px){.wheel-wrap{width:200px;height:200px}.result .re-value{font-size:32px}}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- ===== HEADER ===== -->
-  <div class="hdr" id="hdr">
-    <button class="back" id="btnBack" style="display:none">← 返回</button>
-    <span class="title" id="hdrTitle">关门</span>
-    <span class="rt" id="hdrDate"></span>
-  </div>
-
-  <!-- ===== TAB 1: 记账 ===== -->
-  <div class="pg on" id="tabEntry">
-    <!-- Main: 每日对账 -->
-    <div class="sub on" id="subDaily">
-      <div class="pad">
-        <div class="rev-card"><div class="rl">今日利润</div><div class="rv" id="revVal">¥0</div><div class="rs" id="revSub">营收 ¥0 · 成本 ¥0 · 赊账 ¥0</div><button class="rbtn" id="rbtnAdd">＋ 记一笔</button></div>
-        <div class="voice-area"><button class="voice-btn" id="voiceBtn"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button><div class="voice-label">语音记账</div><div class="voice-hint">试着说：微信两千三，支付宝八百五，现金三百</div></div>
-        <div class="alert" id="alertBox"></div>
-        <div id="qcards"></div>
-        <div class="note-row"><span>📝</span><input id="noteInp" placeholder="备注（今天下雨、隔壁开业…）"></div>
-        <div class="qlinks"><button id="btnGoPurchase">📸 拍照记账</button><button id="btnGoCredit">📋 赊账记录</button></div>
-        <button class="btn-save" id="btnSaveDaily">保存</button>
-      </div>
-    </div>
-    <!-- Sub: 进货单 -->
-    <div class="sub" id="subPurchase">
-      <div class="pad">
-        <div class="white-card" style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:8px">📸</div><div style="font-size:15px;color:#8e8e93">拍照识别送货单</div></div>
-        <div class="white-card" style="text-align:center;padding:24px;margin-top:10px"><div style="font-size:48px;margin-bottom:8px">🎤</div><div style="font-size:15px;color:#8e8e93">语音输入</div><div style="font-size:11px;color:#aeaeb2;margin-top:4px">试着说：李老板送了可乐5箱、雪碧3箱</div></div>
-        <div class="white-card" style="margin-top:10px"><div style="font-size:14px;font-weight:600;margin-bottom:12px">手动录入</div><div id="purchaseItems"></div><button class="btn-outline" id="btnAddItem" style="margin-top:8px">＋ 添加商品</button></div>
-        <button class="btn-save" id="btnSavePurchase" style="margin-top:10px">保存进货单</button>
-      </div>
-    </div>
-    <!-- Sub: 赊账本 -->
-    <div class="sub" id="subCredit">
-      <div class="pad">
-        <div style="font-size:22px;font-weight:700;color:#c62828;margin-bottom:4px" id="crTotal">待收赊账 ¥0</div>
-        <div style="font-size:12px;color:#8e8e93;margin-bottom:14px" id="crCount">0人未结</div>
-        <button class="btn-outline" id="btnAddCredit" style="margin-bottom:14px">＋ 新增赊账</button>
-        <div id="creditList"></div>
-      </div>
+  <div class="spin-area">
+    <div class="spin-label">转一转 · 交给命运</div>
+    <div class="wheel-wrap" id="wheelWrap">
+      <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"></svg>
+      <div class="wheel-center" id="wheelCenter">🎯</div>
     </div>
   </div>
 
-  <!-- ===== TAB 2: 库存 ===== -->
-  <div class="pg" id="tabStock">
-    <div class="stabs"><button class="stab active" data-st="list">库存列表</button><button class="stab" data-st="expiry">临期预警</button><button class="stab" data-st="history">进货记录</button></div>
-    <!-- 库存列表 -->
-    <div class="sub on" id="stList">
-      <div class="pad"><div class="search-bar"><span>🔍</span><input id="stockSearch" placeholder="搜索商品…"></div><div class="met-row"><div class="met"><div class="ml">总商品</div><div class="mv" id="stTotal">0</div></div><div class="met"><div class="ml">总库存值</div><div class="mv" id="stValue">¥0</div></div><div class="met"><div class="ml">本月入库</div><div class="mv" id="stIn">¥0</div></div></div><div id="stockList"></div></div>
-    </div>
-    <!-- 临期预警 -->
-    <div class="sub" id="stExpiry"><div class="pad"><div class="alert warn on" id="expAlert" style="display:flex">⚠️ 加载中…</div><div id="expiryList"></div></div></div>
-    <!-- 进货记录 -->
-    <div class="sub" id="stHistory"><div class="pad"><div id="purchaseHistory"></div></div></div>
-  </div>
+  <div class="input-area" id="inputArea"></div>
+  <button class="add-btn" id="btnAdd">＋ 添加选项</button>
+  <button class="decide-btn" id="btnDecide">决定了</button>
 
-  <!-- ===== TAB 3: 经营 ===== -->
-  <div class="pg" id="tabBiz">
-    <div class="stabs"><button class="stab active" data-bz="overview">本月概览</button><button class="stab" data-bz="report">月度报告</button><button class="stab" data-bz="supplier">供应商对账</button></div>
-    <!-- 本月概览 -->
-    <div class="sub on" id="bzOverview"><div class="pad"><div class="met-row"><div class="met"><div class="ml">本月营收</div><div class="mv" id="bzRev">¥0</div></div><div class="met"><div class="ml">本月成本</div><div class="mv" id="bzCost">¥0</div></div><div class="met"><div class="ml">本月利润</div><div class="mv" style="color:#34c759" id="bzProfit">¥0</div></div></div><div class="alert danger" id="bzAlert" style="display:none"></div><div class="chart-row" id="bzCharts"></div><div class="white-card"><div style="font-size:13px;font-weight:600;margin-bottom:10px">收支对比</div><div id="bzBars"></div></div><div style="font-size:13px;font-weight:600;margin:14px 0 8px">本周明细</div><div id="bzWeek"></div></div></div>
-    <!-- 月度报告 -->
-    <div class="sub" id="bzReport"><div class="pad"><div class="mr-card" id="mrContent"></div><button class="btn-outline" id="btnShareMR">📤 分享月报</button></div></div>
-    <!-- 供应商对账 -->
-    <div class="sub" id="bzSupplier"><div class="pad"><div style="font-size:22px;font-weight:700;color:#c62828;margin-bottom:4px" id="spTotal">本月待付 ¥0</div><div style="font-size:12px;color:#8e8e93;margin-bottom:14px" id="spCount">0个供应商</div><div id="supplierList"></div></div></div>
-  </div>
-
-  <!-- ===== TAB 4: 我的 ===== -->
-  <div class="pg" id="tabMe">
-    <div class="pad">
-      <div class="prof-card"><div class="pn">老王家超市</div><div class="pd">📞 138-xxxx-xxxx<br>📍 XX市XX区XX路XX号</div></div>
-      <div class="menu-list"><div class="menu-row" id="btnExport"><span>📤 数据导出</span><span class="ar">›</span></div><div class="menu-row" id="btnRestore"><span>📥 数据恢复</span><span class="ar">›</span></div><div class="menu-row" id="btnReminder"><span>🔔 提醒设置</span><span class="ar">›</span></div><div class="menu-row" id="btnHelp"><span>📖 使用帮助</span><span class="ar">›</span></div></div>
-      <div class="sub-card"><div class="st">当前版本：免费试用</div><div class="sp">升级专业版 · ¥399/年</div><div class="sf">✓ 无限记录 · 语音记账 · 月报导出 · 数据备份 · 优先客服</div><button class="btn-upgrade" id="btnUpgrade">立即升级</button></div>
-      <div style="text-align:center;font-size:11px;color:#aeaeb2">v1.0.0</div>
+  <div class="result" id="resultArea">
+    <div class="re-label">命运选择了</div>
+    <div class="re-value" id="resultText"></div>
+    <div class="re-sub">这个决定怎么样？</div>
+    <div class="re-actions">
+      <button class="re-again" id="btnAgain">再转一次</button>
+      <button class="re-share" id="btnShare">📤 分享结果</button>
     </div>
   </div>
 
-  <!-- ===== BOTTOM NAV ===== -->
-  <div class="bnav" id="bottomNav">
-    <button class="active" data-tab="entry"><span class="bi">✎</span>记账</button>
-    <button data-tab="stock"><span class="bi">▦</span>库存</button>
-    <button data-tab="biz"><span class="bi">◉</span>经营</button>
-    <button data-tab="me"><span class="bi">👤</span>我的</button>
+  <div class="hist-section" id="histSection">
+    <div class="hist-title">过往决定</div>
+    <div class="hist-list" id="histList"></div>
   </div>
 </div>
-
-<!-- EDIT MODAL -->
-<div class="modal" id="editModal"><div class="sheet"><div class="sh"></div><h3>编辑记录</h3><div id="editFields"></div><div class="ba"><button class="bc" id="btnEditCancel">取消</button><button class="bs" id="btnEditSave">保存修改</button></div></div></div>
-
-<!-- CREDIT ADD MODAL -->
-<div class="modal" id="creditModal"><div class="sheet"><div class="sh"></div><h3>新增赊账</h3><div class="sr"><span class="sl">姓名</span><input id="crName" placeholder="老王"></div><div class="sr"><span class="sl">金额</span><input id="crAmt" type="number" placeholder="0"></div><div class="sr"><span class="sl">原因</span><input id="crReason" placeholder="中华1包"></div><div class="ba"><button class="bc" id="btnCrCancel">取消</button><button class="bs" id="btnCrSave">确认</button></div></div></div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== DATA ====================
-const K='gm',KP='gm_prod',KC='gm_credit',KS='gm_supplier';
-function ld(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
-function sv(k,d){localStorage.setItem(k,JSON.stringify(d))}
-function td(){return new Date().toISOString().slice(0,10)}
-function fm(n){return n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:0})}
-const CL={wx:'#3b82f6',ali:'#f59e0b',cash:'#34c759',cost:'#8b5cf6',credit:'#f472b6'};
-const FL=[{id:'w',key:'wx',l:'微信',c:CL.wx},{id:'a',key:'ali',l:'支付宝',c:CL.ali},{id:'c',key:'cash',l:'现金',c:CL.cash},{id:'cs',key:'cost',l:'进货成本',c:CL.cost},{id:'cr',key:'credit',l:'赊账',c:CL.credit}];
+// ============ STATE ============
+var options=['吃火锅','吃日料','吃烤肉'];
+var spinning=false;
+var savedHistory=[];
 
-// Demo data
-if(!ld(K).length){const a=[];const n=new Date();for(let i=6;i>=0;i--){const d=new Date(n);d.setDate(n.getDate()-i);const ds=d.toISOString().slice(0,10);if(i===0)continue;a.push({date:ds,wx:~~(2200+Math.random()*1800),ali:~~(500+Math.random()*700),cash:~~(200+Math.random()*350),cost:~~(500+Math.random()*600),credit:Math.random()>.5?~~(Math.random()*100):0,note:['下雨','隔壁促销','正常','进货价涨了','周末人多','正常'][i]||''})}sv(K,a)}
-if(!ld(KP).length){sv(KP,[{id:1,name:'可口可乐330ml',pPrice:2.8,sPrice:4.0,supplier:'李老板',stock:24,unit:'箱',expiry:'2025-12-15'},{id:2,name:'康师傅红烧牛肉面',pPrice:3.5,sPrice:5.0,supplier:'张供应商',stock:5,unit:'箱',expiry:'2025-06-17'},{id:3,name:'青岛啤酒500ml',pPrice:5.5,sPrice:8.0,supplier:'李老板',stock:18,unit:'箱',expiry:'2026-01-20'},{id:4,name:'农夫山泉550ml',pPrice:1.2,sPrice:2.0,supplier:'王代理',stock:42,unit:'箱',expiry:'2026-08-10'}])}
-if(!ld(KC).length){sv(KC,[{id:1,person:'老王',amount:165,reason:'中华1包65元·青岛啤酒2箱100元',date:'2025-06-03',paid:false},{id:2,person:'隔壁理发店',amount:80,reason:'洗发水2瓶',date:'2025-06-05',paid:false}])}
+function loadHist(){try{return JSON.parse(localStorage.getItem('pick_history')||'[]')}catch(e){return[]}}
+function saveHist(h){localStorage.setItem('pick_history',JSON.stringify(h))}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on')},1800)}
 
-// ==================== NAVIGATION ====================
-let curTab='entry',curSub='daily',curSt='list',curBz='overview';
-function $(id){return document.getElementById(id)}
+// ============ COLORS ============
+var palette=[
+  ['#ff6b6b','#ffa8a8'],['#ff9f43','#ffbe76'],['#feca57','#ffe082'],
+  ['#54a0ff','#7ec8ff'],['#5f27cd','#8e6fe6'],['#1dd1a1','#6fe6c3'],
+  ['#ff6b9d','#ffa8c5'],['#a29bfe','#c4bdfe'],['#00d2d3','#6fe6e5'],
+  ['#f368e0','#f8a5f0'],['#ee5a24','#f79f81'],['#009432','#6ab04c'],
+  ['#e056a0','#f0a0c8'],['#686de0','#a0a5e8'],['#30336b','#5f63a8'],
+  ['#c44569','#e0899f'],['#3dc1d3','#7edae8'],['#f19066','#f8b89e']
+];
 
-function goTab(tab){
-  curTab=tab;['tabEntry','tabStock','tabBiz','tabMe'].forEach(x=>$(x).classList.remove('on'));$('tab'+{entry:'Entry',stock:'Stock',biz:'Biz',me:'Me'}[tab]).classList.add('on');
-  document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.remove('active'));document.querySelector('[data-tab="'+tab+'"]').classList.add('active');
-  // Reset sub views
-  if(tab==='entry')goEntrySub(curSub);
-  if(tab==='stock')goStockSub(curSt);
-  if(tab==='biz')goBizSub(curBz);
-  updateHeader();
-}
-function goEntrySub(sub){
-  curSub=sub;['subDaily','subPurchase','subCredit'].forEach(x=>$(x).classList.remove('on'));$('sub'+{daily:'Daily',purchase:'Purchase',credit:'Credit'}[sub]).classList.add('on');
-  updateHeader();
-  if(sub==='daily')renderDaily();
-  if(sub==='purchase')renderPurchase();
-  if(sub==='credit')renderCredit();
-}
-function goStockSub(sub){
-  curSt=sub;['stList','stExpiry','stHistory'].forEach(x=>$(x).classList.remove('on'));$('st'+{list:'List',expiry:'Expiry',history:'History'}[sub]).classList.add('on');
-  document.querySelectorAll('#tabStock .stab').forEach(b=>b.classList.remove('active'));document.querySelector('[data-st="'+sub+'"]').classList.add('active');
-  if(sub==='list')renderStock();
-  if(sub==='expiry')renderExpiry();
-  if(sub==='history')renderPurchaseHistory();
-}
-function goBizSub(sub){
-  curBz=sub;['bzOverview','bzReport','bzSupplier'].forEach(x=>$(x).classList.remove('on'));$('bz'+{overview:'Overview',report:'Report',supplier:'Supplier'}[sub]).classList.add('on');
-  document.querySelectorAll('#tabBiz .stab').forEach(b=>b.classList.remove('active'));document.querySelector('[data-bz="'+sub+'"]').classList.add('active');
-  if(sub==='overview')renderBiz();
-  if(sub==='report')renderBiz();
-  if(sub==='supplier')renderSupplier();
-}
-function goBack(){
-  if(curTab==='entry'&&curSub!=='daily'){goEntrySub('daily');return}
-  if(curTab==='entry'){return}
-  goTab('entry');goEntrySub('daily');
-}
-function updateHeader(){
-  const h=$('hdrTitle'),b=$('btnBack');
-  if(curTab==='entry'&&curSub==='daily'){h.textContent='关门';b.style.display='none'}
-  else if(curTab==='entry'&&curSub==='purchase'){h.textContent='进货单';b.style.display='block'}
-  else if(curTab==='entry'&&curSub==='credit'){h.textContent='赊账本';b.style.display='block'}
-  else if(curTab==='stock'){h.textContent='库存';b.style.display='none'}
-  else if(curTab==='biz'){h.textContent='经营';b.style.display='none'}
-  else if(curTab==='me'){h.textContent='我的';b.style.display='none'}
-}
-// ==================== RENDER FUNCTIONS ====================
-function getVals(){var v={};FL.forEach(function(f){var el=$('q'+f.id);v[f.key]=el?+el.value||0:0});return v}
-function updateRev(){var v=getVals();var rev=v.wx+v.ali+v.cash;var profit=rev-v.cost-v.credit;$('revVal').textContent='¥'+fm(profit);$('revSub').textContent='营收 ¥'+fm(rev)+' · 成本 ¥'+fm(v.cost)+' · 赊账 ¥'+fm(v.credit)}
-function showDailyAlert(){var all=ld(K).sort(function(a,b){return b.date.localeCompare(a.date)});if(all.length<2)return;var yest=all[1];var yp=yest.wx+yest.ali+yest.cash-yest.cost-yest.credit;var v=getVals();var profit=v.wx+v.ali+v.cash-v.cost-v.credit;var box=$('alertBox');box.classList.remove('on','warn','danger');if(!profit&&!v.wx)return;if(yp>0&&profit<yp*.7){box.className='alert danger on';box.innerHTML='⚠️ 今日利润比昨天跌了'+Math.round((1-profit/yp)*100)+'%，建议查下原因';return}var wkAvg=all.slice(0,Math.min(7,all.length)).reduce(function(s,x){return s+x.wx+x.ali+x.cash-x.cost-x.credit},0)/Math.min(7,all.length);if(wkAvg>0&&profit<wkAvg*.6){box.className='alert warn on';box.innerHTML='📉 今日利润低于本周平均，是否成本高了？'}}
-function renderDaily(){var dt=ld(K).find(function(x){return x.date===td()});$('qcards').innerHTML=FL.map(function(f){return '<div class="qrow"><span class="qd" style="background:'+f.c+'"></span><span class="ql">'+f.l+'</span><input id="q'+f.id+'" type="number" placeholder="0" value="'+(dt?dt[f.key]||'':'')+'" inputmode="decimal"></div>'}).join('');$('noteInp').value=dt?dt.note||'':'';FL.forEach(function(f){var el=$('q'+f.id);if(el)el.oninput=updateRev});$('noteInp').oninput=updateRev;updateRev();showDailyAlert()}
-function parseVoice(t){var map={微信:'wx',支付宝:'ali',现金:'cash',进货:'cost',赊账:'credit'};var nums={wx:0,ali:0,cash:0,cost:0,credit:0};var nw={零:0,一:1,二:2,两:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9,十:10,百:100,千:1000,万:10000};Object.entries(map).forEach(function(e){var kw=e[0],k=e[1];var re=new RegExp(kw+'[^零一二两三四五六七八九十百千万]*?([零一二两三四五六七八九十百千万]+)','g');var m=t.match(re);if(!m)return;m.forEach(function(mt){var nr=mt.match(/([零一二两三四五六七八九十百千万]+)/);if(nr){var val=0,cur=0;for(var i=0;i<nr[1].length;i++){var c=nr[1][i];if(c==='十'){cur=cur||1;cur*=10;val+=cur;cur=0}else if(c==='百'){cur*=100;val+=cur;cur=0}else if(c==='千'){cur*=1000;val+=cur;cur=0}else if(c==='万'){cur*=10000;val+=cur;cur=0}else{cur=nw[c]||0}}val+=cur;nums[k]+=val}})});var dm=t.match(new RegExp(kw+'\\s*(\\d+)','g'));if(dm)dm.forEach(function(m){var n=parseInt(m.replace(kw,'').trim());if(!isNaN(n))nums[k]+=n})});FL.forEach(function(f){var el=$('q'+f.id);if(el)el.value=nums[f.key]||''});updateRev();showDailyAlert();toast('✅ 已识别语音')}
-var purchaseRows=1;
-function renderPurchase(){purchaseRows=1;$('purchaseItems').innerHTML='<div class="sr"><span class="sl">供应商</span><input id="pSup" placeholder="供应商名"></div><div id="pRows"><div class="sr"><span class="sl">商品</span><input id="pName0" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty0" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice0" type="number" placeholder="0"></div></div><div style="font-size:16px;font-weight:700;text-align:right;margin-top:8px">合计 ¥<span id="pTotal">0</span></div>';['pName0','pQty0','pPrice0'].forEach(function(id){var el=$(id);if(el)el.oninput=updatePTotal})}
-function updatePTotal(){var t=0;for(var i=0;i<purchaseRows;i++){var q=+($('pQty'+i)?$('pQty'+i).value:0);var p=+($('pPrice'+i)?$('pPrice'+i).value:0);t+=q*p}$('pTotal').textContent=fm(t)}
-function renderCredit(){var credits=ld(KC);var total=credits.filter(function(x){return!x.paid}).reduce(function(s,x){return s+x.amount},0);var cnt=credits.filter(function(x){return!x.paid}).length;$('crTotal').textContent='待收赊账 ¥'+fm(total);$('crCount').textContent=cnt+'人未结';$('creditList').innerHTML=credits.length?credits.map(function(c){return '<div class="white-card"><div class="sp-top"><div><div class="sp-name">'+c.person+(c.paid?' ✓':'')+'</div><div class="sp-sub">'+c.reason+'</div><div class="sp-sub">'+c.date+' '+(c.paid?'已还':'未还')+'</div></div><div style="color:'+(c.paid?'#34c759':'#c62828')+';font-weight:700;font-size:16px">¥'+fm(c.amount)+'</div></div>'+(c.paid?'':'<div style="margin-top:8px;display:flex;gap:8px"><button class="btn-outline" style="flex:1" onclick="markPaid('+c.id+')">✅ 已还款</button></div>')+'</div>'}).join(''):'<div class="empty">暂无赊账记录</div>'}
-function markPaid(id){var credits=ld(KC);var c=credits.find(function(x){return x.id===id});if(c){c.paid=true;sv(KC,credits);renderCredit();toast('✅ 已标记还款')}}
-
-// ==================== BIND EVENTS + INIT ====================
-document.addEventListener('DOMContentLoaded',function(){
-  try{
-    // Header
-    $('btnBack').onclick=goBack;
-    $('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
-
-    // Bottom nav
-    document.querySelectorAll('#bottomNav button').forEach(b=>b.onclick=function(){goTab(this.dataset.tab)});
-
-    // Stock sub-tabs
-    document.querySelectorAll('#tabStock .stab').forEach(b=>b.onclick=function(){goStockSub(this.dataset.st)});
-
-    // Biz sub-tabs
-    document.querySelectorAll('#tabBiz .stab').forEach(b=>b.onclick=function(){goBizSub(this.dataset.bz)});
-
-    // Entry buttons
-    $('btnGoPurchase').onclick=function(){goEntrySub('purchase')};
-    $('btnGoCredit').onclick=function(){goEntrySub('credit')};
-    $('rbtnAdd').onclick=function(){var el=$('qw');if(el)el.focus()};
-    $('btnSaveDaily').onclick=saveDaily;
-    $('voiceBtn').onclick=startVoice;
-
-    // Purchase
-    $('btnAddItem').onclick=addPurchaseRow;
-    $('btnSavePurchase').onclick=savePurchase;
-
-    // Credit
-    $('btnAddCredit').onclick=function(){$('creditModal').classList.add('on')};
-    $('btnCrCancel').onclick=function(){$('creditModal').classList.remove('on')};
-    $('btnCrSave').onclick=saveCredit;
-
-    // Stock search
-    $('stockSearch').oninput=renderStock;
-
-    // Profile
-    $('btnExport').onclick=exportCSV;
-    $('btnRestore').onclick=function(){toast('请将备份文件发给开发者进行恢复')};
-    $('btnReminder').onclick=function(){toast('提醒设置：每晚20:30推送（需小程序环境）')};
-    $('btnHelp').onclick=function(){toast('使用帮助请联系客服微信：gm_support')};
-    $('btnUpgrade').onclick=function(){toast('订阅功能即将上线，敬请期待')};
-    $('btnShareMR').onclick=function(){toast('📤 月报已复制到剪贴板')};
-
-    // Edit modal
-    $('btnEditCancel').onclick=function(){$('editModal').classList.remove('on')};
-    $('btnEditSave').onclick=saveEdit;
-
-    renderDaily();
-    if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
-  }catch(e){
-    document.body.innerHTML='<div style="padding:40px;text-align:center;color:red"><h2>加载失败</h2><p>'+e.message+'</p><p style="font-size:12px;color:#999">请截图发给开发者</p></div>';
+// ============ WHEEL ============
+function drawWheel(){
+  var svg=document.getElementById('wheelSvg');var n=options.length;
+  var angle=360/n;var paths='';var r=90;var cx=100;var cy=100;
+  for(var i=0;i<n;i++){
+    var a1=i*angle*Math.PI/180 - Math.PI/2;
+    var a2=(i+1)*angle*Math.PI/180 - Math.PI/2;
+    var x1=cx+r*Math.cos(a1);var y1=cy+r*Math.sin(a1);
+    var x2=cx+r*Math.cos(a2);var y2=cy+r*Math.sin(a2);
+    var large=angle>180?1:0;
+    var c=palette[i%palette.length];
+    paths+='<path d="M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+',1 '+x2+','+y2+' Z" fill="'+c[0]+'" opacity=".85"/>';
+    var ma=(a1+a2)/2;var tx=cx+r*.62*Math.cos(ma);var ty=cy+r*.62*Math.sin(ma);
+    paths+='<text x="'+tx+'" y="'+ty+'" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="'+(n>6?'9':n>4?'11':'13')+'" font-weight="600" style="text-shadow:0 1px 2px rgba(0,0,0,.15)">'+options[i].slice(0,4)+(options[i].length>4?'…':'')+'</text>';
   }
-});
-
-// Voice
-let listening=false;
-function startVoice(){
-  var btn=$('voiceBtn');var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('浏览器不支持语音');return}
-  if(listening){listening=false;btn.classList.remove('on');return}
-  var rec=new SR();rec.lang='zh-CN';rec.interimResults=false;
-  listening=true;btn.classList.add('on');rec.start();
-  rec.onresult=function(e){parseVoice(e.results[0][0].transcript)};
-  rec.onerror=function(){listening=false;btn.classList.remove('on')};
-  rec.onend=function(){listening=false;btn.classList.remove('on')};
-}
-function saveDaily(){
-  var v=getVals();var note=$('noteInp').value.trim();
-  var d={date:td(),wx:v.wx,ali:v.ali,cash:v.cash,cost:v.cost,credit:v.credit,note:note};
-  var all=ld(K);var idx=all.findIndex(function(x){return x.date===d.date});
-  if(idx>=0)all[idx]=d;else all.push(d);sv(K,all);toast('✅ 已保存');renderDaily();
-}
-function savePurchase(){
-  var sup=$('pSup').value.trim();if(!sup){toast('请填写供应商');return}
-  var total=0,items=[];
-  for(var i=0;i<purchaseRows;i++){var n=$('pName'+i)&&$('pName'+i).value.trim();var q=+($('pQty'+i)&&$('pQty'+i).value||0);var p=+($('pPrice'+i)&&$('pPrice'+i).value||0);if(n&&q){items.push({name:n,qty:q,price:p});total+=q*p}}
-  if(!items.length){toast('请添加商品');return}
-  var ph=ld('gm_purchases');ph.push({date:td(),supplier:sup,items:items,total:total});sv('gm_purchases',ph);
-  var prods=ld(KP);items.forEach(function(item){var exist=prods.find(function(x){return x.name===item.name});if(exist){exist.stock+=item.qty;exist.pPrice=item.price;exist.supplier=sup}else{prods.push({id:Date.now(),name:item.name,pPrice:item.price,sPrice:0,supplier:sup,stock:item.qty,unit:'件',expiry:''})}});sv(KP,prods);
-  toast('✅ 进货单已保存');renderPurchase();
-}
-function addPurchaseRow(){
-  var i=purchaseRows++;var r=$('pRows');var d=document.createElement('div');
-  d.innerHTML='<div class="sr"><span class="sl">商品</span><input id="pName'+i+'" placeholder="商品名"></div><div class="sr"><span class="sl">数量</span><input id="pQty'+i+'" type="number" placeholder="0"></div><div class="sr"><span class="sl">单价</span><input id="pPrice'+i+'" type="number" placeholder="0"></div>';
-  r.appendChild(d);['pName'+i,'pQty'+i,'pPrice'+i].forEach(function(id){var el=$(id);if(el)el.oninput=updatePTotal});
-}
-function saveCredit(){
-  var n=$('crName').value.trim(),a=+($('crAmt').value||0),r=$('crReason').value.trim();
-  if(!n||!a){toast('请填写姓名和金额');return}
-  var credits=ld(KC);credits.push({id:Date.now(),person:n,amount:a,reason:r,date:td(),paid:false});sv(KC,credits);
-  $('creditModal').classList.remove('on');renderCredit();toast('✅ 已记录');
-}
-function saveEdit(){
-  // placeholder for future edit functionality
-  $('editModal').classList.remove('on');toast('✅ 已保存');
-}
-function exportCSV(){
-  var all=ld(K);if(!all.length){toast('暂无数据');return}
-  var csv='日期,微信,支付宝,现金,进货,赊账,利润,备注\n';all.forEach(function(x){var r=x.wx+x.ali+x.cash;csv+=x.date+','+x.wx+','+x.ali+','+x.cash+','+x.cost+','+x.credit+','+(r-x.cost-x.credit)+','+(x.note||'')+'\n'});
-  var b=new Blob(['﻿'+csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='关门_'+td()+'.csv';a.click();URL.revokeObjectURL(u);toast('📤 已导出');
-}
-</script>
-
-// ==================== RENDER: STOCK ====================
-function renderStock(){
-  const prods=ld(KP);const q=$('stockSearch').value.toLowerCase();
-  const filtered=q?prods.filter(x=>x.name.toLowerCase().includes(q)):prods;
-  $('stTotal').textContent=prods.length;
-  $('stValue').textContent='¥'+fm(prods.reduce((s,x)=>s+x.pPrice*x.stock,0));
-  const mth=td().slice(0,7);
-  $('stIn').textContent='¥'+fm((ld('gm_purchases')||[]).filter(x=>x.date.startsWith(mth)).reduce((s,x)=>s+x.total,0));
-  $('stockList').innerHTML=filtered.length?filtered.map(p=>{
-    let tag='',cls='';if(p.stock>20){tag='充足';cls='g'}else if(p.stock>5){tag='偏低';cls='o'}else{tag='告急';cls='r'}
-    return `<div class="stock-item"><div class="si-l"><div class="si-name">${p.name}</div><div class="si-sub">进¥${p.sPrice?fm(p.pPrice)+'·售¥'+fm(p.sPrice):fm(p.pPrice)} · ${p.supplier}${p.expiry?' · 保质至'+p.expiry.slice(5):''}</div></div><div class="si-r"><div class="si-qty">${p.stock}<span style="font-size:12px;font-weight:400;color:#8e8e93"> ${p.unit}</span></div><div class="si-tag ${cls}">● ${tag}</div></div></div>`;
-  }).join(''):'<div class="empty">没有匹配的商品</div>';
-}
-$('stockSearch').oninput=renderStock;
-
-// ==================== RENDER: EXPIRY ====================
-function renderExpiry(){
-  const prods=ld(KP);const now=new Date();const in7=new Date(now.getTime()+7*86400000);
-  const expiring=prods.filter(p=>p.expiry&&new Date(p.expiry)<=in7&&new Date(p.expiry)>=now);
-  if(!expiring.length){$('expAlert').style.display='flex';$('expAlert').className='alert on';$('expAlert').style.background='#e8f5e9';$('expAlert').style.color='#2e7d32';$('expAlert').innerHTML='✅ 暂无临期商品';$('expiryList').innerHTML='';return}
-  $('expAlert').style.display='flex';$('expAlert').className='alert warn on';$('expAlert').style.background='#fff8e1';$('expAlert').style.color='#856404';
-  $('expAlert').innerHTML='⚠️ '+expiring.length+'件商品将在7天内到期';
-  $('expiryList').innerHTML=expiring.map(p=>`<div class="white-card"><div style="display:flex;justify-content:space-between"><div><div style="font-size:14px;font-weight:500">${p.name}</div><div style="color:#c62828;font-size:12px">到期: ${p.expiry}</div><div style="color:#8e8e93;font-size:11px">剩余 ${p.stock} ${p.unit}</div></div><div style="background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:500;align-self:center">建议促销价 ¥${fm(Math.round(p.pPrice*.85*10)/10)}</div></div></div>`).join('');
+  // Outer ring
+  paths='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="2"/>'+paths;
+  // Pointer
+  paths+='<polygon points="'+cx+',-8 '+(cx-8)+',12 '+(cx+8)+',12" fill="#33353a"/>';
+  svg.innerHTML=paths;svg.classList.remove('spinning');
+  document.getElementById('wheelCenter').textContent='🎯';
+  document.getElementById('resultArea').classList.remove('on');
 }
 
-// ==================== RENDER: PURCHASE HISTORY ====================
-function renderPurchaseHistory(){
-  const ph=(ld('gm_purchases')||[]).sort((a,b)=>b.date.localeCompare(a.date));
-  if(!ph.length){$('purchaseHistory').innerHTML='<div class="empty">暂无进货记录</div>';return}
-  const groups={};ph.forEach(x=>{if(!groups[x.date])groups[x.date]=[];groups[x.date].push(x)});
-  $('purchaseHistory').innerHTML=Object.entries(groups).map(([d,items])=>`<div style="font-size:12px;color:#8e8e93;margin:8px 0 4px">${d}</div>`+items.map(x=>`<div class="white-card" onclick="this.querySelector('.pd').classList.toggle('on')"><div class="sp-top"><div><div class="sp-name">${x.supplier}</div><div class="sp-sub">${x.items.length}件商品</div></div><div style="font-weight:700">¥${fm(x.total)}</div></div><div class="sup-detail pd">${x.items.map(i=>`${i.name} ×${i.qty} ¥${fm(i.price)} = ¥${fm(i.qty*i.price)}`).join('<br>')}</div></div>`).join('')).join('');
+// ============ INPUTS ============
+function renderInputs(){
+  var area=document.getElementById('inputArea');
+  area.innerHTML=options.map(function(o,i){
+    var c=palette[i%palette][0];
+    return '<div class="opt-row"><span class="opt-dot" style="background:'+c+'"></span><input id="opt'+i+'" value="'+o.replace(/"/g,'&quot;')+'" oninput="updateOpt('+i+',this.value)" placeholder="选项'+(i+1)+'"><button class="opt-del" onclick="delOpt('+i+')">×</button></div>';
+  }).join('');
+  drawWheel();
 }
+function updateOpt(i,v){options[i]=v;drawWheel()}
+function delOpt(i){if(options.length<=2){toast('至少保留两个选项');return}options.splice(i,1);renderInputs()}
+document.getElementById('btnAdd').onclick=function(){if(options.length>=12){toast('最多12个选项');return}options.push('');renderInputs();var last=document.getElementById('opt'+(options.length-1));if(last){last.focus();last.placeholder='新选项'}};
 
-// ==================== RENDER: BIZ ====================
-function renderBiz(){
-  const all=ld(K);const mth=all.filter(x=>x.date.startsWith(td().slice(0,7)));const wk=getWeekData();
-  const mRev=mth.reduce((s,x)=>s+x.wx+x.ali+x.cash,0);const mCost=mth.reduce((s,x)=>s+x.cost,0);
-  const mProfit=mRev-mCost-mth.reduce((s,x)=>s+x.credit,0);
-  $('bzRev').textContent='¥'+fm(mRev);$('bzCost').textContent='¥'+fm(mCost);$('bzProfit').textContent='¥'+fm(mProfit);
-  // Alert
-  const prev=all.filter(x=>{const d=new Date(x.date);d.setMonth(d.getMonth()-1);return x.date.startsWith(d.toISOString().slice(0,7))});
-  const pProfit=prev.reduce((s,x)=>s+x.wx+x.ali+x.cash-x.cost-x.credit,0);
-  const al=$('bzAlert');al.style.display='none';
-  if(pProfit>0&&mProfit<pProfit*.7){al.style.display='flex';al.innerHTML='⚠️ 利润较上月下降'+Math.round((1-mProfit/pProfit)*100)+'%，建议关注进货成本'}
-  // Charts
-  const tw=mth.reduce((s,x)=>s+x.wx,0);const ta=mth.reduce((s,x)=>s+x.ali,0);const tc=mth.reduce((s,x)=>s+x.cash,0);
-  const trev=tw+ta+tc||1;
-  $('bzCharts').innerHTML=`<div class="white-card" style="text-align:center"><div style="font-size:12px;font-weight:600;margin-bottom:8px">收款构成</div>${ring([{l:'微信',v:tw,c:'#3b82f6'},{l:'支付宝',v:ta,c:'#f59e0b'},{l:'现金',v:tc,c:'#34c759'}],trev,'总收款')}</div><div class="white-card" style="text-align:center"><div style="font-size:12px;font-weight:600;margin-bottom:8px">成本构成</div>${mCost?ring([{l:'进货',v:mCost,c:'#8b5cf6'}],mCost,'总成本'):'<div class="empty">暂无</div>'}</div>`;
-  // Bars
-  const maxV=Math.max(mRev,mCost,1);
-  $('bzBars').innerHTML=`<div class="bar-row"><span class="bl">营收</span><div class="bb" style="background:#3b82f6;width:${Math.max(2,mRev/maxV*100)}%"></div><span class="br">¥${fm(mRev)}</span></div><div class="bar-row"><span class="bl">成本</span><div class="bb" style="background:#8b5cf6;width:${Math.max(2,mCost/maxV*100)}%"></div><span class="br">¥${fm(mCost)}</span></div><div class="bar-row"><span class="bl">利润</span><div class="bb" style="background:#34c759;width:${Math.max(2,mProfit/maxV*100)}%"></div><span class="br">¥${fm(mProfit)}</span></div>`;
-  // Week
-  $('bzWeek').innerHTML=wk.length?wk.map(x=>{const r=x.wx+x.ali+x.cash;const p=r-x.cost-x.credit;return `<div class="itm"><div><div class="id">${x.date.slice(5)}</div><div class="is">收${fm(r)}·进${fm(x.cost)}·赊${fm(x.credit)}</div></div><div class="iv ${p>=0?'up':'down'}">¥${fm(p)}</div></div>`}).join(''):'<div class="empty">本周暂无</div>';
-  // Monthly report
-  if(curBz==='report'){
-    const sorted=mth.sort((a,b)=>a.date.localeCompare(b.date));const best=sorted.reduce((a,b)=>{const pa=a.wx+a.ali+a.cash-a.cost-a.credit;const pb=b.wx+b.ali+b.cash-b.cost-b.credit;return pa>pb?a:b},sorted[0]);const worst=sorted.reduce((a,b)=>{const pa=a.wx+a.ali+a.cash-a.cost-a.credit;const pb=b.wx+b.ali+b.cash-b.cost-b.credit;return pa<pb?a:b},sorted[0]);
-    const bestP=best?best.wx+best.ali+best.cash-best.cost-best.credit:0;const worstP=worst?worst.wx+worst.ali+worst.cash-worst.cost-worst.credit:0;
-    $('mrContent').innerHTML=`<h3>📊 ${td().slice(0,7)} 月度报告</h3><div class="mr-row"><span>总营收</span><span class="mrr">¥${fm(mRev)}</span></div><div class="mr-row"><span>总成本</span><span class="mrr">¥${fm(mCost)}</span></div><div class="mr-row"><span>总利润</span><span class="mrr" style="color:#ffd700">¥${fm(mProfit)}</span></div><div class="mr-row"><span>日均利润</span><span class="mrr">¥${fm(sorted.length?Math.round(mProfit/sorted.length):0)}</span></div><div class="mr-row"><span>成本占比</span><span class="mrr">${mRev?Math.round(mCost/mRev*100):0}%</span></div><div class="mr-row"><span>记录天数</span><span class="mrr">${sorted.length}天</span></div><div class="mr-best">${best?`📈 最高日：<span>${best.date.slice(5)} · ¥${fm(bestP)}</span>`:''}</div><div class="mr-best">${worst?`📉 最低日：<span>${worst.date.slice(5)} · ¥${fm(worstP)}</span>`:''}</div>`;
-  }
-}
-function getWeekData(){const n=new Date();const day=n.getDay();const mon=new Date(n);mon.setDate(n.getDate()-(day===0?6:day-1));mon.setHours(0,0,0,0);const sun=new Date(mon);sun.setDate(mon.getDate()+6);return ld(K).filter(x=>{const d=new Date(x.date);return d>=mon&&d<=sun}).sort((a,b)=>a.date.localeCompare(b.date))}
-function ring(segs,total,label){const r=52;const c=62;const w=15;const circ=2*Math.PI*r;let off=0;let paths='';segs.filter(x=>x.v>0).forEach(s=>{const pct=s.v/total;const len=pct*circ;paths+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.c}" stroke-width="${w}" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-(off*circ)}" transform="rotate(-90 ${c} ${c})"/>`;off+=pct});const leg=segs.filter(x=>x.v>0).map(s=>`<span><i style="background:${s.c}"></i>${s.l} ${Math.round(s.v/total*100)}%</span>`).join('');return`<svg viewBox="0 0 124 124" style="width:110px;height:110px">${paths}<text x="${c}" y="${c-4}" text-anchor="middle" font-size="12" font-weight="600">${label}</text><text x="${c}" y="${c+14}" text-anchor="middle" font-size="10" fill="#8e8e93">¥${fm(total)}</text></svg><div class="leg">${leg}</div>`}
+// ============ DECIDE ============
+document.getElementById('btnDecide').onclick=function(){
+  if(spinning)return;
+  var filled=options.filter(function(o){return o.trim()});
+  if(filled.length<2){toast('至少填两个选项哦');return}
+  // Clean empties
+  options=options.filter(function(o){return o.trim()});
+  renderInputs();
+  // Spin
+  spinning=true;
+  var n=options.length;var anglePer=360/n;
+  var pick=Math.floor(Math.random()*n);
+  var targetAngle=1800 + (360-pick*anglePer-anglePer/2) + Math.random()*anglePer*.6;
+  var svg=document.getElementById('wheelSvg');
+  svg.style.transform='rotate('+targetAngle+'deg)';
+  svg.classList.add('spinning');
+  document.getElementById('wheelCenter').textContent='…';
+  document.getElementById('btnDecide').disabled=true;
 
-// ==================== SUPPLIER ====================
-function renderSupplier(){
-  const ph=ld('gm_purchases')||[];const mth=td().slice(0,7);const mthP=ph.filter(x=>x.date.startsWith(mth));
-  const groups={};mthP.forEach(x=>{if(!groups[x.supplier])groups[x.supplier]=[];groups[x.supplier].push(x)});
-  const total=mthP.reduce((s,x)=>s+x.total,0);const entries=Object.entries(groups);
-  $('spTotal').textContent='本月待付 ¥'+fm(total);$('spCount').textContent=entries.length+'个供应商';
-  $('supplierList').innerHTML=entries.length?entries.map(([sup,items])=>{const st=items.reduce((s,x)=>s+x.total,0);return`<div class="sup-card" onclick="this.querySelector('.sd').classList.toggle('on')"><div class="sp-top"><div><div class="sp-name">${sup}</div><div class="sp-sub">本月送货${items.length}次</div></div><div class="sp-amt">¥${fm(st)}</div></div><div class="sup-detail sd">${items.map(x=>`${x.date.slice(5)}: ${x.items.map(i=>i.name).join('、')} · ¥${fm(x.total)}`).join('<br>')}<br><button class="btn-outline" style="margin-top:6px" onclick="event.stopPropagation();markSupPaid('${sup}')">✅ 标记已付款</button></div></div>`}).join(''):'<div class="empty">本月暂无进货</div>';
-}
-function markSupPaid(sup){const ph=ld('gm_purchases');ph.forEach(x=>{if(x.supplier===sup)x.paid=true});sv('gm_purchases',ph);renderSupplier();toast('✅ 已标记')}
-
-// ==================== PROFILE ====================
-$('btnExport').onclick=function(){
-  const all=ld(K);if(!all.length){toast('暂无数据');return}
-  let csv='日期,微信,支付宝,现金,进货,赊账,利润,备注\n';all.forEach(x=>{const r=x.wx+x.ali+x.cash;csv+=`${x.date},${x.wx},${x.ali},${x.cash},${x.cost},${x.credit},${r-x.cost-x.credit},${x.note||''}\n`});
-  const b=new Blob(['﻿'+csv],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='关门_'+td()+'.csv';a.click();URL.revokeObjectURL(u);toast('📤 已导出')
+  setTimeout(function(){
+    spinning=false;document.getElementById('btnDecide').disabled=false;
+    var chosen=options[pick];
+    document.getElementById('resultText').textContent=chosen;
+    document.getElementById('resultArea').classList.add('on');
+    document.getElementById('wheelCenter').textContent='✅';
+    // Save
+    savedHistory=loadHist();savedHistory.unshift({options:options.slice(),pick:pick,time:new Date().toISOString()});
+    if(savedHistory.length>20)savedHistory.length=20;
+    saveHist(savedHistory);renderHist();
+    document.getElementById('resultArea').scrollIntoView({behavior:'smooth'});
+  },4200);
 };
-$('btnRestore').onclick=function(){toast('请将备份的CSV文件发给开发者进行恢复')};
-$('btnReminder').onclick=function(){toast('提醒设置：每晚20:30推送（需小程序环境）')};
-$('btnHelp').onclick=function(){toast('使用帮助请联系客服微信：gm_support')};
-$('btnUpgrade').onclick=function(){toast('订阅功能即将上线，敬请期待')};
-$('btnShareMR').onclick=function(){toast('📤 月报已复制到剪贴板')};
 
-// ==================== TOAST ====================
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
+document.getElementById('btnAgain').onclick=function(){document.getElementById('resultArea').classList.remove('on');drawWheel();document.getElementById('wheelCenter').textContent='🎯';window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('btnShare').onclick=function(){
+  var t='🎯 命运帮我决定了：\n「'+document.getElementById('resultText').textContent+'」\n\n纠结选项：'+options.join(' / ')+'\n\n—— 决定了 App';
+  if(navigator.share){navigator.share({title:'我的决定',text:t}).catch(function(){})}else{navigator.clipboard.writeText(t);toast('📋 已复制')}
+};
 
-// ==================== INIT ====================
-document.addEventListener('DOMContentLoaded',function(){
-  try{
-    $('hdrDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
-    renderDaily();
-    if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
-  }catch(e){
-    document.body.innerHTML='<div style="padding:40px;text-align:center;color:red"><h2>加载失败</h2><p>'+e.message+'</p><p style="font-size:12px;color:#999">请截图发给开发者</p></div>';
-  }
-});
+// ============ HISTORY ============
+function renderHist(){
+  savedHistory=loadHist();var list=document.getElementById('histList');
+  if(!savedHistory.length){list.innerHTML='<div class="empty">还没有决定<br>做一次选择吧</div>';return}
+  list.innerHTML=savedHistory.map(function(h,i){
+    var chosen=h.options[h.pick]||'?';
+    return '<div class="hist-item" onclick="replayPick('+i+')"><span class="hi-q">'+h.options.slice(0,3).join(' · ')+(h.options.length>3?' …':'')+'</span><span class="hi-a">→ '+chosen+'</span><button class="hi-del" onclick="event.stopPropagation();delHist('+i+')">×</button></div>';
+  }).join('');
+}
+function replayPick(i){var h=loadHist()[i];if(!h)return;options=h.options;renderInputs();document.getElementById('btnDecide').click();window.scrollTo({top:0,behavior:'smooth'})}
+function delHist(i){savedHistory=loadHist();savedHistory.splice(i,1);saveHist(savedHistory);renderHist();toast('已删除')}
+
+// ============ INIT ============
+renderInputs();renderHist();
+if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
 </script>
 </body>
 </html>
