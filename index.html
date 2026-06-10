@@ -8,210 +8,208 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>决定了</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%23f8f6f2'/><text x='50' y='58' text-anchor='middle' fill='%2333353a' font-size='20' font-weight='700' font-family='system-ui'>决定了</text><text x='50' y='76' text-anchor='middle' fill='%23999' font-size='10' font-family='system-ui'>pick one</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%23f8f6f2'/><text x='50' y='58' text-anchor='middle' fill='%2333353a' font-size='20' font-weight='700' font-family='system-ui'>决定了</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-tap-highlight-color:transparent;height:100%}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  background:#f8f6f2;color:#33353a;min-height:100dvh;overflow-x:hidden;
-}
-#app{max-width:440px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:50px 28px 40px}
-/* Spinner */
-.spin-area{width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
-.spin-label{font-size:12px;color:#b0ada6;letter-spacing:2px;margin-bottom:24px}
-/* Wheel */
-.wheel-wrap{position:relative;width:240px;height:240px}
-.wheel-svg{width:100%;height:100%;transform:rotate(0deg);transition:transform 4s cubic-bezier(.17,.67,.12,.99)}
-.wheel-svg.spinning{transform:rotate(1800deg)}
-.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);z-index:2}
-/* Input */
-.input-area{width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
-.opt-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:10px 18px;box-shadow:0 1px 4px rgba(0,0,0,.03);transition:all .15s}
-.opt-row:focus-within{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f6f2;color:#33353a;min-height:100dvh;overflow-x:hidden}
+#app{max-width:440px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:44px 28px 40px}
+
+/* Top */
+.app-icon{font-size:44px;margin-bottom:8px}.app-title{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}.app-sub{font-size:12px;color:#b0ada6;margin-bottom:32px;letter-spacing:1px}
+
+/* Slot machine */
+.slot-area{width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+.slot-window{width:100%;max-width:300px;height:72px;background:#fff;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.slot-window::before,.slot-window::after{content:'';position:absolute;left:0;right:0;height:20px;z-index:2;pointer-events:none}
+.slot-window::before{top:0;background:linear-gradient(to bottom,#fff,transparent)}
+.slot-window::after{bottom:0;background:linear-gradient(to top,#fff,transparent)}
+.slot-scroll{position:absolute;left:0;right:0;top:0;transition:top 5s cubic-bezier(.08,.6,.2,1)}
+.slot-item{height:72px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#33353a;letter-spacing:.5px}
+.slot-arrow{position:absolute;left:50%;transform:translateX(-50%);color:#33353a;font-size:18px;z-index:3}
+.slot-arrow.up{top:-24px}.slot-arrow.down{bottom:-24px}
+
+/* Inputs */
+.opt-list{width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.opt-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 1px 3px rgba(0,0,0,.02);transition:all .15s}
+.opt-row:focus-within{box-shadow:0 2px 10px rgba(0,0,0,.05)}
 .opt-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.opt-row input{border:none;flex:1;font-size:17px;outline:none;font-family:inherit;background:transparent;color:#33353a}
+.opt-row input{border:none;flex:1;font-size:16px;outline:none;font-family:inherit;background:transparent;color:#33353a}
 .opt-row input::placeholder{color:#c5c0b8}
-.opt-del{width:28px;height:28px;border-radius:50%;border:none;background:#f0eeea;color:#b0ada6;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.opt-del:active{background:#e5e2dc}
-/* Add btn */
-.add-btn{width:100%;padding:14px;border:2px dashed #e0dcd5;border-radius:18px;background:transparent;color:#b0ada6;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:all .15s}
-.add-btn:hover{border-color:#c5c0b8;color:#8a8680}
-/* Decide btn */
-.decide-btn{width:100%;padding:18px;border-radius:20px;border:none;background:#33353a;color:#fff;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:1px;margin-top:8px;margin-bottom:24px;transition:all .15s}
-.decide-btn:active{transform:scale(.97);opacity:.9}
-.decide-btn:disabled{background:#d5d2cc;color:#b0ada6;cursor:not-allowed}
+.opt-row .del{width:28px;height:28px;border-radius:50%;border:none;background:#f0eeea;color:#b0ada6;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.opt-row .del:active{background:#e5e2dc}
+
+/* Buttons */
+.btn-row{width:100%;display:flex;gap:10px;margin-bottom:10px}
+.btn-add{flex:1;padding:14px;border:2px dashed #e0dcd5;border-radius:16px;background:transparent;color:#b0ada6;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-add:hover{border-color:#c5c0b8;color:#8a8680}
+.btn-decide{width:100%;padding:18px;border-radius:18px;border:none;background:#33353a;color:#fff;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:all .15s;margin-bottom:8px}
+.btn-decide:active{transform:scale(.97)}
+.btn-decide:disabled{background:#d5d2cc;color:#b0ada6;cursor:not-allowed}
+
+/* Quick picks */
+.quick-section{width:100%;margin-bottom:24px}
+.quick-label{font-size:11px;color:#c5c0b8;letter-spacing:1.5px;margin-bottom:10px;text-align:center}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.quick-chip{padding:10px 6px;background:#fff;border-radius:14px;border:none;font-size:13px;cursor:pointer;font-family:inherit;color:#555;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.02);text-align:center}
+.quick-chip:active{background:#f5f3f0;transform:scale(.96)}
+
 /* Result */
-.result{text-align:center;display:none;animation:fadeIn .5s}
+.result{width:100%;text-align:center;background:#fff;border-radius:20px;padding:24px 20px;display:none;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.04);animation:popIn .4s}
 .result.on{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.result .re-label{font-size:13px;color:#b0ada6;letter-spacing:2px;margin-bottom:8px}
-.result .re-value{font-size:40px;font-weight:800;color:#33353a;letter-spacing:-1px;margin-bottom:6px;word-break:break-all}
-.result .re-sub{font-size:14px;color:#8a8680;margin-bottom:16px}
-.result .re-actions{display:flex;gap:10px;justify-content:center}
-.result .re-actions button{padding:10px 24px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;border:none}
-.re-again{background:#f0eeea;color:#555}
-.re-share{background:#33353a;color:#fff}
-.re-again:active,.re-share:active{transform:scale(.96)}
+@keyframes popIn{0%{opacity:0;transform:scale(.9)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+.result .re-em{font-size:48px;margin-bottom:8px}
+.result .re-label{font-size:12px;color:#b0ada6;letter-spacing:1.5px;margin-bottom:6px}
+.result .re-val{font-size:30px;font-weight:800;color:#33353a;margin-bottom:16px;letter-spacing:-.5px;word-break:break-all}
+.result .re-btns{display:flex;gap:10px}
+.result .re-btns button{flex:1;padding:12px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;border:none}
+.btn-again{background:#f0eeea;color:#555}
+.btn-share{background:#33353a;color:#fff}
+.btn-again:active,.btn-share:active{transform:scale(.96)}
+
 /* History */
-.hist-section{margin-top:32px;width:100%}
-.hist-title{font-size:12px;color:#c5c0b8;letter-spacing:2px;margin-bottom:12px;text-align:center}
-.hist-list{display:flex;flex-direction:column;gap:8px}
-.hist-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-radius:14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.02);transition:all .15s}
+.hist-wrap{width:100%}
+.hist-title{font-size:11px;color:#d0ccc6;letter-spacing:1.5px;margin-bottom:10px;text-align:center}
+.hist-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;border-radius:14px;margin-bottom:6px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.01)}
 .hist-item:active{background:#faf9f7}
-.hist-item .hi-q{font-size:13px;color:#8a8680;flex:1}
-.hist-item .hi-a{font-size:15px;font-weight:700;color:#33353a;margin:0 12px}
-.hist-item .hi-del{width:24px;height:24px;border-radius:50%;border:none;background:transparent;color:#d0ccc6;cursor:pointer;font-size:12px;flex-shrink:0}
+.hist-item .hi-q{flex:1;font-size:12px;color:#8a8680;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-item .hi-a{font-size:14px;font-weight:700;color:#33353a;flex-shrink:0;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-item button{width:24px;height:24px;border-radius:50%;border:none;background:transparent;color:#d0ccc6;cursor:pointer;font-size:12px;flex-shrink:0}
+.hist-item button:active{background:#f0eeea}
+.empty{text-align:center;color:#d0ccc6;font-size:13px;padding:16px}
+
 /* Toast */
 .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(120px);z-index:200;background:#33353a;color:#fff;padding:10px 20px;border-radius:22px;font-size:14px;transition:transform .35s;pointer-events:none;font-weight:500}
 .toast.on{transform:translateX(-50%) translateY(0)}
-/* Empty */
-.empty{text-align:center;color:#d0ccc6;font-size:13px;padding:20px;line-height:1.8}
-@media(max-width:360px){.wheel-wrap{width:200px;height:200px}.result .re-value{font-size:32px}}
+@media(max-width:360px){.slot-window{max-width:260px}.result .re-val{font-size:24px}}
 </style>
 </head>
 <body>
 
 <div id="app">
-  <div class="spin-area">
-    <div class="spin-label">转一转 · 交给命运</div>
-    <div class="wheel-wrap" id="wheelWrap">
-      <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"></svg>
-      <div class="wheel-center" id="wheelCenter">🎯</div>
-    </div>
+  <div class="app-icon">🎯</div>
+  <div class="app-title">决定了</div>
+  <div class="app-sub">PICK ONE</div>
+
+  <!-- Slot machine -->
+  <div class="slot-area">
+    <div class="slot-arrow up">▲</div>
+    <div class="slot-window" id="slotWindow"><div class="slot-scroll" id="slotScroll"></div></div>
+    <div class="slot-arrow down">▼</div>
   </div>
 
-  <div class="input-area" id="inputArea"></div>
-  <button class="add-btn" id="btnAdd">＋ 添加选项</button>
-  <button class="decide-btn" id="btnDecide">决定了</button>
+  <!-- Options -->
+  <div class="opt-list" id="optList"></div>
+  <div class="btn-row"><button class="btn-add" id="btnAdd">＋ 添加</button></div>
+  <button class="btn-decide" id="btnDecide">决定了</button>
 
+  <!-- Quick picks -->
+  <div class="quick-section">
+    <div class="quick-label">快速填空</div>
+    <div class="quick-grid" id="quickGrid"></div>
+  </div>
+
+  <!-- Result -->
   <div class="result" id="resultArea">
-    <div class="re-label">命运选择了</div>
-    <div class="re-value" id="resultText"></div>
-    <div class="re-sub">这个决定怎么样？</div>
-    <div class="re-actions">
-      <button class="re-again" id="btnAgain">再转一次</button>
-      <button class="re-share" id="btnShare">📤 分享结果</button>
-    </div>
+    <div class="re-em" id="reEm">✨</div>
+    <div class="re-label">命运说</div>
+    <div class="re-val" id="reVal"></div>
+    <div class="re-btns"><button class="btn-again" id="btnAgain">再测一次</button><button class="btn-share" id="btnShare">📤 分享</button></div>
   </div>
 
-  <div class="hist-section" id="histSection">
-    <div class="hist-title">过往决定</div>
-    <div class="hist-list" id="histList"></div>
-  </div>
+  <!-- History -->
+  <div class="hist-wrap"><div class="hist-title">过往</div><div class="hist-item" style="display:none" id="histItem"><span class="hi-q"></span><span class="hi-a"></span><button>×</button></div><div id="histList"></div></div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ STATE ============
 var options=['吃火锅','吃日料','吃烤肉'];
-var spinning=false;
-var savedHistory=[];
+var spinning=false;var slotTimer=null;
+var emojis=['✨','🌟','💫','🎉','🎊','🥳','🍀','💎'];
 
-function loadHist(){try{return JSON.parse(localStorage.getItem('pick_history')||'[]')}catch(e){return[]}}
-function saveHist(h){localStorage.setItem('pick_history',JSON.stringify(h))}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on')},1800)}
+function loadHist(){try{return JSON.parse(localStorage.getItem('pk_hist')||'[]')}catch(e){return[]}}
+function saveHist(h){localStorage.setItem('pk_hist',JSON.stringify(h))}
 
-// ============ COLORS ============
-var palette=[
-  ['#ff6b6b','#ffa8a8'],['#ff9f43','#ffbe76'],['#feca57','#ffe082'],
-  ['#54a0ff','#7ec8ff'],['#5f27cd','#8e6fe6'],['#1dd1a1','#6fe6c3'],
-  ['#ff6b9d','#ffa8c5'],['#a29bfe','#c4bdfe'],['#00d2d3','#6fe6e5'],
-  ['#f368e0','#f8a5f0'],['#ee5a24','#f79f81'],['#009432','#6ab04c'],
-  ['#e056a0','#f0a0c8'],['#686de0','#a0a5e8'],['#30336b','#5f63a8'],
-  ['#c44569','#e0899f'],['#3dc1d3','#7edae8'],['#f19066','#f8b89e']
-];
+var COLORS=['#ff6b6b','#ff9f43','#feca57','#54a0ff','#5f27cd','#1dd1a1','#ff6b9d','#a29bfe','#00d2d3','#f368e0','#ee5a24','#009432'];
 
-// ============ WHEEL ============
-function drawWheel(){
-  var svg=document.getElementById('wheelSvg');var n=options.length;
-  var angle=360/n;var paths='';var r=90;var cx=100;var cy=100;
-  for(var i=0;i<n;i++){
-    var a1=i*angle*Math.PI/180 - Math.PI/2;
-    var a2=(i+1)*angle*Math.PI/180 - Math.PI/2;
-    var x1=cx+r*Math.cos(a1);var y1=cy+r*Math.sin(a1);
-    var x2=cx+r*Math.cos(a2);var y2=cy+r*Math.sin(a2);
-    var large=angle>180?1:0;
-    var c=palette[i%palette.length];
-    paths+='<path d="M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+',1 '+x2+','+y2+' Z" fill="'+c[0]+'" opacity=".85"/>';
-    var ma=(a1+a2)/2;var tx=cx+r*.62*Math.cos(ma);var ty=cy+r*.62*Math.sin(ma);
-    paths+='<text x="'+tx+'" y="'+ty+'" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="'+(n>6?'9':n>4?'11':'13')+'" font-weight="600" style="text-shadow:0 1px 2px rgba(0,0,0,.15)">'+options[i].slice(0,4)+(options[i].length>4?'…':'')+'</text>';
-  }
-  // Outer ring
-  paths='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="2"/>'+paths;
-  // Pointer
-  paths+='<polygon points="'+cx+',-8 '+(cx-8)+',12 '+(cx+8)+',12" fill="#33353a"/>';
-  svg.innerHTML=paths;svg.classList.remove('spinning');
-  document.getElementById('wheelCenter').textContent='🎯';
-  document.getElementById('resultArea').classList.remove('on');
+// Slot machine
+function buildSlot(){
+  var s=document.getElementById('slotScroll');var filled=options.filter(function(o){return o.trim()});
+  // Repeat options 6 times for scrolling effect
+  var items=[];for(var r=0;r<8;r++){for(var i=0;i<filled.length;i++){items.push(filled[i])}}
+  s.style.top='0px';s.innerHTML=items.map(function(o,i){return '<div class="slot-item" style="color:'+COLORS[i%COLORS.length]+'">'+o+'</div>'}).join('');
 }
-
-// ============ INPUTS ============
-function renderInputs(){
-  var area=document.getElementById('inputArea');
-  area.innerHTML=options.map(function(o,i){
-    var c=palette[i%palette][0];
-    return '<div class="opt-row"><span class="opt-dot" style="background:'+c+'"></span><input id="opt'+i+'" value="'+o.replace(/"/g,'&quot;')+'" oninput="updateOpt('+i+',this.value)" placeholder="选项'+(i+1)+'"><button class="opt-del" onclick="delOpt('+i+')">×</button></div>';
+function renderOptions(){
+  document.getElementById('optList').innerHTML=options.map(function(o,i){
+    return '<div class="opt-row"><span class="opt-dot" style="background:'+COLORS[i%COLORS.length]+'"></span><input id="o'+i+'" value="'+o.replace(/"/g,'&quot;').replace(/</g,'&lt;')+'" oninput="updateOpt('+i+',this.value)" placeholder="选项'+(i+1)+'"><button class="del" onclick="delOpt('+i+')">×</button></div>';
   }).join('');
-  drawWheel();
+  buildSlot();
 }
-function updateOpt(i,v){options[i]=v;drawWheel()}
-function delOpt(i){if(options.length<=2){toast('至少保留两个选项');return}options.splice(i,1);renderInputs()}
-document.getElementById('btnAdd').onclick=function(){if(options.length>=12){toast('最多12个选项');return}options.push('');renderInputs();var last=document.getElementById('opt'+(options.length-1));if(last){last.focus();last.placeholder='新选项'}};
+function updateOpt(i,v){options[i]=v;clearTimeout(slotTimer);slotTimer=setTimeout(buildSlot,400)}
+function delOpt(i){if(options.length<=2){toast('至少两个');return}options.splice(i,1);renderOptions()}
+document.getElementById('btnAdd').onclick=function(){if(options.length>=10){toast('最多10个');return}options.push('');renderOptions();var e=document.getElementById('o'+(options.length-1));if(e){e.focus();e.placeholder='新选项'}};
 
-// ============ DECIDE ============
+// Quick picks
+var quicks=[
+  {label:'🍜 吃什么',opts:['火锅','日料','烧烤','炸鸡','麻辣烫','螺蛳粉']},
+  {label:'☕ 喝什么',opts:['奶茶','咖啡','果茶','可乐','白开水','啤酒']},
+  {label:'🎬 看什么',opts:['悬疑片','喜剧','动画','纪录片','爱情片','随便']},
+  {label:'🎮 玩什么',opts:['王者','原神','吃鸡','Switch','出去走走','学习']},
+  {label:'📅 周末',opts:['宅家','逛街','爬山','约饭','看电影','加班']},
+  {label:'💼 选哪个',opts:['方案A','方案B','方案C']},
+];
+document.getElementById('quickGrid').innerHTML=quicks.map(function(q){return '<button class="quick-chip" onclick="quickPick('+JSON.stringify(q.opts).replace(/"/g,'&quot;')+')">'+q.label+'</button>'}).join('');
+function quickPick(opts){options=opts;renderOptions();toast('✅ 已填入')}
+
+// Decide
 document.getElementById('btnDecide').onclick=function(){
-  if(spinning)return;
-  var filled=options.filter(function(o){return o.trim()});
-  if(filled.length<2){toast('至少填两个选项哦');return}
-  // Clean empties
-  options=options.filter(function(o){return o.trim()});
-  renderInputs();
-  // Spin
-  spinning=true;
-  var n=options.length;var anglePer=360/n;
-  var pick=Math.floor(Math.random()*n);
-  var targetAngle=1800 + (360-pick*anglePer-anglePer/2) + Math.random()*anglePer*.6;
-  var svg=document.getElementById('wheelSvg');
-  svg.style.transform='rotate('+targetAngle+'deg)';
-  svg.classList.add('spinning');
-  document.getElementById('wheelCenter').textContent='…';
-  document.getElementById('btnDecide').disabled=true;
+  if(spinning)return;var filled=options.filter(function(o){return o.trim()});if(filled.length<2){toast('至少填两个');return}
+  options=filled;renderOptions();
+  spinning=true;document.getElementById('btnDecide').disabled=true;
+  document.getElementById('resultArea').classList.remove('on');
+
+  // Spin slot machine
+  var pick=Math.floor(Math.random()*options.length);var itemH=72;
+  // Target: scroll to somewhere in the middle repetitions, then land on pick
+  var rounds=3+Math.floor(Math.random()*2);var targetIdx=rounds*options.length+pick;
+  var targetTop=-(targetIdx*itemH)+(itemH*.05);
+
+  var scroll=document.getElementById('slotScroll');scroll.style.transition='none';scroll.style.top='0px';
+  scroll.offsetHeight;
+  scroll.style.transition='top '+(3.5+Math.random()*1.5)+'s cubic-bezier(.08,.7,.15,1)';
+  scroll.style.top=targetTop+'px';
 
   setTimeout(function(){
     spinning=false;document.getElementById('btnDecide').disabled=false;
     var chosen=options[pick];
-    document.getElementById('resultText').textContent=chosen;
+    document.getElementById('reEm').textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    document.getElementById('reVal').textContent=chosen;
     document.getElementById('resultArea').classList.add('on');
-    document.getElementById('wheelCenter').textContent='✅';
-    // Save
-    savedHistory=loadHist();savedHistory.unshift({options:options.slice(),pick:pick,time:new Date().toISOString()});
-    if(savedHistory.length>20)savedHistory.length=20;
-    saveHist(savedHistory);renderHist();
     document.getElementById('resultArea').scrollIntoView({behavior:'smooth'});
-  },4200);
+    // Save
+    var h=loadHist();h.unshift({opts:options.slice(),pick:pick,t:new Date().toISOString()});
+    if(h.length>30)h.length=30;saveHist(h);renderHist();
+  },4000+Math.random()*1000);
 };
 
-document.getElementById('btnAgain').onclick=function(){document.getElementById('resultArea').classList.remove('on');drawWheel();document.getElementById('wheelCenter').textContent='🎯';window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('btnAgain').onclick=function(){document.getElementById('resultArea').classList.remove('on');buildSlot();window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('btnShare').onclick=function(){
-  var t='🎯 命运帮我决定了：\n「'+document.getElementById('resultText').textContent+'」\n\n纠结选项：'+options.join(' / ')+'\n\n—— 决定了 App';
+  var t='🎯 决定了！\n「'+document.getElementById('reVal').textContent+'」\n\n纠结过：'+options.join(' / ');
   if(navigator.share){navigator.share({title:'我的决定',text:t}).catch(function(){})}else{navigator.clipboard.writeText(t);toast('📋 已复制')}
 };
 
-// ============ HISTORY ============
+// History
 function renderHist(){
-  savedHistory=loadHist();var list=document.getElementById('histList');
-  if(!savedHistory.length){list.innerHTML='<div class="empty">还没有决定<br>做一次选择吧</div>';return}
-  list.innerHTML=savedHistory.map(function(h,i){
-    var chosen=h.options[h.pick]||'?';
-    return '<div class="hist-item" onclick="replayPick('+i+')"><span class="hi-q">'+h.options.slice(0,3).join(' · ')+(h.options.length>3?' …':'')+'</span><span class="hi-a">→ '+chosen+'</span><button class="hi-del" onclick="event.stopPropagation();delHist('+i+')">×</button></div>';
-  }).join('');
+  var h=loadHist();var l=document.getElementById('histList');
+  if(!h.length){l.innerHTML='<div class="empty">还没有决定</div>';return}
+  l.innerHTML=h.map(function(x,i){return '<div class="hist-item" onclick="replay('+i+')"><span class="hi-q">'+x.opts.slice(0,4).join(' · ')+(x.opts.length>4?' …':'')+'</span><span class="hi-a">→ '+x.opts[x.pick]+'</span><button onclick="event.stopPropagation();delHist('+i+')">×</button></div>'}).join('');
 }
-function replayPick(i){var h=loadHist()[i];if(!h)return;options=h.options;renderInputs();document.getElementById('btnDecide').click();window.scrollTo({top:0,behavior:'smooth'})}
-function delHist(i){savedHistory=loadHist();savedHistory.splice(i,1);saveHist(savedHistory);renderHist();toast('已删除')}
+function replay(i){var h=loadHist()[i];if(!h)return;options=h.opts;renderOptions();document.getElementById('btnDecide').click();window.scrollTo({top:0,behavior:'smooth'})}
+function delHist(i){var h=loadHist();h.splice(i,1);saveHist(h);renderHist();toast('已删')}
 
-// ============ INIT ============
-renderInputs();renderHist();
+// Init
+renderOptions();renderHist();
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
 </script>
 </body>
